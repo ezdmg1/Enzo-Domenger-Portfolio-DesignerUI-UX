@@ -336,21 +336,6 @@
       #logo-btn img { width: 44px; height: 44px; display: block; opacity: 0.9; }
       #logo-btn:hover img { opacity: 1; }
 
-      /* Touch navigation buttons (mobile/tablet) */
-      .nav-touch-btn { position: fixed; bottom: 16px; width: 52px; height: 52px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.3); background: rgba(255,255,255,0.12); color: #fff; z-index: 2001; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
-      .nav-touch-btn svg { pointer-events: none; }
-      .nav-touch-left { left: 16px; }
-      .nav-touch-right { right: 16px; }
-      .nav-touch-btn:active, .nav-touch-btn.pressed { transform: scale(0.95); background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.5); }
-      @media (pointer: coarse), (hover: none) {
-        .nav-touch-btn { display: flex; }
-      }
-      @media (max-width: 400px) {
-        .nav-touch-btn { width: 46px; height: 46px; bottom: 12px; }
-        .nav-touch-left { left: 12px; }
-        .nav-touch-right { right: 12px; }
-      }
-
       /* Startup white overlay (will fade OUT) */
       #fade-overlay {
         position: fixed;
@@ -364,8 +349,9 @@
     <script type="importmap">
       {
         "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
       }
     </script>
     
@@ -429,6 +415,18 @@
         <polyline points="15 18 9 12 15 6"></polyline>
       </svg>
     </button>
+
+    <!-- Bottom touch navigation buttons (mobile/tablet) -->
+    <button id="touch-prev" class="nav-touch-btn nav-touch-prev" aria-label="Projet précédent">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+    <button id="touch-next" class="nav-touch-btn nav-touch-next" aria-label="Projet suivant">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
     <button id="nav-right" class="nav-arrow nav-right" aria-label="Projet suivant" title="Projet suivant (Flèche droite)">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
         <polyline points="9 18 15 12 9 6"></polyline>
@@ -441,21 +439,22 @@
       <div id="cursor-text" class="cursor-text">scroll</div>
     </div>
     
-    <!-- Touch navigation buttons (mobile/tablet) -->
-    <button id="nav-touch-prev" class="nav-touch-btn nav-touch-left" aria-label="Précédent">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
-        <polyline points="15 18 9 12 15 6"></polyline>
-      </svg>
-    </button>
-    <button id="nav-touch-next" class="nav-touch-btn nav-touch-right" aria-label="Suivant">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
-        <polyline points="9 18 15 12 9 6"></polyline>
-      </svg>
-    </button>
-    
     <!-- Action button for focused item -->
     <button id="action-button" class="action-button" aria-label="Découvrir le projet" title="Découvrir le projet (Entrée)">
       <span>Découvrir</span>
+    </button>
+
+    <!-- Touch zoom buttons (mobile/tablet) -->
+    <button id="zoom-touch-out" class="zoom-touch-btn zoom-touch-out" aria-label="Zoom arrière">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+    </button>
+    <button id="zoom-touch-in" class="zoom-touch-btn zoom-touch-in" aria-label="Zoom avant">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
     </button>
     
     <!-- Modal window -->

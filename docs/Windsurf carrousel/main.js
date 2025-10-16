@@ -73,6 +73,30 @@ window.addEventListener('touchstart', (e) => {
   }
 }, { passive: true });
 
+// Touch zoom buttons (mobile/tablet): press-and-hold to adjust cameraProgress
+const zoomTouchInBtn = document.getElementById('zoom-touch-in');
+const zoomTouchOutBtn = document.getElementById('zoom-touch-out');
+let holdZoomIn = false;
+let holdZoomOut = false;
+
+function bindZoomHold(el, dir) {
+  if (!el) return;
+  const onDown = () => { if (dir > 0) holdZoomIn = true; else holdZoomOut = true; };
+  const onUp = () => { if (dir > 0) holdZoomIn = false; else holdZoomOut = false; };
+  el.addEventListener('touchstart', onDown, { passive: true });
+  el.addEventListener('touchend', onUp, { passive: true });
+  el.addEventListener('touchcancel', onUp, { passive: true });
+  el.addEventListener('pointerdown', onDown, { passive: true });
+  el.addEventListener('pointerup', onUp, { passive: true });
+  el.addEventListener('pointercancel', onUp, { passive: true });
+  el.addEventListener('mousedown', onDown, { passive: true });
+  el.addEventListener('mouseup', onUp, { passive: true });
+  el.addEventListener('mouseleave', onUp, { passive: true });
+}
+
+bindZoomHold(zoomTouchInBtn, +1);
+bindZoomHold(zoomTouchOutBtn, -1);
+
 window.addEventListener('touchmove', (e) => {
   if (!e.touches || e.touches.length === 0) return;
   
@@ -728,26 +752,24 @@ document.getElementById('nav-right').addEventListener('click', () => {
   rotateToIndex(nextIndex);
 });
 
-// Touch on-screen buttons (mobile/tablet)
-const navTouchPrev = document.getElementById('nav-touch-prev');
-const navTouchNext = document.getElementById('nav-touch-next');
-
-if (navTouchPrev) {
+// Touch prev/next buttons (mobile/tablet)
+const touchPrev = document.getElementById('touch-prev');
+const touchNext = document.getElementById('touch-next');
+if (touchPrev) {
   const goPrev = () => {
     const prevIndex = (currentIndex - 1 + itemCount) % itemCount;
     rotateToIndex(prevIndex);
   };
-  navTouchPrev.addEventListener('click', goPrev, { passive: true });
-  navTouchPrev.addEventListener('touchstart', (e) => { e.preventDefault(); goPrev(); }, { passive: false });
+  touchPrev.addEventListener('click', goPrev, { passive: true });
+  touchPrev.addEventListener('touchend', goPrev, { passive: true });
 }
-
-if (navTouchNext) {
+if (touchNext) {
   const goNext = () => {
     const nextIndex = (currentIndex + 1) % itemCount;
     rotateToIndex(nextIndex);
   };
-  navTouchNext.addEventListener('click', goNext, { passive: true });
-  navTouchNext.addEventListener('touchstart', (e) => { e.preventDefault(); goNext(); }, { passive: false });
+  touchNext.addEventListener('click', goNext, { passive: true });
+  touchNext.addEventListener('touchend', goNext, { passive: true });
 }
 
 // Modal elements

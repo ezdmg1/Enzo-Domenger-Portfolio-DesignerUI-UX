@@ -66,11 +66,9 @@ function bindHoldButton(el, dir) {
   if (!el) return;
   const onDown = () => {
     if (dir > 0) holdForwardPressed = true; else holdBackPressed = true;
-    el.classList.add('pressed');
   };
   const onUp = () => {
     if (dir > 0) holdForwardPressed = false; else holdBackPressed = false;
-    el.classList.remove('pressed');
   };
   el.addEventListener('touchstart', onDown, { passive: true });
   el.addEventListener('touchend', onUp, { passive: true });
