@@ -293,6 +293,55 @@ scene.add(carouselGroup);
 // Colors for the carousel items
 const colors = [0xff6b6b, 0x4ecdc4, 0xffe66d, 0x95e1d3, 0xf38181, 0xaa96da];
 
+// Optional: per-item textures for the model materials (one texture per carousel slot)
+// Provide your own list; defaults use existing files in ./Textures/
+let itemTexturePaths = [
+  // Noms réels trouvés dans le dossier Textures/
+  './Textures/Polaroid_Frame_Template_UV_1.jpg',
+  './Textures/Polaroid_Frame_Template_UV_2.jpg',
+  './Textures/Polaroid_Frame_Template_UV_3.jpg',
+  './Textures/Polaroid_Frame_Template_UV_4.jpg',
+  './Textures/Polaroid_Frame_Template_UV_5.jpg',
+  './Textures/Polaroid_Frame_Template_UV_6.jpg',
+];
+
+// Trie par numéro de slot indiqué en fin de nom de fichier (avant l'extension)
+function extractTrailingNumber(path) {
+  const base = path.split('/').pop() || path;
+  // capture les chiffres avant extension optionnelle (supporte aussi un nom se terminant par chiffres sans point)
+  // exemples: name_12.webp -> 12, name-6webp -> 6, name 3 -> 3
+  const m = base.match(/(?:_|-|\s)(\d+)(?:\.[a-zA-Z0-9]+)?$/);
+  return m ? parseInt(m[1], 10) : NaN;
+}
+
+itemTexturePaths = itemTexturePaths.slice().sort((a, b) => {
+  const na = extractTrailingNumber(a);
+  const nb = extractTrailingNumber(b);
+  if (Number.isNaN(na) && Number.isNaN(nb)) return 0;
+  if (Number.isNaN(na)) return 1;
+  if (Number.isNaN(nb)) return -1;
+  return na - nb;
+});
+
+const textureLoader = new THREE.TextureLoader();
+const TEX_BUSTER = `?t=${Date.now()}`;
+const itemTextures = itemTexturePaths.map((path) => {
+  const tex = textureLoader.load(path + TEX_BUSTER);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.minFilter = THREE.LinearMipmapLinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  tex.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+  tex.generateMipmaps = true;
+  // glTF-compatible orientation
+  tex.flipY = false;
+  return tex;
+});
+
+// Shared normal map applied to all items
+const sharedNormalMap = textureLoader.load('./Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.png' + TEX_BUSTER);
+// normal maps should not be in sRGB; keep default color space
+sharedNormalMap.flipY = false;
+
 /**
  * Applies realistic lighting effects to a Three.js material
  * Adds rim lighting and ACES filmic tone mapping for better visuals
@@ -317,7 +366,7 @@ let modelsLoaded = 0;
 
 // Load the GLTF model
 loader.load(
-  './BLENDER_Template.glb',
+  './BLENDER_Template_1.glb',
   (gltf) => {
     modelTemplate = gltf.scene;
     
@@ -338,13 +387,24 @@ loader.load(
           child.castShadow = false;
           child.receiveShadow = false;
           
-          // Optimize textures
-          if (child.material.map) {
+          // Assign per-item texture regardless of existing map and optimize
+          const perItemTex = itemTextures[(i % itemTextures.length)];
+          if (perItemTex) {
+            child.material.map = perItemTex;
             child.material.map.minFilter = THREE.LinearMipmapLinearFilter;
             child.material.map.magFilter = THREE.LinearFilter;
             child.material.map.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
             child.material.map.generateMipmaps = true;
           }
+          // Apply shared normal map to enhance shading
+          if (sharedNormalMap) {
+            child.material.normalMap = sharedNormalMap;
+            // typical default strength; adjust if needed
+            if (!child.material.normalScale) {
+              child.material.normalScale = new THREE.Vector2(1, 1);
+            }
+          }
+          child.material.needsUpdate = true;
           
           // Optimize geometry
           if (child.geometry) {
@@ -411,12 +471,24 @@ function createFallbackBoxes() {
     
     const geometry = new THREE.BoxGeometry(2, 2.5, 0.5);
     const material = new THREE.MeshStandardMaterial({ 
-      color: colors[i],
+      color: 0xffffff,
       metalness: 0.3,
       roughness: 0.4,
       transparent: true,
       opacity: 1
     });
+    // Apply per-item texture if available
+    const perItemTex = itemTextures[(i % itemTextures.length)];
+    if (perItemTex) {
+      material.map = perItemTex;
+    }
+    if (sharedNormalMap) {
+      material.normalMap = sharedNormalMap;
+      if (!material.normalScale) {
+        material.normalScale = new THREE.Vector2(1, 1);
+      }
+    }
+    material.needsUpdate = true;
     applyRealismToMaterial(material);
     const mesh = new THREE.Mesh(geometry, material);
     mesh.castShadow = false;
@@ -489,11 +561,25 @@ const cursorText = document.getElementById('cursor-text');
 const CURSOR_IDLE_DELAY_MS = 200; // Show "scroll" text after 200ms of inactivity
 let idleTimer = null;
 let isIdle = false;
+// Track cursor scale and last position to compose translate + scale without conflicts
+let cursorScale = 1;
+let lastMouseX = 0;
+let lastMouseY = 0;
+
+function applyCursorTransform() {
+  if (customCursor) {
+    const inv = cursorScale || 1;
+    customCursor.style.transform = `translate(${lastMouseX / inv}px, ${lastMouseY / inv}px) scale(${cursorScale})`;
+    customCursor.style.transformOrigin = 'center center';
+  }
+}
 
 // Update cursor position with transform for better performance
 window.addEventListener('mousemove', (e) => {
   if (customCursor) {
-    customCursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+    applyCursorTransform();
   }
   
   // User is moving, hide text
@@ -512,6 +598,17 @@ window.addEventListener('mousemove', (e) => {
     }
   }, CURSOR_IDLE_DELAY_MS);
 }, { passive: true });
+
+// Shrink cursor while mouse button is pressed
+window.addEventListener('mousedown', () => {
+  cursorScale = 0.5;
+  applyCursorTransform();
+});
+
+window.addEventListener('mouseup', () => {
+  cursorScale = 1;
+  applyCursorTransform();
+});
 
 // Handle scroll to zoom camera
 window.addEventListener('wheel', (event) => {
