@@ -33,6 +33,22 @@ function maybeHideLoadingOverlay() {
   }
 }
 
+// If we navigated from index, don't flash the loader between scenes on mobile
+let comingFromIndex = false;
+try {
+  comingFromIndex = sessionStorage.getItem('fromIndex') === '1';
+  sessionStorage.removeItem('fromIndex');
+} catch (_) {}
+if (loadingOverlay && comingFromIndex) {
+  // Start hidden; reveal only if loading is still ongoing after a short delay
+  loadingOverlay.style.display = 'none';
+  setTimeout(() => {
+    if (!modelReady || !videoReady) {
+      loadingOverlay.style.display = 'flex';
+    }
+  }, 450);
+}
+
 // Reduced motion support
 const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 

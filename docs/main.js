@@ -634,6 +634,7 @@ function animate() {
       if (markerGlow) markerGlow.visible = false;
       if (markerGlowSprite) markerGlowSprite.visible = false;
       // Show white immediately, then navigate to carousel
+      try { sessionStorage.setItem('fromIndex', '1'); } catch (_) {}
       fadeOverlay.style.opacity = '1';
       navigateToCarouselAfterPreload();
     }
@@ -668,6 +669,7 @@ function animate() {
       marker.visible = false;
       if (markerGlow) markerGlow.visible = false;
       // Show white immediately, then navigate to carousel
+      try { sessionStorage.setItem('fromIndex', '1'); } catch (_) {}
       fadeOverlay.style.opacity = '1';
       navigateToCarouselAfterPreload();
     }
