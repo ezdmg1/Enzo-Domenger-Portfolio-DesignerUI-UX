@@ -56,6 +56,34 @@ document.addEventListener('visibilitychange', () => {
   isDocHidden = document.hidden;
 });
 
+// On-screen touch navigation buttons (mobile/tablet)
+const navTouchForward = document.getElementById('nav-touch-forward');
+const navTouchBack = document.getElementById('nav-touch-back');
+let holdForwardPressed = false;
+let holdBackPressed = false;
+
+function bindHoldButton(el, dir) {
+  if (!el) return;
+  const onDown = () => {
+    if (dir > 0) holdForwardPressed = true; else holdBackPressed = true;
+  };
+  const onUp = () => {
+    if (dir > 0) holdForwardPressed = false; else holdBackPressed = false;
+  };
+  el.addEventListener('touchstart', onDown, { passive: true });
+  el.addEventListener('touchend', onUp, { passive: true });
+  el.addEventListener('touchcancel', onUp, { passive: true });
+  el.addEventListener('pointerdown', onDown, { passive: true });
+  el.addEventListener('pointerup', onUp, { passive: true });
+  el.addEventListener('pointercancel', onUp, { passive: true });
+  el.addEventListener('mousedown', onDown, { passive: true });
+  el.addEventListener('mouseup', onUp, { passive: true });
+  el.addEventListener('mouseleave', onUp, { passive: true });
+}
+
+bindHoldButton(navTouchForward, +1);
+bindHoldButton(navTouchBack, -1);
+
 // Fade-to-white overlay (DOM-based)
 const fadeOverlay = document.createElement('div');
 fadeOverlay.style.position = 'fixed';
@@ -564,6 +592,14 @@ function animate() {
   if (!isDocHidden) {
     grassUniforms.iTime.value = Date.now() - grassTimeStart;
     grassUniforms.uCameraPos.value.copy(camera.position);
+  }
+  // Apply touch hold buttons acceleration (emulate continuous scroll)
+  if (!transitionStarted && (holdForwardPressed || holdBackPressed)) {
+    const dir = holdForwardPressed ? 1 : (holdBackPressed ? -1 : 0);
+    const HOLD_ACCEL = SCROLL_ACCEL * 900; // tuned for finger hold
+    forwardVel += dir * HOLD_ACCEL * (dt * 60);
+    forwardVel = THREE.MathUtils.clamp(forwardVel, -MAX_VEL, MAX_VEL);
+    lastScrollTime = performance.now();
   }
   // pulse diffuse sprite glow subtly and keep it centered on marker
   if (markerGlowSprite && markerGlowSprite.visible) {

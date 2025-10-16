@@ -106,6 +106,35 @@
       .loader { width: 144px; height: 144px; }
       .loader .arc { inset: 10px; border-width: 12px; }
     }
+    /* Touch navigation buttons (mobile/tablet) */
+    .nav-touch-btn {
+      position: fixed;
+      bottom: 12px;
+      width: 44px;
+      height: 44px;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      z-index: 6000;
+    }
+    .nav-touch-btn svg {
+      width: 28px;
+      height: 28px;
+      stroke: white;
+      stroke-width: 2;
+    }
+    .nav-touch-left {
+      left: 12px;
+    }
+    .nav-touch-right {
+      right: 12px;
+    }
+    @media (pointer: fine) {
+      .nav-touch-btn {
+        display: none;
+      }
+    }
   </style>
   
 </head>
@@ -147,6 +176,17 @@
     <div class="cursor-crosshair"></div>
     <div id="cursor-text" class="cursor-text">scroll</div>
   </div>
+  <!-- Touch navigation buttons (mobile/tablet) -->
+  <button id="nav-touch-back" class="nav-touch-btn nav-touch-left" aria-label="Reculer">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  </button>
+  <button id="nav-touch-forward" class="nav-touch-btn nav-touch-right" aria-label="Avancer">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </button>
   <script type="module" src="./main.js"></script>
 </body>
 </html>
