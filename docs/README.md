@@ -1,24 +1,6 @@
 # 🎨 Portfolio 3D - Enzo Domenger
 
-Portfolio interactif 3D présentant mes projets en motion design, architecture générative IA et design graphique. Réalisé avec Three.js et WebGL.
-
-## 🚀 Démarrage Rapide
-
-### Installation
-```bash
-# Cloner le repository
-git clone https://github.com/votre-username/portfolio-3d.git
-
-# Ouvrir avec un serveur local
-cd portfolio-3d
-python3 -m http.server 8000
-# Ou
-npx http-server -p 8000
-```
-
-### Accès
-- **Page principale** : http://localhost:8000/
-- **Page projets** : http://localhost:8000/Windsurf%20carrousel/
+Portfolio interactif 3D présentant mes projets en design Ui/Ux. Réalisé avec Three.js et WebGL.
 
 ---
 
@@ -124,9 +106,7 @@ THREE JS PORTFOLIO/
 ### Outils de Développement
 - **After Effects** - Motion design
 - **Blender** - Modélisation 3D
-- **Cinema 4D** - Rendu 3D
 - **Illustrator** - Design graphique
-- **Premiere Pro** - Montage vidéo
 
 ### Optimisations
 - **Service Worker** - Cache et offline
@@ -151,55 +131,9 @@ THREE JS PORTFOLIO/
 
 ---
 
-## 🚀 Déploiement
-
-### Hébergeurs Recommandés
-1. **Netlify** - Gratuit, HTTPS, CDN
-2. **Vercel** - Gratuit, rapide, optimisé
-3. **GitHub Pages** - Gratuit, simple
-4. **Cloudflare Pages** - Gratuit, CDN global
-
-### Checklist Avant Déploiement
-- [ ] Remplacer "votre-site.com" par votre domaine
-- [ ] Créer preview.png (1200x630px)
-- [ ] Créer favicons (3 fichiers)
-- [ ] Minifier main.js
-- [ ] Convertir GIFs en WebP
-- [ ] Tester avec Lighthouse
-- [ ] Soumettre à Google Search Console
-
----
-
-## 📈 Roadmap
-
-### À Faire
-- [ ] Convertir image2-4.gif en WebP
-- [ ] Minifier le code JavaScript
-- [ ] Ajouter page About/Contact
-- [ ] Créer un blog
-- [ ] Tests sur mobile
-- [ ] Optimiser pour Safari
-
-### Idées Futures
-- [ ] Mode sombre/clair
-- [ ] Multilingue (FR/EN)
-- [ ] Filtres de projets
-- [ ] Animations GSAP
-- [ ] Transitions de page
-- [ ] Easter eggs interactifs
-
----
-
 ## 🤝 Contribution
 
 Ce projet est personnel, mais les suggestions sont les bienvenues !
-
-### Comment Contribuer
-1. Fork le projet
-2. Créer une branche (`git checkout -b feature/AmazingFeature`)
-3. Commit (`git commit -m 'Add some AmazingFeature'`)
-4. Push (`git push origin feature/AmazingFeature`)
-5. Ouvrir une Pull Request
 
 ---
 
@@ -212,23 +146,11 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 ## 👤 Auteur
 
 **Enzo Domenger**
-- Motion Designer Freelance
-- Spécialiste Architecture Générative
+- Designer UI/UX
 
 ### Contact
-- 🌐 Portfolio : [enzo-domenger-portfolio.com](https://enzo-domenger-portfolio.com)
+- 🌐 Portfolio : [enzo-domenger-portfolio.com](https://ezdmg1.github.io/Enzo-Domenger-Portfolio-DesignerUI-UX/index.html)
 - 💼 LinkedIn : [linkedin.com/in/enzo-domenger](https://linkedin.com/in/enzo-domenger)
-- 🎨 Behance : [behance.net/enzo-domenger](https://behance.net/enzo-domenger)
-- 📧 Email : contact@enzo-domenger.com
-
----
-
-## 🙏 Remerciements
-
-- **Three.js** - Pour le moteur 3D incroyable
-- **Windsurf** - Pour l'assistance au développement
-- **Margot Legrand** - Collaboration sur "Comme tout le monde"
-- **ESAT Les Ateliers De L'Espoir** - Partenariat documentaire
 
 ---
 
