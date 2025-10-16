@@ -106,34 +106,16 @@
       .loader { width: 144px; height: 144px; }
       .loader .arc { inset: 10px; border-width: 12px; }
     }
-    /* Touch navigation buttons (mobile/tablet) */
-    .nav-touch-btn {
-      position: fixed;
-      bottom: 12px;
-      width: 44px;
-      height: 44px;
-      background: none;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      z-index: 6000;
+    /* Touch navigation buttons: centered stack bottom (forward above back) */
+    .nav-touch-group { display: none; position: fixed; left: 50%; transform: translateX(-50%); bottom: 20px; z-index: 6000; flex-direction: column; gap: 12px; align-items: center; }
+    .nav-touch-btn { width: 112px; height: 112px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.17); color: #fff; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; }
+    .nav-touch-btn svg { pointer-events: none; }
+    @media (pointer: coarse), (hover: none) {
+      .nav-touch-group { display: flex; }
     }
-    .nav-touch-btn svg {
-      width: 28px;
-      height: 28px;
-      stroke: white;
-      stroke-width: 2;
-    }
-    .nav-touch-left {
-      left: 12px;
-    }
-    .nav-touch-right {
-      right: 12px;
-    }
-    @media (pointer: fine) {
-      .nav-touch-btn {
-        display: none;
-      }
+    @media (max-width: 400px) {
+      .nav-touch-group { bottom: 16px; gap: 10px; }
+      .nav-touch-btn { width: 96px; height: 96px; }
     }
   </style>
   
@@ -176,17 +158,19 @@
     <div class="cursor-crosshair"></div>
     <div id="cursor-text" class="cursor-text">scroll</div>
   </div>
-  <!-- Touch navigation buttons (mobile/tablet) -->
-  <button id="nav-touch-back" class="nav-touch-btn nav-touch-left" aria-label="Reculer">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
-      <polyline points="15 18 9 12 15 6"></polyline>
-    </svg>
-  </button>
-  <button id="nav-touch-forward" class="nav-touch-btn nav-touch-right" aria-label="Avancer">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
-      <polyline points="9 18 15 12 9 6"></polyline>
-    </svg>
-  </button>
+  <!-- Touch navigation buttons (mobile/tablet) centered bottom -->
+  <div class="nav-touch-group" aria-hidden="false">
+    <button id="nav-touch-forward" class="nav-touch-btn" aria-label="Avancer">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+        <polyline points="6 15 12 9 18 15"></polyline>
+      </svg>
+    </button>
+    <button id="nav-touch-back" class="nav-touch-btn" aria-label="Reculer">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+  </div>
   <script type="module" src="./main.js"></script>
 </body>
 </html>

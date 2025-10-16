@@ -752,6 +752,35 @@ document.getElementById('nav-right').addEventListener('click', () => {
   rotateToIndex(nextIndex);
 });
 
+// Mobile up/down buttons (centered stack): forward/back control camera (zoom in/out)
+const navTouchForward = document.getElementById('nav-touch-forward');
+const navTouchBack = document.getElementById('nav-touch-back');
+if (navTouchForward) {
+  const zoomInStep = () => {
+    // Mirror wheel behavior: increase cameraProgress towards 1
+    cameraProgress = Math.min(cameraProgress + 0.12, 1);
+    // Dismiss startup overlay progressively similar to wheel
+    if (startupOverlay && !overlayDismissed) {
+      startupOverlayOpacity = Math.max(0, startupOverlayOpacity - 0.2);
+      startupOverlay.style.opacity = String(startupOverlayOpacity);
+      if (startupOverlayOpacity === 0) {
+        overlayDismissed = true;
+        startupOverlay.remove();
+      }
+    }
+  };
+  navTouchForward.addEventListener('click', zoomInStep, { passive: true });
+  navTouchForward.addEventListener('touchend', zoomInStep, { passive: true });
+}
+if (navTouchBack) {
+  const zoomOutStep = () => {
+    // Mirror wheel behavior: decrease cameraProgress towards 0
+    cameraProgress = Math.max(cameraProgress - 0.12, 0);
+  };
+  navTouchBack.addEventListener('click', zoomOutStep, { passive: true });
+  navTouchBack.addEventListener('touchend', zoomOutStep, { passive: true });
+}
+
 // Touch prev/next buttons (mobile/tablet)
 const touchPrev = document.getElementById('touch-prev');
 const touchNext = document.getElementById('touch-next');

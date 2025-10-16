@@ -59,6 +59,7 @@
     
     <title>Enzo Domenger - Portfolio Designer UI/UX</title>
     <style>
+      :root { --ntg-bottom: 20px; --ntg-gap: 12px; --ntg-size: 112px; }
       body { 
         margin: 0; 
         overflow: hidden;
@@ -117,7 +118,7 @@
       /* Action button */
       .action-button {
         position: fixed;
-        bottom: 80px;
+        bottom: calc(var(--ntg-bottom) + (var(--ntg-size) * 2) + var(--ntg-gap) + 16px);
         left: 50%;
         transform: translateX(-50%) translateY(20px);
         padding: 15px 40px;
@@ -152,6 +153,32 @@
       .action-button:active {
         transform: translateX(-50%) translateY(-2px);
       }
+
+      /* Touch navigation buttons: centered stack bottom (forward above back) */
+      .nav-touch-group { display: none; position: fixed; left: 50%; transform: translateX(-50%); bottom: 20px; z-index: 4000; flex-direction: column; gap: 12px; align-items: center; }
+      .nav-touch-btn { width: 112px; height: 112px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.17); color: #fff; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; }
+      .nav-touch-btn svg { pointer-events: none; }
+      @media (pointer: coarse), (hover: none) {
+        .nav-touch-group { display: flex; }
+        /* Mobile styles for Découvrir and arrows: match button theme */
+        .action-button {
+          background: rgba(0,0,0,0.17);
+          border-color: rgba(255,255,255,0.6);
+          z-index: 4000;
+        }
+        .nav-arrow {
+          background: rgba(0,0,0,0.17);
+          border-color: rgba(255,255,255,0.6);
+          z-index: 4000;
+        }
+      }
+      @media (max-width: 400px) {
+        :root { --ntg-bottom: 16px; --ntg-gap: 10px; --ntg-size: 96px; }
+        .nav-touch-group { bottom: 16px; gap: 10px; }
+        .nav-touch-btn { width: 96px; height: 96px; }
+      }
+      
+      
       
       /* Modal */
       .modal {
@@ -308,6 +335,28 @@
       @keyframes spin {
         to { transform: rotate(360deg); }
       }
+
+      /* Loading overlay (responsive) */
+      #loading-overlay {
+        position: fixed;
+        inset: 0;
+        background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 5000;
+      }
+      .loading-spinner {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        border: 10px solid rgba(255,255,255,0.15);
+        border-top-color: #fff;
+        animation: spin 1s linear infinite;
+      }
+      @media (max-width: 480px) {
+        .loading-spinner { width: 120px; height: 120px; border-width: 8px; }
+      }
       
       /* Gallery image loading skeleton */
       .gallery-image {
@@ -403,6 +452,10 @@
     </script>
   </head>
   <body>
+    <!-- Loading overlay: removed by main.js when model & video are ready -->
+    <div id="loading-overlay" aria-live="polite" aria-busy="true">
+      <div class="loading-spinner" role="status" aria-label="Chargement"></div>
+    </div>
     <!-- Top-left logo placeholder. Replace src with your logo. Click refreshes the page. -->
     <a id="logo-btn" href="#" aria-label="Retour à l'accueil">
       <img id="logo-img" alt="Logo Portfolio Enzo Domenger - Motion Designer & Architecte" src="../assets/logo(180).png">
@@ -415,18 +468,20 @@
         <polyline points="15 18 9 12 15 6"></polyline>
       </svg>
     </button>
-
-    <!-- Bottom touch navigation buttons (mobile/tablet) -->
-    <button id="touch-prev" class="nav-touch-btn nav-touch-prev" aria-label="Projet précédent">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
-        <polyline points="15 18 9 12 15 6"></polyline>
-      </svg>
-    </button>
-    <button id="touch-next" class="nav-touch-btn nav-touch-next" aria-label="Projet suivant">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
-        <polyline points="9 18 15 12 9 6"></polyline>
-      </svg>
-    </button>
+    
+    <!-- Bottom touch navigation buttons (mobile/tablet) centered stack: next above prev -->
+    <div class="nav-touch-group" aria-hidden="false">
+      <button id="nav-touch-forward" class="nav-touch-btn" aria-label="Projet suivant">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+          <polyline points="6 15 12 9 18 15"></polyline>
+        </svg>
+      </button>
+      <button id="nav-touch-back" class="nav-touch-btn" aria-label="Projet précédent">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+    </div>
     <button id="nav-right" class="nav-arrow nav-right" aria-label="Projet suivant" title="Projet suivant (Flèche droite)">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
         <polyline points="9 18 15 12 9 6"></polyline>

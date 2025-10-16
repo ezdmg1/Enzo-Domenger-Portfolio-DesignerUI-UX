@@ -56,33 +56,31 @@ document.addEventListener('visibilitychange', () => {
   isDocHidden = document.hidden;
 });
 
-// On-screen touch navigation buttons (mobile/tablet)
+// On-screen touch navigation buttons (mobile/tablet) - discrete tap impulses
 const navTouchForward = document.getElementById('nav-touch-forward');
 const navTouchBack = document.getElementById('nav-touch-back');
-let holdForwardPressed = false;
-let holdBackPressed = false;
+const navTouchGroup = document.querySelector('.nav-touch-group');
 
-function bindHoldButton(el, dir) {
-  if (!el) return;
-  const onDown = () => {
-    if (dir > 0) holdForwardPressed = true; else holdBackPressed = true;
-  };
-  const onUp = () => {
-    if (dir > 0) holdForwardPressed = false; else holdBackPressed = false;
-  };
-  el.addEventListener('touchstart', onDown, { passive: true });
-  el.addEventListener('touchend', onUp, { passive: true });
-  el.addEventListener('touchcancel', onUp, { passive: true });
-  el.addEventListener('pointerdown', onDown, { passive: true });
-  el.addEventListener('pointerup', onUp, { passive: true });
-  el.addEventListener('pointercancel', onUp, { passive: true });
-  el.addEventListener('mousedown', onDown, { passive: true });
-  el.addEventListener('mouseup', onUp, { passive: true });
-  el.addEventListener('mouseleave', onUp, { passive: true });
+function addImpulse(dir) {
+  // Tap adds a fixed velocity impulse similar to a short wheel flick
+  const IMPULSE = 220; // tune step size
+  const magnitude = IMPULSE;
+  forwardVel += dir * magnitude * SCROLL_ACCEL;
+  forwardVel = THREE.MathUtils.clamp(forwardVel, -MAX_VEL, MAX_VEL);
+  lastScrollTime = performance.now();
 }
 
-bindHoldButton(navTouchForward, +1);
-bindHoldButton(navTouchBack, -1);
+function bindTap(el, dir) {
+  if (!el) return;
+  const fire = () => addImpulse(dir);
+  el.addEventListener('click', fire, { passive: true });
+  el.addEventListener('touchend', fire, { passive: true });
+}
+
+// Forward = move towards target (negative Z) => dir = -1
+bindTap(navTouchForward, -1);
+// Back = move away (positive Z) => dir = +1
+bindTap(navTouchBack, +1);
 
 // Fade-to-white overlay (DOM-based)
 const fadeOverlay = document.createElement('div');
@@ -593,14 +591,7 @@ function animate() {
     grassUniforms.iTime.value = Date.now() - grassTimeStart;
     grassUniforms.uCameraPos.value.copy(camera.position);
   }
-  // Apply touch hold buttons acceleration (emulate continuous scroll)
-  if (!transitionStarted && (holdForwardPressed || holdBackPressed)) {
-    const dir = holdForwardPressed ? 1 : (holdBackPressed ? -1 : 0);
-    const HOLD_ACCEL = SCROLL_ACCEL * 900; // tuned for finger hold
-    forwardVel += dir * HOLD_ACCEL * (dt * 60);
-    forwardVel = THREE.MathUtils.clamp(forwardVel, -MAX_VEL, MAX_VEL);
-    lastScrollTime = performance.now();
-  }
+  // No hold-to-move; movement occurs via discrete tap impulses or wheel/swipe
   // pulse diffuse sprite glow subtly and keep it centered on marker
   if (markerGlowSprite && markerGlowSprite.visible) {
     const t = (Date.now() - grassTimeStart) * 0.002; // seconds * 2
