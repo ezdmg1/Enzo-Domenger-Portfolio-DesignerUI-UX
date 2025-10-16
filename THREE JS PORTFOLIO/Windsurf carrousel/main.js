@@ -324,7 +324,7 @@ itemTexturePaths = itemTexturePaths.slice().sort((a, b) => {
 });
 
 const textureLoader = new THREE.TextureLoader();
-const TEX_BUSTER = `?t=${Date.now()}`;
+const TEX_BUSTER = DEBUG ? `?t=${Date.now()}` : '';
 const itemTextures = itemTexturePaths.map((path) => {
   const tex = textureLoader.load(path + TEX_BUSTER);
   tex.colorSpace = THREE.SRGBColorSpace;
@@ -611,6 +611,8 @@ window.addEventListener('mouseup', () => {
 });
 
 // Handle scroll to zoom camera
+let lastWheelTime = 0;
+const WHEEL_THROTTLE_MS = 50;
 window.addEventListener('wheel', (event) => {
   log('Wheel event detected - controlsEnabled:', controlsEnabled, 'isMouseOverModal:', isMouseOverModal);
   
@@ -619,6 +621,12 @@ window.addEventListener('wheel', (event) => {
     log('❌ Scroll bloqué');
     return;
   }
+  
+  const now = performance.now();
+  if (now - lastWheelTime < WHEEL_THROTTLE_MS) {
+    return;
+  }
+  lastWheelTime = now;
   
   log('✅ Scroll autorisé - deltaY:', event.deltaY);
   
@@ -633,10 +641,10 @@ window.addEventListener('wheel', (event) => {
   
   // Decrease progress on scroll (zoom out)
   if (event.deltaY > 0) {
-    cameraProgress = Math.max(cameraProgress - 0.05, 0);
+    cameraProgress = Math.max(cameraProgress - 0.12, 0);
   } else {
     // Allow scrolling back in
-    cameraProgress = Math.min(cameraProgress + 0.05, 1);
+    cameraProgress = Math.min(cameraProgress + 0.12, 1);
   }
   
   log('New cameraProgress:', cameraProgress);
@@ -1056,6 +1064,9 @@ actionButton.addEventListener('click', () => {
   controlsEnabled = false;
   isMouseOverModal = true; // Considérer que la souris est sur la modal dès l'ouverture
   
+  // Lock body scroll while modal is open
+  document.body.style.overflow = 'hidden';
+  
   // Focus on first interactive element for accessibility
   setTimeout(() => {
     const firstFocusable = modal.querySelector('button, a, iframe');
@@ -1071,6 +1082,9 @@ function closeModal() {
   modal.classList.remove('active');
   controlsEnabled = true;
   isMouseOverModal = false;
+  
+  // Restore body scroll
+  document.body.style.overflow = '';
   
   // Stop YouTube video by reloading iframe src
   const iframe = document.getElementById('youtube-iframe');
@@ -1278,14 +1292,14 @@ function animate() {
   // Animate camera zoom based on scroll progress (seulement si les contrôles sont activés)
   if (controlsEnabled) {
     const targetZ = cameraStartZ + (cameraEndZ - cameraStartZ) * cameraProgress;
-    const lerpFactor = prefersReduced ? 0.15 : 0.05;
+    const lerpFactor = prefersReduced ? 0.25 : 0.12;
     camera.position.z += (targetZ - camera.position.z) * lerpFactor;
   }
   
   // Smooth rotation interpolation for keyboard navigation (optimized)
   const rotationDiff = targetRotation - currentRotation;
   if (Math.abs(rotationDiff) > 0.001) {
-    const lerpSpeed = prefersReduced ? 0.15 : 0.08;
+    const lerpSpeed = prefersReduced ? 0.2 : 0.12;
     currentRotation += rotationDiff * lerpSpeed;
     carouselGroup.rotation.y = currentRotation;
   }

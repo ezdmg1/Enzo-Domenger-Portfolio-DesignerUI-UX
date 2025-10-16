@@ -561,7 +561,7 @@ function animate() {
 
   // Predict reaching the exact target Z before moving; trigger fade and lock at TARGET_Z
   if (!transitionStarted) {
-    const predictedZ = camera.position.z + forwardVel * dt * 2;
+    const predictedZ = camera.position.z + forwardVel * dt * 3;
     if (forwardVel < 0 && predictedZ <= TARGET_Z) {
       transitionStarted = true;
       forwardVel = 0;
@@ -580,7 +580,7 @@ function animate() {
   if (transitionStarted && lockZPos !== null) {
     camera.position.z = lockZPos;
   } else {
-    camera.position.z += forwardVel * dt * 2;
+    camera.position.z += forwardVel * dt * 3;
     // Clamp Z so we do not go past MIN_Z
     if (camera.position.z < MIN_Z) {
       camera.position.z = MIN_Z;
