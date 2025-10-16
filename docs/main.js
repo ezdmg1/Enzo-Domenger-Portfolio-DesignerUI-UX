@@ -3,6 +3,15 @@ import * as THREE from 'three';
 const app = document.getElementById('app');
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+// Mobile/tablets: lower pixel ratio to improve performance
+const isCoarsePointer = (function() {
+  try {
+    return (window.matchMedia && (window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(hover: none)').matches));
+  } catch (_) { return false; }
+})();
+if (isCoarsePointer) {
+  renderer.setPixelRatio(1);
+}
 renderer.setSize(window.innerWidth, window.innerHeight);
 app.appendChild(renderer.domElement);
 renderer.shadowMap.enabled = false;
@@ -442,6 +451,33 @@ window.addEventListener('mousemove', (e) => {
       }
     }, 200);
   });
+}, { passive: true });
+
+// Touch controls for mobile/tablets: emulate scroll movement
+let touchY = null;
+let lastTouchTime = 0;
+window.addEventListener('touchstart', (e) => {
+  if (!e.touches || e.touches.length === 0) return;
+  touchY = e.touches[0].clientY;
+  lastTouchTime = performance.now();
+}, { passive: true });
+
+window.addEventListener('touchmove', (e) => {
+  if (!e.touches || e.touches.length === 0 || touchY === null) return;
+  const y = e.touches[0].clientY;
+  const deltaY = touchY - y; // swipe up => positive (move forward)
+  // Map touch delta to wheel-like behavior
+  const magnitude = Math.abs(deltaY);
+  const dir = deltaY < 0 ? -1 : (deltaY > 0 ? 1 : 0);
+  forwardVel += dir * magnitude * SCROLL_ACCEL * 0.6; // slightly softer than wheel
+  forwardVel = THREE.MathUtils.clamp(forwardVel, -MAX_VEL, MAX_VEL);
+  lastScrollTime = performance.now();
+  lastTouchTime = lastScrollTime;
+  touchY = y;
+}, { passive: true });
+
+window.addEventListener('touchend', () => {
+  touchY = null;
 }, { passive: true });
 
 let resizeTimeout;

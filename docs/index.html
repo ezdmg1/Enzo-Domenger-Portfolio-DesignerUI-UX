@@ -91,6 +91,22 @@
     .cursor-crosshair::before { top: 50%; left: 0; width: 100%; height: 1px; transform: translateY(-50%); }
     .cursor-crosshair::after { top: 0; left: 50%; width: 1px; height: 100%; transform: translateX(-50%); }
   </style>
+  <style>
+    /* Mobile & tablet: restore native cursor and hide custom one */
+    @media (pointer: coarse), (hover: none) {
+      body { cursor: auto; }
+      a, button, [role="button"], #logo-btn { cursor: auto !important; }
+      #custom-cursor { display: none !important; }
+    }
+
+    /* Small screens: slightly smaller logo */
+    @media (max-width: 768px) {
+      #logo-btn { top: 8px; left: 8px; }
+      #logo-btn img { width: 36px; height: 36px; }
+      .loader { width: 144px; height: 144px; }
+      .loader .arc { inset: 10px; border-width: 12px; }
+    }
+  </style>
   
 </head>
 <body>
