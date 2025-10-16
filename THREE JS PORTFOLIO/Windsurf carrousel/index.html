@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfolio 3D interactif d'Enzo Domenger, designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur, prototypage et design system. Découvrez mes projets créatifs.">
+    <meta name="keywords" content="portfolio UI/UX, designer UI/UX freelance, Three.js portfolio, portfolio 3D interactif, design d'interface, expérience utilisateur, UX design, UI design, prototypage Figma, design system, WebGL portfolio, creative portfolio, designer Paris, Enzo Domenger">
+    <meta name="author" content="Enzo Domenger">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://enzo-domenger-portfolio.com/projets">
+    <meta property="og:title" content="Enzo Domenger - Portfolio Designer UI/UX 3D Interactif">
+    <meta property="og:description" content="Designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur et prototypage. Découvrez mes projets créatifs en design UI/UX et design interactif.">
+    <meta property="og:image" content="https://enzo-domenger-portfolio.com/preview.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://enzo-domenger-portfolio.com/projets">
+    <meta property="twitter:title" content="Enzo Domenger - Portfolio Designer UI/UX 3D Interactif">
+    <meta property="twitter:description" content="Designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur et prototypage. Découvrez mes projets créatifs.">
+    <meta property="twitter:image" content="https://enzo-domenger-portfolio.com/preview.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../assets/Logo_32_.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/Logo_32_.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/Logo_32_.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/logo(180).png">
+    <link rel="shortcut icon" href="../assets/Logo_32_.ico">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://www.youtube.com">
+    
+    <title>Enzo Domenger - Portfolio Designer UI/UX</title>
+    <style>
+      body { 
+        margin: 0; 
+        overflow: hidden;
+        font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+        cursor: none;
+      }
+      /* Keep custom crosshair by hiding native cursor on interactive elements */
+      a, button, [role="button"], #logo-btn { cursor: none !important; }
+      canvas {
+        display: block;
+      }
+      
+      /* Navigation arrows */
+      .nav-arrow {
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: none;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+      }
+      
+      .nav-arrow:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-50%) scale(1.1);
+        border-color: rgba(255, 255, 255, 0.4);
+      }
+      
+      .nav-arrow:active {
+        transform: translateY(-50%) scale(0.95);
+      }
+      
+      .nav-left {
+        left: 30px;
+      }
+      
+      .nav-right {
+        right: 30px;
+      }
+      
+      .nav-arrow svg {
+        pointer-events: none;
+      }
+
+      
+      
+      /* Action button */
+      .action-button {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        padding: 15px 40px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 30px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: none;
+        transition: all 0.4s ease;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 1000;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      }
+      
+      .action-button.visible {
+        opacity: 1;
+        pointer-events: all;
+        transform: translateX(-50%) translateY(0);
+      }
+      
+      .action-button:hover {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateX(-50%) translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      }
+      
+      .action-button:active {
+        transform: translateX(-50%) translateY(-2px);
+      }
+      
+      /* Modal */
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
+      }
+      
+      .modal.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      
+      .modal-content {
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 800px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        position: relative;
+        transform: scale(0.9) translateY(20px);
+        transition: transform 0.3s ease;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      }
+      
+      .modal.active .modal-content {
+        transform: scale(1) translateY(0);
+      }
+      
+      .modal-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 32px;
+        cursor: none;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+      }
+      
+      .modal-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(90deg);
+      }
+      
+      .modal-content h2 {
+        color: white;
+        margin: 0 0 20px 0;
+        font-size: 28px;
+      }
+      
+      .modal-body {
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.6;
+      }
+      
+      .modal-body p {
+        margin: 10px 0;
+      }
+      
+      .modal-video {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      
+      /* Custom cursor */
+      .custom-cursor {
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        mix-blend-mode: difference;
+        will-change: transform;
+      }
+      
+      .cursor-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+        white-space: nowrap;
+      }
+      
+      .cursor-text.hidden {
+        opacity: 0;
+      }
+      
+      .cursor-crosshair {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+      }
+      
+      .cursor-crosshair::before,
+      .cursor-crosshair::after {
+        content: '';
+        position: absolute;
+        background: white;
+      }
+      
+      .cursor-crosshair::before {
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        transform: translateY(-50%);
+      }
+      
+      .cursor-crosshair::after {
+        top: 0;
+        left: 50%;
+        width: 1px;
+        height: 100%;
+        transform: translateX(-50%);
+      }
+      
+      /* Loading spinner animation */
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      /* Top-left logo button */
+      #logo-btn { position: fixed; top: 12px; left: 12px; z-index: 4001; }
+      #logo-btn img { width: 44px; height: 44px; display: block; opacity: 0.9; }
+      #logo-btn:hover img { opacity: 1; }
+
+      /* Startup white overlay (will fade OUT) */
+      #fade-overlay {
+        position: fixed;
+        inset: 0;
+        background: #ffffff;
+        opacity: 1;
+        pointer-events: none;
+        z-index: 3000;
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+    
+    <!-- JSON-LD Schema.org markup for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      "name": "Portfolio Designer UI/UX 3D - Enzo Domenger",
+      "description": "Portfolio interactif 3D présentant des projets en design UI/UX, design d'interface, expérience utilisateur, prototypage Figma et design system",
+      "keywords": "portfolio UI/UX, designer UI/UX freelance, design d'interface, UX design, UI design, prototypage Figma, design system, WebGL portfolio, Three.js",
+      "author": {
+        "@type": "Person",
+        "name": "Enzo Domenger",
+        "jobTitle": "Designer UI/UX Freelance & Spécialiste Design Interactif",
+        "url": "https://enzo-domenger-portfolio.com",
+        "sameAs": [
+          "https://www.linkedin.com/in/enzo-domenger",
+          "https://www.behance.net/enzo-domenger"
+        ]
+      },
+      "workExample": [
+        {
+          "@type": "CreativeWork",
+          "name": "Club Architecture - IA Générative",
+          "description": "Projet de vulgarisation de la conception générative par l'IA en architecture",
+          "video": {
+            "@type": "VideoObject",
+            "name": "Club Architecture",
+            "thumbnailUrl": "https://img.youtube.com/vi/T1v0eDGNcOg/maxresdefault.jpg",
+            "uploadDate": "2024-01-01",
+            "contentUrl": "https://www.youtube.com/watch?v=T1v0eDGNcOg"
+          }
+        },
+        {
+          "@type": "CreativeWork",
+          "name": "Garry Kasparov - Intelligence Artificielle",
+          "description": "Motion design sur la conférence TED de Garry Kasparov",
+          "video": {
+            "@type": "VideoObject",
+            "name": "But was it intelligent?",
+            "thumbnailUrl": "https://img.youtube.com/vi/F3rhjsh-SmQ/maxresdefault.jpg",
+            "uploadDate": "2024-01-01",
+            "contentUrl": "https://www.youtube.com/watch?v=F3rhjsh-SmQ"
+          }
+        }
+      ]
+    }
+    </script>
+  </head>
+  <body>
+    <!-- Top-left logo placeholder. Replace src with your logo. Click refreshes the page. -->
+    <a id="logo-btn" href="#" aria-label="Retour à l'accueil">
+      <img id="logo-img" alt="Logo Portfolio Enzo Domenger - Motion Designer & Architecte" src="../assets/logo(180).png">
+    </a>
+    <!-- Startup white overlay: we fade this OUT in main.js to reveal the carousel -->
+    <div id="fade-overlay"></div>
+    <!-- Navigation arrows -->
+    <button id="nav-left" class="nav-arrow nav-left" aria-label="Projet précédent" title="Projet précédent (Flèche gauche)">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+    <button id="nav-right" class="nav-arrow nav-right" aria-label="Projet suivant" title="Projet suivant (Flèche droite)">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+    
+    <!-- Custom cursor -->
+    <div id="custom-cursor" class="custom-cursor" aria-hidden="true">
+      <div class="cursor-crosshair"></div>
+      <div id="cursor-text" class="cursor-text">scroll</div>
+    </div>
+    
+    <!-- Action button for focused item -->
+    <button id="action-button" class="action-button" aria-label="Découvrir le projet" title="Découvrir le projet (Entrée)">
+      <span>Découvrir</span>
+    </button>
+    
+    <!-- Modal window -->
+    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-content">
+        <button id="modal-close" class="modal-close" aria-label="Fermer la fenêtre" title="Fermer (Échap)">&times;</button>
+        <h2 id="modal-title">Élément</h2>
+        <div id="modal-body" class="modal-body">
+          <p>Contenu de l'élément sélectionné</p>
+        </div>
+      </div>
+    </div>
+    
+    <script type="module" src="./main.js?v=2"></script>
+    
+    <!-- Register Service Worker -->
+    <script>
+      // Désactiver temporairement le Service Worker pour forcer le rechargement
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for(let registration of registrations) {
+            registration.unregister();
+            console.log('🔄 Service Worker unregistered');
+          }
+        });
+      }
+      
+      // Décommenter pour réactiver le Service Worker plus tard
+      /*
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('✅ Service Worker registered:', reg.scope))
+            .catch(err => console.error('❌ Service Worker registration failed:', err));
+        });
+      }
+      */
+    </script>
+  </body>
+</html>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  
+  <!-- Page d'accueil -->
+  <url>
+    <loc>https://enzo-domenger-portfolio.com/</loc>
+    <lastmod>2025-10-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Page projets (carrousel) -->
+  <url>
+    <loc>https://enzo-domenger-portfolio.com/Windsurf%20carrousel/</loc>
+    <lastmod>2025-10-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    
+    <!-- Vidéos des projets -->
+    <video:video>
+      <video:thumbnail_loc>https://img.youtube.com/vi/T1v0eDGNcOg/maxresdefault.jpg</video:thumbnail_loc>
+      <video:title>Club Architecture - IA Générative</video:title>
+      <video:description>Projet de vulgarisation de la conception générative par l'IA en architecture</video:description>
+      <video:content_loc>https://www.youtube.com/watch?v=T1v0eDGNcOg</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/T1v0eDGNcOg</video:player_loc>
+    </video:video>
+    
+    <video:video>
+      <video:thumbnail_loc>https://img.youtube.com/vi/F3rhjsh-SmQ/maxresdefault.jpg</video:thumbnail_loc>
+      <video:title>Garry Kasparov - Intelligence Artificielle</video:title>
+      <video:description>Motion design sur la conférence TED de Garry Kasparov</video:description>
+      <video:content_loc>https://www.youtube.com/watch?v=F3rhjsh-SmQ</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/F3rhjsh-SmQ</video:player_loc>
+    </video:video>
+    
+    <video:video>
+      <video:thumbnail_loc>https://img.youtube.com/vi/X-lIDver-5k/maxresdefault.jpg</video:thumbnail_loc>
+      <video:title>Angel Mugler - Parfum</video:title>
+      <video:description>Motion design sur le parfum Angel Mugler</video:description>
+      <video:content_loc>https://www.youtube.com/watch?v=X-lIDver-5k</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/X-lIDver-5k</video:player_loc>
+    </video:video>
+    
+    <video:video>
+      <video:thumbnail_loc>https://img.youtube.com/vi/Yx5Jlxr_iuA/maxresdefault.jpg</video:thumbnail_loc>
+      <video:title>Comme tout le monde</video:title>
+      <video:description>Film sélectionné au FESTIVAL REGARDS CROISÉS</video:description>
+      <video:content_loc>https://www.youtube.com/watch?v=Yx5Jlxr_iuA</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/Yx5Jlxr_iuA</video:player_loc>
+    </video:video>
+    
+    <!-- Images de la galerie -->
+    <image:image>
+      <image:loc>https://enzo-domenger-portfolio.com/Windsurf%20carrousel/gallery/image1.webp</image:loc>
+      <image:title>Projet Motion Design - Illustration Graphique</image:title>
+    </image:image>
+  </url>
+  
+</urlset>

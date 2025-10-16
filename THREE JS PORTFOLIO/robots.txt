@@ -1,0 +1,29 @@
+# robots.txt pour Portfolio 3D
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://enzo-domenger-portfolio.com/sitemap.xml
+
+# Bloquer les fichiers sensibles
+Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /.DS_Store
+Disallow: /package.json
+Disallow: /package-lock.json
+
+# Autoriser les assets
+Allow: /assets/
+Allow: /gallery/
+Allow: /*.js
+Allow: /*.css
+Allow: /*.jpg
+Allow: /*.png
+Allow: /*.webp
+Allow: /*.gif
+Allow: /*.mp4
+Allow: /*.glb
+
+# Crawl-delay pour ne pas surcharger le serveur
+Crawl-delay: 1

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Enzo Domenger - Portfolio Designer UI/UX</title>
+  <meta name="description" content="Portfolio 3D interactif d'Enzo Domenger, designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur, prototypage et design system. Découvrez mes projets créatifs.">
+  <meta name="keywords" content="portfolio UI/UX, designer UI/UX freelance, Three.js portfolio, portfolio 3D interactif, design d'interface, expérience utilisateur, UX design, UI design, prototypage Figma, design system, WebGL portfolio, creative portfolio, designer Paris, Enzo Domenger">
+  <meta name="author" content="Enzo Domenger">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://enzo-domenger-portfolio.com">
+  <meta property="og:title" content="Enzo Domenger - Portfolio Designer UI/UX 3D Interactif">
+  <meta property="og:description" content="Designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur et prototypage. Découvrez mes projets créatifs en design UI/UX et design interactif.">
+  <meta property="og:image" content="https://enzo-domenger-portfolio.com/preview.png">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://enzo-domenger-portfolio.com">
+  <meta property="twitter:title" content="Enzo Domenger - Portfolio Designer UI/UX 3D Interactif">
+  <meta property="twitter:description" content="Designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur et prototypage. Découvrez mes projets créatifs.">
+  <meta property="twitter:image" content="https://enzo-domenger-portfolio.com/preview.png">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="./assets/Logo_32_.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/Logo_32_.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/Logo_32_.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/logo(180).png">
+  <link rel="shortcut icon" href="./assets/Logo_32_.ico">
+  <!-- Prefetch next-page heavy assets to reduce load time -->
+  <link rel="prefetch" href="./Windsurf carrousel/BLENDER_Template.glb" as="fetch" crossorigin>
+  <link rel="prefetch" href="./Windsurf carrousel/COMP VIDEO.mp4" as="video" crossorigin>
+  <link rel="prefetch" href="./Windsurf carrousel/index.html">
+  <!-- Preconnect to CDN used by carousel's module imports -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  
+  <!-- Import map for Three.js modules -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+  
+  <style>
+    html,body { height:100%; margin:0; }
+    body { cursor: none; }
+    /* Keep crosshair (hide native cursor) on interactive elements */
+    a, button, [role="button"], #logo-btn { cursor: none !important; }
+    #app { position:fixed; inset:0; overflow:hidden; }
+    canvas { display:block; }
+
+    /* Top-left logo button */
+    #logo-btn { position: fixed; top: 12px; left: 12px; z-index: 4000; }
+    #logo-btn img { width: 44px; height: 44px; display: block; opacity: 0.9; }
+    #logo-btn:hover img { opacity: 1; }
+
+    /* Page loader */
+    #page-loader { position: fixed; inset: 0; background: #0e0e12; color: #fff; display: flex; align-items: center; justify-content: center; z-index: 5000; transition: opacity .3s ease; font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif; }
+    #page-loader.hide { opacity: 0; pointer-events: none; }
+    .loader { position: relative; width: 96px; height: 96px; }
+    .loader .bg { position: absolute; inset: 0; border-radius: 50%; background: rgba(0,0,0,0.35); }
+    .loader .arc { position: absolute; inset: 6px; border-radius: 50%; border: 8px solid transparent; border-top-color: #000; border-right-color: #000; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    
+
+    .custom-cursor { position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; will-change: transform; }
+    .cursor-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; opacity: 1; transition: opacity 0.3s ease; white-space: nowrap; }
+    .cursor-text.hidden { opacity: 0; }
+    .cursor-crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 20px; height: 20px; }
+    .cursor-crosshair::before, .cursor-crosshair::after { content: ''; position: absolute; background: white; }
+    .cursor-crosshair::before { top: 50%; left: 0; width: 100%; height: 1px; transform: translateY(-50%); }
+    .cursor-crosshair::after { top: 0; left: 50%; width: 1px; height: 100%; transform: translateX(-50%); }
+  </style>
+  
+</head>
+<body>
+  <!-- Full-screen loading page shown on arrival -->
+  <div id="page-loader" aria-live="polite" aria-busy="true">
+    <!-- Fallback CSS loader (kept hidden if WebM with alpha is supported) -->
+    <div id="css-fallback-loader" class="loader" aria-hidden="true" style="display:none">
+      <div class="bg"></div>
+      <div class="arc"></div>
+    </div>
+    <!-- Preferred: transparent WebM animation -->
+    <video id="loader-video" width="96" height="96" autoplay muted loop playsinline style="background: transparent; display:none"></video>
+    <script>
+      (function() {
+        try {
+          var v = document.getElementById('loader-video');
+          var cssFallback = document.getElementById('css-fallback-loader');
+          var can = v && v.canPlayType && v.canPlayType('video/webm; codecs="vp9"');
+          if (can === 'probably' || can === 'maybe') {
+            v.src = './asset/Loading_animation_1.webm';
+            v.style.display = 'block';
+          } else {
+            cssFallback.style.display = 'block';
+          }
+        } catch (e) {
+          var fb = document.getElementById('css-fallback-loader');
+          if (fb) fb.style.display = 'block';
+        }
+      })();
+    </script>
+  </div>
+  <div id="app"></div>
+  <!-- Top-left logo placeholder. Replace src with your logo. Click refreshes the page. -->
+  <a id="logo-btn" href="#" aria-label="Retour à l'accueil">
+    <img id="logo-img" alt="Logo Portfolio Enzo Domenger - Motion Designer & Architecte" src="./assets/logo(180).png">
+  </a>
+  <div id="custom-cursor" class="custom-cursor">
+    <div class="cursor-crosshair"></div>
+    <div id="cursor-text" class="cursor-text">scroll</div>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
