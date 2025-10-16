@@ -584,6 +584,7 @@ const projectGalleries = {
     './gallery/image1.webp',
     './gallery/image2.webp',
     './gallery/image3.webp',
+    './gallery/image5.webp',
     './gallery/image4.webp'
   ]
 };
@@ -594,7 +595,8 @@ const galleryAltTexts = {
     'Projet motion design - Illustration graphique et typographie créative',
     'Animation motion design - Transition fluide et effets visuels dynamiques',
     'Création graphique animée - Composition visuelle et mouvement',
-    'Motion design 3D - Rendu et animation de formes géométriques'
+    'Motion design 3D - Rendu et animation de formes géométriques',
+    'Projet design graphique - Composition visuelle et création artistique'
   ]
 };
 
@@ -624,7 +626,7 @@ const projectDescriptions = [
     technologies: 'After effect, Premiere Pro, Illustrator, Blender, 3ds max, Revit',
   },
   {
-    title: 'But was it intelligent ? Garry Kasparov - Motion Design IA',
+    title: 'But was it intelligent ? Garry Kasparov - Motion Design',
     description: 'Animation motion design avec bande sonore de la conférence TED de Garry Kasparov sur l\'intelligence artificielle. Création typographique et effets visuels explorant la relation homme-machine à travers l\'histoire de Deep Blue. Motion design narratif mêlant animation 2D et composition graphique.',
     technologies: 'After Effects, Premiere Pro, Illustrator, Photoshop',
   },
@@ -797,9 +799,17 @@ actionButton.addEventListener('click', () => {
       const imgSrc = img + '?t=' + timestamp;
       const altText = altTexts[idx] || `Projet ${currentIndex + 1} - Image ${idx + 1}`;
       console.log('🖼️ Loading gallery image:', imgSrc); // Debug
-      return `<img src="${imgSrc}" alt="${altText}" class="gallery-image" 
+      
+      // Special styling for images 4 and 5 (indices 3 and 4)
+      let gridStyle = '';
+      if (idx === 2) {
+        // Image 3 spans 2 rows
+        gridStyle = 'grid-row: span 2;';
+      }
+      
+      return `<img src="${imgSrc}" alt="${altText}" class="gallery-image gallery-image-${idx + 1}" 
             loading="lazy"
-            style="width: 100%; border-radius: 8px; object-fit: cover; opacity: 0; transition: opacity 0.3s; background: #f0f0f0;"
+            style="width: 100%; border-radius: 8px; object-fit: cover; opacity: 0; transition: opacity 0.3s; background: #f0f0f0; ${gridStyle}"
             onload="console.log('✅ Image loaded:', this.src); this.style.opacity='1';"
             onerror="console.error('❌ Failed to load:', this.src); this.style.border='3px solid red'; this.style.opacity='1'; this.alt='Erreur de chargement: ' + this.alt;">`;
     }).join('');
@@ -807,7 +817,7 @@ actionButton.addEventListener('click', () => {
     // Replace loading with gallery after a short delay
     setTimeout(() => {
       modalBody.innerHTML = `
-        <div class="gallery-container" style="max-height: 500px; overflow-y: auto; padding: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div class="gallery-container" style="max-height: 500px; overflow-y: auto; padding: 10px; display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: minmax(150px, auto); gap: 15px;">
           ${galleryHTML}
         </div>
       `;
@@ -869,6 +879,15 @@ modal.addEventListener('mouseenter', () => {
 
 modal.addEventListener('mouseleave', () => {
   isMouseOverModal = false;
+});
+
+// Close modal with Escape key
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modal.classList.contains('active')) {
+    modal.classList.remove('active');
+    controlsEnabled = true;
+    isMouseOverModal = false;
+  }
 });
 
 // Helper function to get color name
