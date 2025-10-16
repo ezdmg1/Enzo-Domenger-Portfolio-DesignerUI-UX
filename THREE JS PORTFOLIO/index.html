@@ -76,14 +76,12 @@
     #logo-btn:hover img { opacity: 1; }
 
     /* Page loader */
-    #page-loader { position: fixed; inset: 0; background: #0e0e12; color: #fff; display: flex; align-items: center; justify-content: center; z-index: 5000; transition: opacity .3s ease; font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif; }
+    #page-loader { position: fixed; inset: 0; background: #000; color: #fff; display: flex; align-items: center; justify-content: center; z-index: 5000; transition: opacity .3s ease; font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif; }
     #page-loader.hide { opacity: 0; pointer-events: none; }
-    .loader { position: relative; width: 96px; height: 96px; }
+    .loader { position: relative; width: 192px; height: 192px; }
     .loader .bg { position: absolute; inset: 0; border-radius: 50%; background: rgba(0,0,0,0.35); }
-    .loader .arc { position: absolute; inset: 6px; border-radius: 50%; border: 8px solid transparent; border-top-color: #000; border-right-color: #000; animation: spin 1s linear infinite; }
+    .loader .arc { position: absolute; inset: 12px; border-radius: 50%; border: 16px solid transparent; border-top-color: #000; border-right-color: #000; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    
 
     .custom-cursor { position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; will-change: transform; }
     .cursor-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; opacity: 1; transition: opacity 0.3s ease; white-space: nowrap; }
@@ -104,7 +102,7 @@
       <div class="arc"></div>
     </div>
     <!-- Preferred: transparent WebM animation -->
-    <video id="loader-video" width="96" height="96" autoplay muted loop playsinline style="background: transparent; display:none"></video>
+    <video id="loader-video" width="192" height="192" autoplay muted loop playsinline style="background: transparent; display:none"></video>
     <script>
       (function() {
         try {
