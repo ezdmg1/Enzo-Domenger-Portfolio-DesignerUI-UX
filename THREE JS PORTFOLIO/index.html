@@ -9,6 +9,22 @@
   <meta name="author" content="Enzo Domenger">
   <meta name="robots" content="index, follow">
   
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: https: http:;
+    media-src 'self' https: http:;
+    connect-src 'self' https:;
+    font-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    upgrade-insecure-requests;
+  ">
+  
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://enzo-domenger-portfolio.com">
@@ -96,7 +112,7 @@
           var cssFallback = document.getElementById('css-fallback-loader');
           var can = v && v.canPlayType && v.canPlayType('video/webm; codecs="vp9"');
           if (can === 'probably' || can === 'maybe') {
-            v.src = './asset/Loading_animation_1.webm';
+            v.src = './assets/Loading_animation_1.webm';
             v.style.display = 'block';
           } else {
             cssFallback.style.display = 'block';

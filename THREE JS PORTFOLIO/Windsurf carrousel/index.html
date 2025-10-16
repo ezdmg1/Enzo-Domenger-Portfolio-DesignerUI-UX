@@ -8,6 +8,23 @@
     <meta name="author" content="Enzo Domenger">
     <meta name="robots" content="index, follow">
     
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' data: https: http:;
+      media-src 'self' https: http:;
+      connect-src 'self' https:;
+      frame-src https://www.youtube.com https://www.youtube-nocookie.com;
+      font-src 'self';
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self';
+      frame-ancestors 'none';
+      upgrade-insecure-requests;
+    ">
+    
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://enzo-domenger-portfolio.com/projets">
@@ -36,8 +53,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     
     <!-- Preconnect to external resources -->
-    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="dns-prefetch" href="https://www.youtube.com">
+    <link rel="dns-prefetch" href="https://img.youtube.com">
     
     <title>Enzo Domenger - Portfolio Designer UI/UX</title>
     <style>
@@ -289,6 +307,28 @@
       /* Loading spinner animation */
       @keyframes spin {
         to { transform: rotate(360deg); }
+      }
+      
+      /* Gallery image loading skeleton */
+      .gallery-image {
+        position: relative;
+        min-height: 200px;
+      }
+      
+      .gallery-image[style*="opacity: 0"] {
+        background: linear-gradient(
+          90deg,
+          #2a2a2a 25%,
+          #3a3a3a 50%,
+          #2a2a2a 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+      }
+      
+      @keyframes skeleton-loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
       }
 
       /* Top-left logo button */

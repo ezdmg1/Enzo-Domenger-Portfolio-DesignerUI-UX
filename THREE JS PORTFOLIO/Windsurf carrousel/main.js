@@ -1,7 +1,11 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-console.log('🚀 main.js chargé - Version avec fix scroll modal');
+// Debug mode - set to false in production
+const DEBUG = false;
+const log = DEBUG ? console.log.bind(console) : () => {};
+
+log('🚀 main.js chargé - Version avec fix scroll modal');
 
 // If this page was reloaded (F5/Ctrl+R), go back to the portfolio root
 try {
@@ -32,35 +36,66 @@ function maybeHideLoadingOverlay() {
 // Reduced motion support
 const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Visibility throttling (reduce work when tab is hidden)
+// Visibility throttling (reduce work when tab is hidden to save resources)
 let isDocHidden = document.hidden;
-const HIDDEN_RENDER_INTERVAL_MS = 250; // ~4 FPS
+const HIDDEN_RENDER_INTERVAL_MS = 250; // Render at ~4 FPS when tab is hidden
 let lastHiddenRender = 0;
 document.addEventListener('visibilitychange', () => {
   isDocHidden = document.hidden;
 });
 
-// Touch gestures (swipe)
+// Touch gestures (swipe navigation and pinch-to-zoom on mobile)
 let touchStartX = 0;
 let touchStartY = 0;
 let touchEndX = 0;
 let touchEndY = 0;
 let touching = false;
-const SWIPE_THRESHOLD = 40; // px
+let initialPinchDistance = 0;
+const SWIPE_THRESHOLD = 40; // Minimum distance in pixels to trigger a swipe
+const PINCH_SENSITIVITY = 0.002; // Sensitivity for pinch-to-zoom
 
 window.addEventListener('touchstart', (e) => {
   if (!e.touches || e.touches.length === 0) return;
-  const t = e.touches[0];
-  touchStartX = touchEndX = t.clientX;
-  touchStartY = touchEndY = t.clientY;
-  touching = true;
+  
+  // Single touch: swipe navigation
+  if (e.touches.length === 1) {
+    const t = e.touches[0];
+    touchStartX = touchEndX = t.clientX;
+    touchStartY = touchEndY = t.clientY;
+    touching = true;
+  }
+  
+  // Two fingers: pinch-to-zoom
+  if (e.touches.length === 2) {
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    initialPinchDistance = Math.sqrt(dx * dx + dy * dy);
+  }
 }, { passive: true });
 
 window.addEventListener('touchmove', (e) => {
-  if (!touching || !e.touches || e.touches.length === 0) return;
-  const t = e.touches[0];
-  touchEndX = t.clientX;
-  touchEndY = t.clientY;
+  if (!e.touches || e.touches.length === 0) return;
+  
+  // Single touch: track swipe
+  if (e.touches.length === 1 && touching) {
+    const t = e.touches[0];
+    touchEndX = t.clientX;
+    touchEndY = t.clientY;
+  }
+  
+  // Two fingers: pinch-to-zoom
+  if (e.touches.length === 2 && initialPinchDistance > 0) {
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const delta = distance - initialPinchDistance;
+    
+    // Update camera zoom based on pinch gesture
+    cameraProgress += delta * PINCH_SENSITIVITY;
+    cameraProgress = Math.max(0, Math.min(1, cameraProgress));
+    
+    initialPinchDistance = distance;
+  }
 }, { passive: true });
 
 window.addEventListener('touchend', () => {
@@ -68,6 +103,8 @@ window.addEventListener('touchend', () => {
   const dx = touchEndX - touchStartX;
   const dy = touchEndY - touchStartY;
   touching = false;
+  initialPinchDistance = 0;
+  
   // Horizontal swipe to navigate items
   if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SWIPE_THRESHOLD) {
     if (dx < 0) {
@@ -97,14 +134,14 @@ scene.fog = new THREE.Fog(0x1a1a2e, 8, 15);
 
 // Camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 0, 25); // Start far away
+camera.position.set(0, 0, 25); // Start far away from the carousel
 camera.lookAt(0, 0, 0);
 
 // Camera animation state
-let cameraProgress = 0; // 0 = far, 1 = close
-const cameraStartZ = 25;
-const cameraEndZ = 10;
-let hasScrolled = false;
+let cameraProgress = 0;    // Progress of zoom animation: 0 = far away, 1 = fully zoomed in
+const cameraStartZ = 25;   // Initial camera distance (far)
+const cameraEndZ = 10;     // Final camera distance (close to carousel)
+let hasScrolled = false;   // Track if user has started scrolling
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({ 
@@ -136,6 +173,10 @@ video.addEventListener('loadeddata', () => {
 
 video.addEventListener('error', (e) => {
   console.error('Video loading error:', e);
+  // Fallback: use solid color background
+  scene.background = new THREE.Color(0x1a1a2e);
+  videoReady = true;
+  maybeHideLoadingOverlay();
 });
 
 video.addEventListener('canplay', () => {
@@ -231,9 +272,9 @@ scene.add(topLight);
 scene.add(topLight.target);
 
 // Carousel configuration
-const carouselRadius = 8;
-const itemCount = 6;
-const carouselItems = [];
+const carouselRadius = 8;  // Radius of the circular carousel (in Three.js units)
+const itemCount = 6;       // Number of projects to display in the carousel
+const carouselItems = [];  // Array to store all carousel item meshes
 
 // Initial rotations per item in degrees (x, y, z)
 const initialRotationsDeg = [
@@ -252,7 +293,12 @@ scene.add(carouselGroup);
 // Colors for the carousel items
 const colors = [0xff6b6b, 0x4ecdc4, 0xffe66d, 0x95e1d3, 0xf38181, 0xaa96da];
 
-// Apply subtle realism: rim light + ACES tonemapping to standard materials
+/**
+ * Applies realistic lighting effects to a Three.js material
+ * Adds rim lighting and ACES filmic tone mapping for better visuals
+ * @param {THREE.Material} mat - The material to enhance
+ * @returns {void}
+ */
 function applyRealismToMaterial(mat) {
   if (!mat || !mat.onBeforeCompile) return;
   mat.onBeforeCompile = (shader) => {
@@ -347,10 +393,18 @@ loader.load(
   undefined,
   (error) => {
     console.error('Error loading GLTF:', error);
+    // Fallback: create simple boxes if model fails to load
+    createFallbackBoxes();
+    modelReady = true;
+    maybeHideLoadingOverlay();
   }
 );
 
-// Fallback function to create boxes if model loading fails
+/**
+ * Creates simple colored boxes as fallback if 3D model fails to load
+ * Ensures the carousel still works even if the GLB file is unavailable
+ * @returns {void}
+ */
 function createFallbackBoxes() {
   for (let i = 0; i < itemCount; i++) {
     const angle = (i / itemCount) * Math.PI * 2;
@@ -410,6 +464,7 @@ let selectedItem = null;
 let controlsEnabled = true; // Flag to enable/disable controls
 
 // Handle window resize with debouncing
+const RESIZE_DEBOUNCE_MS = 100; // Delay before applying resize to avoid performance issues
 let resizeTimeout;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimeout);
@@ -417,19 +472,21 @@ window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const MAX_PIXEL_RATIO = 2; // Cap pixel ratio to avoid performance issues on high-DPI screens
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO));
     backgroundMaterial.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
     
     // Update video resolution if video is loaded
     if (video.videoWidth && video.videoHeight) {
       backgroundMaterial.uniforms.uVideoResolution.value.set(video.videoWidth, video.videoHeight);
     }
-  }, 100);
+  }, RESIZE_DEBOUNCE_MS);
 });
 
 // Custom cursor management
 const customCursor = document.getElementById('custom-cursor');
 const cursorText = document.getElementById('cursor-text');
+const CURSOR_IDLE_DELAY_MS = 200; // Show "scroll" text after 200ms of inactivity
 let idleTimer = null;
 let isIdle = false;
 
@@ -448,25 +505,25 @@ window.addEventListener('mousemove', (e) => {
   // Reset idle timer
   clearTimeout(idleTimer);
   idleTimer = setTimeout(() => {
-    // Show "scroll" text after 0.5 seconds of inactivity
+    // Show "scroll" text after inactivity
     if (cursorText && cameraProgress < 1) {
       cursorText.classList.remove('hidden');
       isIdle = true;
     }
-  }, 200);
+  }, CURSOR_IDLE_DELAY_MS);
 }, { passive: true });
 
 // Handle scroll to zoom camera
 window.addEventListener('wheel', (event) => {
-  console.log('Wheel event detected - controlsEnabled:', controlsEnabled, 'isMouseOverModal:', isMouseOverModal);
+  log('Wheel event detected - controlsEnabled:', controlsEnabled, 'isMouseOverModal:', isMouseOverModal);
   
   // Désactiver le scroll de la caméra si la modal est ouverte ou si la souris est sur la modal
   if (!controlsEnabled || isMouseOverModal) {
-    console.log('❌ Scroll bloqué');
+    log('❌ Scroll bloqué');
     return;
   }
   
-  console.log('✅ Scroll autorisé - deltaY:', event.deltaY);
+  log('✅ Scroll autorisé - deltaY:', event.deltaY);
   
   if (!hasScrolled) {
     hasScrolled = true;
@@ -485,7 +542,7 @@ window.addEventListener('wheel', (event) => {
     cameraProgress = Math.min(cameraProgress + 0.05, 1);
   }
   
-  console.log('New cameraProgress:', cameraProgress);
+  log('New cameraProgress:', cameraProgress);
   
   // Permanently hide text once fully zoomed in
   if (cameraProgress >= 1 && cursorText) {
@@ -516,7 +573,14 @@ video.addEventListener('canplay', () => {
   maybeHideLoadingOverlay();
 });
 
-// Navigation controls
+/**
+ * Rotates the carousel to display the project at the specified index
+ * Calculates the shortest rotation path for smooth animation
+ * @param {number} index - Index of the project to display (0-5)
+ * @returns {void}
+ * @example
+ * rotateToIndex(2); // Displays project 3
+ */
 function rotateToIndex(index) {
   const oldIndex = currentIndex;
   currentIndex = index;
@@ -570,17 +634,17 @@ let isMouseOverModal = false;
 
 // YouTube video IDs for each project (replace with your own video IDs)
 const projectVideos = [
-  'T1v0eDGNcOg', // Projet 1
-  'F3rhjsh-SmQ', // Projet 2
-  'X-lIDver-5k', // Projet 3
-  'Yx5Jlxr_iuA', // Projet 4
-  'gallery', // Projet 5 - Gallery mode
-  'cv'  // Projet 6 - CV mode
+  'cv',  // Projet 1 - CV mode (ancien Projet 6)
+  'T1v0eDGNcOg', // Projet 2 (ancien Projet 1)
+  'F3rhjsh-SmQ', // Projet 3 (ancien Projet 2)
+  'X-lIDver-5k', // Projet 4 (ancien Projet 3)
+  'Yx5Jlxr_iuA', // Projet 5 (ancien Projet 4)
+  'gallery', // Projet 6 - Gallery mode (ancien Projet 5)
 ];
 
-// Gallery images for project 5 (add your image/gif paths)
+// Gallery images for project 6 (add your image/gif paths)
 const projectGalleries = {
-  4: [ // Index 4 = Projet 5
+  5: [ // Index 5 = Projet 6 (ancien Projet 5)
     './gallery/image1.webp',
     './gallery/image2.webp',
     './gallery/image3.webp',
@@ -591,7 +655,7 @@ const projectGalleries = {
 
 // Alt texts for gallery images
 const galleryAltTexts = {
-  4: [ // Index 4 = Projet 5
+  5: [ // Index 5 = Projet 6 (ancien Projet 5)
     'Projet motion design - Illustration graphique et typographie créative',
     'Animation motion design - Transition fluide et effets visuels dynamiques',
     'Création graphique animée - Composition visuelle et mouvement',
@@ -602,6 +666,12 @@ const galleryAltTexts = {
 
 // Lazy load gallery images only when needed (not on page load)
 const preloadedImages = [];
+
+/**
+ * Preloads gallery images for the current project
+ * Only called when user opens the gallery modal
+ * @returns {void}
+ */
 function preloadGalleryImages() {
   // Only preload when user opens the gallery, not on page load
   const timestamp = new Date().getTime();
@@ -610,8 +680,8 @@ function preloadGalleryImages() {
   
   gallery.forEach(imagePath => {
     const img = new Image();
-    img.onload = () => console.log('✅ Loaded:', imagePath);
-    img.onerror = () => console.error('❌ Failed to load:', imagePath);
+    img.onload = () => log('✅ Loaded:', imagePath);
+    img.onerror = () => log('❌ Failed to load:', imagePath);
     img.src = imagePath + '?t=' + timestamp;
     preloadedImages.push(img);
   });
@@ -621,8 +691,13 @@ function preloadGalleryImages() {
 // Project descriptions
 const projectDescriptions = [
   {
+    title: 'CV - Enzo Domenger',
+    description: 'Designer UI/UX & Motion Designer passionné par la création d\'expériences visuelles immersives et interactives. Spécialisé en design d\'interface, prototypage et animation.',
+    technologies: 'UI/UX Design, Motion Design, Three.js, WebGL'
+  },
+  {
     title: 'Club architecture',
-    description: 'Cette vidéo illustre un projet de vulgarisation de la conception générative par l’IA en architecture. Durant mon stage de cinq mois, j’ai renforcé mes compétences en motion design, gestion de projet et narration visuelle, tout en apprenant à structurer et simplifier des concepts complexes.',
+    description: 'Cette vidéo illustre un projet de vulgarisation de la conception générative par l\'IA en architecture. Durant mon stage de cinq mois, j\'ai renforcé mes compétences en motion design, gestion de projet et narration visuelle, tout en apprenant à structurer et simplifier des concepts complexes.',
     technologies: 'After effect, Premiere Pro, Illustrator, Blender, 3ds max, Revit',
   },
   {
@@ -632,23 +707,18 @@ const projectDescriptions = [
   },
   {
     title: 'Angel Mugler - Parfum',
-    description: 'Motion design sur le parfum Angel Mugler. J’ai exploré les effets visuels et les dynamiques de mouvement, en jouant avec les matériaux, la lumière et la transparance pour sublimer les reflets du verre et créer une ambiance immersive.',
+    description: 'Motion design sur le parfum Angel Mugler. J\'ai exploré les effets visuels et les dynamiques de mouvement, en jouant avec les matériaux, la lumière et la transparance pour sublimer les reflets du verre et créer une ambiance immersive.',
     technologies: 'Cinema 4d, After effect, Premiere Pro'
   },
   {
     title: 'Comme tout le monde',
-    description: 'J’ai eu l’opportunité de participer au FESTIVAL REGARDS CROISÉS en collaboration avec Margot Legrand et ESAT Les Ateliers De L\'Espoir. Notre film « Comme tout le monde » a été sélectionné en compétition dans la catégorie Milieu protégé et adapté.',
+    description: 'J\'ai eu l\'opportunité de participer au FESTIVAL REGARDS CROISÉS en collaboration avec Margot Legrand et ESAT Les Ateliers De L\'Espoir. Notre film « Comme tout le monde » a été sélectionné en compétition dans la catégorie Milieu protégé et adapté.',
     technologies: 'Captation vidéo, Premiere Pro'
   },
   {
     title: 'Autres Projets - Motion Design & Design Graphique',
     description: 'Collection de projets variés en motion design, illustration graphique et animation. Explorations créatives mêlant typographie animée, compositions visuelles et effets de transition. Projets personnels et expérimentations en design graphique et animation 2D/3D.',
     technologies: 'After Effects, Illustrator, Photoshop, Animation 2D/3D'
-  },
-  {
-    title: 'CV - Enzo Domenger',
-    description: 'Designer UI/UX & Motion Designer passionné par la création d\'expériences visuelles immersives et interactives. Spécialisé en design d\'interface, prototypage et animation.',
-    technologies: 'UI/UX Design, Motion Design, Three.js, WebGL'
   }
 ];
 
@@ -798,7 +868,7 @@ actionButton.addEventListener('click', () => {
     const galleryHTML = images.map((img, idx) => {
       const imgSrc = img + '?t=' + timestamp;
       const altText = altTexts[idx] || `Projet ${currentIndex + 1} - Image ${idx + 1}`;
-      console.log('🖼️ Loading gallery image:', imgSrc); // Debug
+      log('🖼️ Loading gallery image:', imgSrc);
       
       // Special styling for images 4 and 5 (indices 3 and 4)
       let gridStyle = '';
@@ -810,8 +880,8 @@ actionButton.addEventListener('click', () => {
       return `<img src="${imgSrc}" alt="${altText}" class="gallery-image gallery-image-${idx + 1}" 
             loading="lazy"
             style="width: 100%; border-radius: 8px; object-fit: cover; opacity: 0; transition: opacity 0.3s; background: #f0f0f0; ${gridStyle}"
-            onload="console.log('✅ Image loaded:', this.src); this.style.opacity='1';"
-            onerror="console.error('❌ Failed to load:', this.src); this.style.border='3px solid red'; this.style.opacity='1'; this.alt='Erreur de chargement: ' + this.alt;">`;
+            onload="this.style.opacity='1';"
+            onerror="this.style.border='3px solid red'; this.style.opacity='1'; this.alt='Erreur de chargement: ' + this.alt;">`;
     }).join('');
     
     // Replace loading with gallery after a short delay
@@ -823,12 +893,46 @@ actionButton.addEventListener('click', () => {
       `;
     }, 300);
   } else {
-    // Standard video display
+    // Standard video display with lazy loading and thumbnail preview
     modalBody.innerHTML = `
       <iframe 
         id="youtube-iframe"
         class="modal-video" 
-        src="https://www.youtube.com/embed/${videoId}" 
+        src="https://www.youtube.com/embed/${videoId}"
+        loading="lazy"
+        srcdoc="<style>
+          * { padding: 0; margin: 0; overflow: hidden; }
+          html, body { height: 100%; background: #000; }
+          img { position: absolute; width: 100%; height: 100%; object-fit: cover; }
+          .play-button { 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+            width: 68px; 
+            height: 48px; 
+            background: rgba(255, 0, 0, 0.8);
+            border-radius: 14px;
+            transition: background 0.3s;
+          }
+          .play-button:hover { background: rgba(255, 0, 0, 1); }
+          .play-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-40%, -50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid white;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+          }
+        </style>
+        <a href='https://www.youtube.com/embed/${videoId}?autoplay=1'>
+          <img src='https://img.youtube.com/vi/${videoId}/maxresdefault.jpg' alt='${project.title}'>
+          <div class='play-button'></div>
+        </a>"
         title="YouTube video player" 
         frameborder="0" 
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
@@ -854,21 +958,37 @@ actionButton.addEventListener('click', () => {
   modal.classList.add('active');
   controlsEnabled = false;
   isMouseOverModal = true; // Considérer que la souris est sur la modal dès l'ouverture
+  
+  // Focus on first interactive element for accessibility
+  setTimeout(() => {
+    const firstFocusable = modal.querySelector('button, a, iframe');
+    if (firstFocusable) firstFocusable.focus();
+  }, 100);
 });
 
-// Close modal
-modalClose.addEventListener('click', () => {
+/**
+ * Closes the modal and resets all related states
+ * Stops YouTube video if present to save bandwidth
+ */
+function closeModal() {
   modal.classList.remove('active');
-  controlsEnabled = true; // Re-enable controls
-  isMouseOverModal = false; // Reset mouse tracking
-});
+  controlsEnabled = true;
+  isMouseOverModal = false;
+  
+  // Stop YouTube video by reloading iframe src
+  const iframe = document.getElementById('youtube-iframe');
+  if (iframe && iframe.src) {
+    iframe.src = iframe.src; // Force reload to stop video
+  }
+}
+
+// Close modal on button click
+modalClose.addEventListener('click', closeModal);
 
 // Close modal when clicking outside
 modal.addEventListener('click', (e) => {
   if (e.target === modal) {
-    modal.classList.remove('active');
-    controlsEnabled = true; // Re-enable controls
-    isMouseOverModal = false; // Reset mouse tracking
+    closeModal();
   }
 });
 
@@ -881,12 +1001,35 @@ modal.addEventListener('mouseleave', () => {
   isMouseOverModal = false;
 });
 
-// Close modal with Escape key
+// Close modal with Escape key and handle Tab focus trap
 window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && modal.classList.contains('active')) {
-    modal.classList.remove('active');
-    controlsEnabled = true;
-    isMouseOverModal = false;
+  if (!modal.classList.contains('active')) return;
+  
+  // Close on Escape
+  if (e.key === 'Escape') {
+    closeModal();
+    return;
+  }
+  
+  // Focus trap: keep Tab navigation within modal
+  if (e.key === 'Tab') {
+    const focusableElements = modal.querySelectorAll(
+      'button, a, iframe, [tabindex]:not([tabindex="-1"])'
+    );
+    const focusableArray = Array.from(focusableElements);
+    const firstFocusable = focusableArray[0];
+    const lastFocusable = focusableArray[focusableArray.length - 1];
+    
+    // Shift + Tab on first element -> go to last
+    if (e.shiftKey && document.activeElement === firstFocusable) {
+      e.preventDefault();
+      lastFocusable.focus();
+    }
+    // Tab on last element -> go to first
+    else if (!e.shiftKey && document.activeElement === lastFocusable) {
+      e.preventDefault();
+      firstFocusable.focus();
+    }
   }
 });
 
