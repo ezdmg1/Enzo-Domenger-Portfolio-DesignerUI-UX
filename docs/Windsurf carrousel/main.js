@@ -728,6 +728,28 @@ document.getElementById('nav-right').addEventListener('click', () => {
   rotateToIndex(nextIndex);
 });
 
+// Touch on-screen buttons (mobile/tablet)
+const navTouchPrev = document.getElementById('nav-touch-prev');
+const navTouchNext = document.getElementById('nav-touch-next');
+
+if (navTouchPrev) {
+  const goPrev = () => {
+    const prevIndex = (currentIndex - 1 + itemCount) % itemCount;
+    rotateToIndex(prevIndex);
+  };
+  navTouchPrev.addEventListener('click', goPrev, { passive: true });
+  navTouchPrev.addEventListener('touchstart', (e) => { e.preventDefault(); goPrev(); }, { passive: false });
+}
+
+if (navTouchNext) {
+  const goNext = () => {
+    const nextIndex = (currentIndex + 1) % itemCount;
+    rotateToIndex(nextIndex);
+  };
+  navTouchNext.addEventListener('click', goNext, { passive: true });
+  navTouchNext.addEventListener('touchstart', (e) => { e.preventDefault(); goNext(); }, { passive: false });
+}
+
 // Modal elements
 const modal = document.getElementById('modal');
 const modalTitle = document.getElementById('modal-title');
