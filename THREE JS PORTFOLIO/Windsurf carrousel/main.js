@@ -575,7 +575,7 @@ const projectVideos = [
   'X-lIDver-5k', // Projet 3
   'Yx5Jlxr_iuA', // Projet 4
   'gallery', // Projet 5 - Gallery mode
-  'dQw4w9WgXcQ'  // Projet 6
+  'cv'  // Projet 6 - CV mode
 ];
 
 // Gallery images for project 5 (add your image/gif paths)
@@ -644,9 +644,9 @@ const projectDescriptions = [
     technologies: 'After Effects, Illustrator, Photoshop, Animation 2D/3D'
   },
   {
-    title: 'Projets en Développement',
-    description: 'Nouveaux projets en cours de réalisation combinant motion design, architecture générative et technologies web interactives. Explorations en WebGL, Three.js et visualisation de données architecturales.',
-    technologies: 'Three.js, WebGL, Blender, After Effects'
+    title: 'CV - Enzo Domenger',
+    description: 'Designer UI/UX & Motion Designer passionné par la création d\'expériences visuelles immersives et interactives. Spécialisé en design d\'interface, prototypage et animation.',
+    technologies: 'UI/UX Design, Motion Design, Three.js, WebGL'
   }
 ];
 
@@ -662,8 +662,116 @@ actionButton.addEventListener('click', () => {
   // Update modal content
   modalTitle.textContent = project.title;
   
-  // Check if this project has a gallery instead of video
-  if (videoId === 'gallery' && projectGalleries[currentIndex]) {
+  // Check if this project has a CV mode
+  if (videoId === 'cv') {
+    // Display CV content
+    modalBody.innerHTML = `
+      <div class="cv-container" style="color: white; line-height: 1.8;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h3 style="font-size: 24px; margin-bottom: 10px; color: #fff;">Enzo Domenger</h3>
+          <p style="font-size: 16px; color: rgba(255,255,255,0.8); margin-bottom: 15px;">Designer UI/UX</p>
+          <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; font-size: 14px;">
+            <a href="mailto:enzo.domenger@gmail.com" style="color: #a8d3ee; text-decoration: none;">📧 Contact</a>
+            <a href="https://linkedin.com/in/enzo-domenger" target="_blank" style="color: #a8d3ee; text-decoration: none;">💼 LinkedIn</a>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+          <h4 style="color: #a8d3ee; font-size: 18px; margin-bottom: 10px; border-bottom: 2px solid rgba(168,211,238,0.3); padding-bottom: 5px;">🎯 Profil</h4>
+          <p style="font-size: 14px; color: rgba(255,255,255,0.9);">
+            Designer créatif spécialisé en UI/UX avec une forte expertise en motion design et en 3D. 
+            Passionné par la création d'expériences utilisateur immersives et l'innovation en design interactif.
+          </p>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+          <h4 style="color: #a8d3ee; font-size: 18px; margin-bottom: 10px; border-bottom: 2px solid rgba(168,211,238,0.3); padding-bottom: 5px;">💼 Expérience</h4>
+          <div style="margin-bottom: 15px;">
+            <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Designer UI/UX</p>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Chez Léonard | Septembre 2025 - Mai 2026</p>
+            <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Conception de sites internet, la création d'affiches sur mesure ainsi que la refonte de logos et d’identités visuelles.</p>
+          </div>
+          <div style="margin-bottom: 15px;">
+            <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Webdesigner - Stage</p>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Agence Mekaa | Février 2026 - Avril 2026</p>
+            <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Stage en webdesign au sein de l'agence Mekaa. Conception d'interfaces web, design graphique et expérience utilisateur.</p>
+          </div>
+          <div style="margin-bottom: 15px;">
+            <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Motion Designer - Stage</p>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Club Architecture | 5 mois</p>
+            <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Vulgarisation de la conception générative par IA en architecture. Renforcement des compétences en motion design, gestion de projet et narration visuelle.</p>
+          </div>
+          <div style="margin-bottom: 15px;">
+            <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Motion Designer, Designer UI/UX & Infographiste 3D - Freelance</p>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Projets variés | 2021-2025</p>
+            <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Projets diversifiés incluant jeux vidéos, captation vidéo (concerts), montage vidéo, conception d'interfaces utilisateur et création de design systems pour applications web et mobile.</p>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+          <h4 style="color: #a8d3ee; font-size: 18px; margin-bottom: 10px; border-bottom: 2px solid rgba(168,211,238,0.3); padding-bottom: 5px;">🎓 Formation</h4>
+          <div style="margin-bottom: 15px;">
+            <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Licence - Concepteur Designer UI</p>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Greta CFA Est Bretagne | 2025 - 2026</p>
+            <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Formation en conception et design d'interfaces utilisateur.</p>
+          </div>
+          <div style="margin-bottom: 15px;">
+            <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Licence - Animation, Technologie Interactive, Vidéographie et Effets Spéciaux</p>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px;">3axes Institut | 2021 - 2024</p>
+            <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Formation spécialisée en animation, technologies interactives, vidéographie et effets spéciaux.</p>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+          <h4 style="color: #a8d3ee; font-size: 18px; margin-bottom: 10px; border-bottom: 2px solid rgba(168,211,238,0.3); padding-bottom: 5px;">🛠️ Compétences</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 14px;">
+            <div>
+              <p style="font-weight: 600; margin-bottom: 8px; color: rgba(255,255,255,0.95);">Design</p>
+              <ul style="margin: 0; padding-left: 20px; color: rgba(255,255,255,0.85);">
+                <li>UI/UX Design</li>
+                <li>Motion Design</li>
+                <li>Design Graphique</li>
+                <li>Infographie 3D</li>
+              </ul>
+            </div>
+            <div>
+              <p style="font-weight: 600; margin-bottom: 8px; color: rgba(255,255,255,0.95);">Outils</p>
+              <ul style="margin: 0; padding-left: 20px; color: rgba(255,255,255,0.85);">
+                <li>Figma, Wordpress</li>
+                <li>After Effects, Premiere Pro</li>
+                <li>Illustrator, Photoshop</li>
+                <li>Blender, Cinema 4D</li>
+              </ul>
+            </div>
+            <div>
+              <p style="font-weight: 600; margin-bottom: 8px; color: rgba(255,255,255,0.95);">Développement</p>
+              <ul style="margin: 0; padding-left: 20px; color: rgba(255,255,255,0.85);">
+                <li>Three.js, WebGL</li>
+                <li>HTML/CSS/JavaScript</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <h4 style="color: #a8d3ee; font-size: 18px; margin-bottom: 10px; border-bottom: 2px solid rgba(168,211,238,0.3); padding-bottom: 5px;">🏆 Réalisations</h4>
+          <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: rgba(255,255,255,0.85);">
+            <li style="margin-bottom: 8px;">Sélection au Festival Regards Croisés - Film "Comme tout le monde"</li>
+            <li style="margin-bottom: 8px;">Portfolio 3D interactif avec Three.js et WebGL</li>
+            <li style="margin-bottom: 8px;">Projets de motion design et création de jeux vidéos avec une équipe de 15 personnes</li>
+          </ul>
+        </div>
+
+        <!-- Téléchargement CV désactivé temporairement
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
+          <a href="./CV_Enzo_Domenger.pdf" download="CV_Enzo_Domenger.pdf" style="display: inline-block; padding: 12px 30px; background: rgba(168,211,238,0.2); border: 2px solid #a8d3ee; border-radius: 25px; color: #a8d3ee; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(168,211,238,0.3)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(168,211,238,0.2)'; this.style.transform='translateY(0)';">
+            💾 Télécharger le CV complet (PDF)
+          </a>
+        </div>
+        -->
+      </div>
+    `;
+  } else if (videoId === 'gallery' && projectGalleries[currentIndex]) {
     // Show loading indicator
     modalBody.innerHTML = `
       <div style="text-align: center; padding: 50px;">
