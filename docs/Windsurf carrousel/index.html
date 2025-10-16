@@ -64,10 +64,7 @@
         margin: 0; 
         overflow: hidden;
         font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
-        cursor: none;
       }
-      /* Keep custom crosshair by hiding native cursor on interactive elements */
-      a, button, [role="button"], #logo-btn { cursor: none !important; }
       canvas {
         display: block;
       }
@@ -118,7 +115,7 @@
       /* Action button */
       .action-button {
         position: fixed;
-        bottom: calc(var(--ntg-bottom) + (var(--ntg-size) * 2) + var(--ntg-gap) + 16px);
+        bottom: 80px;
         left: 50%;
         transform: translateX(-50%) translateY(20px);
         padding: 15px 40px;
@@ -160,10 +157,12 @@
       .nav-touch-btn svg { pointer-events: none; }
       @media (pointer: coarse), (hover: none) {
         .nav-touch-group { display: flex; }
+        /* Keep native cursor; crosshair overlay remains visible */
         /* Mobile styles for Découvrir and arrows: match button theme */
         .action-button {
           background: rgba(0,0,0,0.17);
           border-color: rgba(255,255,255,0.3);
+          bottom: calc(var(--ntg-bottom) + (var(--ntg-size) * 2) + var(--ntg-gap) + 16px);
           z-index: 4000;
         }
         .nav-arrow {
@@ -172,6 +171,7 @@
           z-index: 4000;
         }
       }
+      
       @media (max-width: 400px) {
         :root { --ntg-bottom: 16px; --ntg-gap: 10px; --ntg-size: 96px; }
         .nav-touch-group { bottom: 16px; gap: 10px; }
@@ -278,6 +278,7 @@
         z-index: 9999;
         mix-blend-mode: difference;
         will-change: transform;
+        display: block; /* always show crosshair overlay */
       }
       
       .cursor-text {
