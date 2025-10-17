@@ -270,42 +270,14 @@ const BLADE_HEIGHT_VARIATION = 0.6;
 let texturesLoaded = 0;
 const totalTextures = 2;
 
-// WebP support detection
-function supportsWebP() {
-  const elem = document.createElement('canvas');
-  if (elem.getContext && elem.getContext('2d')) {
-    return elem.toDataURL('image/webp').indexOf('data:image/webp') === 0;
-  }
-  return false;
-}
-
-const useWebP = supportsWebP();
-const imageExt = useWebP ? '.webp' : '.jpg';
-
 const textureLoader = new THREE.TextureLoader();
-const grassTex = textureLoader.load(`./assets/grass${imageExt}`, () => {
+const grassTex = textureLoader.load('./assets/grass.jpg', () => {
   texturesLoaded++;
   checkIfFullyLoaded();
-}, undefined, () => {
-  // Fallback to JPG if WebP fails
-  if (useWebP) {
-    textureLoader.load('./assets/grass.jpg', () => {
-      texturesLoaded++;
-      checkIfFullyLoaded();
-    });
-  }
 });
-const cloudTex = textureLoader.load(`./assets/cloud${imageExt}`, () => {
+const cloudTex = textureLoader.load('./assets/cloud.jpg', () => {
   texturesLoaded++;
   checkIfFullyLoaded();
-}, undefined, () => {
-  // Fallback to JPG if WebP fails
-  if (useWebP) {
-    textureLoader.load('./assets/cloud.jpg', () => {
-      texturesLoaded++;
-      checkIfFullyLoaded();
-    });
-  }
 });
 
 cloudTex.wrapS = cloudTex.wrapT = THREE.RepeatWrapping;
@@ -390,14 +362,19 @@ function generateBlade(center, vArrOffset, uv) {
   return { verts, indices };
 }
 
-// Generate grass field in chunks to avoid blocking main thread
-function generateFieldChunk(startIdx, endIdx, positions, uvs, indices, colors) {
+// Generate grass field (synchronous - original version)
+function generateField() {
+  const positions = [];
+  const uvs = [];
+  const indices = [];
+  const colors = [];
+
   const VERTEX_COUNT = 5;
   const surfaceMin = PLANE_SIZE / 2 * -1;
   const surfaceMax = PLANE_SIZE / 2;
   const radius = PLANE_SIZE / 2;
 
-  for (let i = startIdx; i < endIdx; i++) {
+  for (let i = 0; i < BLADE_COUNT; i++) {
     const r = radius * Math.sqrt(Math.random());
     const theta = Math.random() * 2 * Math.PI;
     const x = r * Math.cos(theta);
@@ -414,35 +391,7 @@ function generateFieldChunk(startIdx, endIdx, positions, uvs, indices, colors) {
     });
     blade.indices.forEach(indice => indices.push(indice));
   }
-}
 
-async function generateFieldAsync() {
-  const positions = [];
-  const uvs = [];
-  const indices = [];
-  const colors = [];
-
-  // Generate in chunks to avoid blocking main thread
-  const CHUNK_SIZE = 5000;
-  const chunks = Math.ceil(BLADE_COUNT / CHUNK_SIZE);
-
-  for (let chunk = 0; chunk < chunks; chunk++) {
-    const startIdx = chunk * CHUNK_SIZE;
-    const endIdx = Math.min(startIdx + CHUNK_SIZE, BLADE_COUNT);
-    
-    // Use requestIdleCallback if available, otherwise setTimeout
-    await new Promise(resolve => {
-      if ('requestIdleCallback' in window) {
-        requestIdleCallback(resolve);
-      } else {
-        setTimeout(resolve, 0);
-      }
-    });
-
-    generateFieldChunk(startIdx, endIdx, positions, uvs, indices, colors);
-  }
-
-  // Create geometry after all chunks are generated
   const geom = new THREE.BufferGeometry();
   geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
   geom.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2));
@@ -455,8 +404,8 @@ async function generateFieldAsync() {
   scene.add(grassMesh);
 }
 
-// Start async generation
-generateFieldAsync();
+// Generate grass field
+generateField();
 
 // Grass-textured ground plane
 const groundGeom = new THREE.PlaneGeometry(PLANE_SIZE, PLANE_SIZE, 1, 1);
