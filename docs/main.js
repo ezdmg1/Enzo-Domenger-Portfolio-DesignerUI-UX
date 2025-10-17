@@ -41,20 +41,17 @@ function preloadCarouselAssets() {
 const carouselPreloadPromise = preloadCarouselAssets();
 
 function navigateToCarouselAfterPreload() {
-  // Show transition message
+  // For touch devices: skip transition and go directly to carousel
+  if (isCoarsePointer) {
+    transitionNavigated = true;
+    window.location.href = CAROUSEL_URL;
+    return;
+  }
+  
+  // For desktop: show transition message and wait
   const transitionMessage = document.getElementById('transition-message');
   if (transitionMessage) {
     transitionMessage.style.display = 'block';
-  }
-  
-  // For touch devices: automatically fade out the white overlay during transition
-  const fadeOverlay = document.getElementById('fade-overlay');
-  if (isCoarsePointer && fadeOverlay) {
-    // Start at full white, then fade to transparent over 1s
-    fadeOverlay.style.transition = 'opacity 1s ease-out';
-    setTimeout(() => {
-      fadeOverlay.style.opacity = '0';
-    }, 100); // Small delay to ensure white flash is visible first
   }
   
   // Shorter timeout for faster transition (1.5s instead of 3s)
