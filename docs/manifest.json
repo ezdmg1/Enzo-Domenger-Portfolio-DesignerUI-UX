@@ -1,7 +1,7 @@
 {
-  "name": "Portfolio 3D - Motion Design & Architecture",
-  "short_name": "Portfolio 3D",
-  "description": "Portfolio interactif 3D présentant mes projets en motion design, architecture et design graphique",
+  "name": "Portfolio 3D - Designer UI/UX",
+  "short_name": "Portfolio UI/UX",
+  "description": "Portfolio interactif 3D d'Enzo Domenger, designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur et prototypage",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

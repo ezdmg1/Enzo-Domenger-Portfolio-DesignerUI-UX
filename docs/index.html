@@ -4,10 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Enzo Domenger - Portfolio Designer UI/UX</title>
-  <meta name="description" content="Portfolio 3D interactif d'Enzo Domenger, designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur, prototypage et design system. Découvrez mes projets créatifs.">
-  <meta name="keywords" content="portfolio UI/UX, designer UI/UX freelance, Three.js portfolio, portfolio 3D interactif, design d'interface, expérience utilisateur, UX design, UI design, prototypage Figma, design system, WebGL portfolio, creative portfolio, designer Paris, Enzo Domenger">
+  <meta name="description" content="Portfolio 3D interactif d'Enzo Domenger, designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur, prototypage Figma, design system et design interactif. Découvrez mes projets créatifs en UI/UX design.">
+  <meta name="keywords" content="designer UI/UX, portfolio UI/UX, designer interface utilisateur, UX designer freelance, UI designer Paris, design d'interface, expérience utilisateur, prototypage Figma, design system, wireframing, user research, portfolio 3D interactif, Three.js portfolio, WebGL portfolio, design thinking, Enzo Domenger">
   <meta name="author" content="Enzo Domenger">
   <meta name="robots" content="index, follow">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://enzo-domenger-portfolio.com/">
+  
+  <!-- Language -->
+  <link rel="alternate" hreflang="fr" href="https://enzo-domenger-portfolio.com/">
+  <link rel="alternate" hreflang="x-default" href="https://enzo-domenger-portfolio.com/">
   
   <!-- Content Security Policy -->
   <meta http-equiv="Content-Security-Policy" content="
@@ -29,14 +36,14 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://enzo-domenger-portfolio.com">
   <meta property="og:title" content="Enzo Domenger - Portfolio Designer UI/UX 3D Interactif">
-  <meta property="og:description" content="Designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur et prototypage. Découvrez mes projets créatifs en design UI/UX et design interactif.">
+  <meta property="og:description" content="Designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur, prototypage Figma et design system. Découvrez mes projets créatifs en UI/UX design et design interactif.">
   <meta property="og:image" content="https://enzo-domenger-portfolio.com/preview.png">
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://enzo-domenger-portfolio.com">
   <meta property="twitter:title" content="Enzo Domenger - Portfolio Designer UI/UX 3D Interactif">
-  <meta property="twitter:description" content="Designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur et prototypage. Découvrez mes projets créatifs.">
+  <meta property="twitter:description" content="Designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur, prototypage Figma et design system. Portfolio 3D interactif présentant mes projets UI/UX.">
   <meta property="twitter:image" content="https://enzo-domenger-portfolio.com/preview.png">
   
   <!-- Favicon -->
@@ -45,12 +52,68 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/Logo_32_.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/logo(180).png">
   <link rel="shortcut icon" href="./assets/Logo_32_.ico">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#000000">
   <!-- Prefetch next-page heavy assets to reduce load time -->
   <link rel="prefetch" href="./Windsurf carrousel/BLENDER_Template.glb" as="fetch" crossorigin>
   <link rel="prefetch" href="./Windsurf carrousel/COMP VIDEO.mp4" as="video" crossorigin>
   <link rel="prefetch" href="./Windsurf carrousel/index.html">
   <!-- Preconnect to CDN used by carousel's module imports -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  
+  <!-- Structured Data (JSON-LD) for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Enzo Domenger",
+    "jobTitle": "Designer UI/UX Freelance",
+    "description": "Designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur, prototypage Figma et design system",
+    "url": "https://enzo-domenger-portfolio.com",
+    "image": "https://enzo-domenger-portfolio.com/preview.png",
+    "sameAs": [
+      "https://www.linkedin.com/in/enzo-domenger"
+    ],
+    "knowsAbout": [
+      "UI Design",
+      "UX Design",
+      "Design d'interface",
+      "Expérience utilisateur",
+      "Prototypage Figma",
+      "Design System",
+      "Wireframing",
+      "User Research",
+      "Design Thinking",
+      "Three.js",
+      "WebGL"
+    ],
+    "hasOccupation": {
+      "@type": "Occupation",
+      "name": "Designer UI/UX",
+      "occupationLocation": {
+        "@type": "City",
+        "name": "Paris"
+      },
+      "skills": "UI Design, UX Design, Prototypage, Design System, Figma, User Research, Wireframing"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Portfolio Enzo Domenger - Designer UI/UX",
+    "url": "https://enzo-domenger-portfolio.com",
+    "description": "Portfolio 3D interactif présentant mes projets en design UI/UX, design d'interface et expérience utilisateur",
+    "author": {
+      "@type": "Person",
+      "name": "Enzo Domenger"
+    },
+    "inLanguage": "fr-FR"
+  }
+  </script>
   
   <!-- Import map for Three.js modules -->
   <script type="importmap">
@@ -233,7 +296,7 @@
   <div id="app"></div>
   <!-- Top-left logo placeholder. Replace src with your logo. Click refreshes the page. -->
   <a id="logo-btn" href="#" aria-label="Retour à l'accueil">
-    <img id="logo-img" alt="Logo Portfolio Enzo Domenger - Motion Designer & Architecte" src="./assets/logo(180).png">
+    <img id="logo-img" alt="Logo Portfolio Enzo Domenger - Designer UI/UX" src="./assets/logo(180).png">
   </a>
   
   <!-- Cursor text -->
