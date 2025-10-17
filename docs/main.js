@@ -10,11 +10,10 @@ let isCoarsePointer = (function() {
   } catch (_) { return false; }
 })();
 
-// Force touch mode via URL parameter (?touch=1)
+// Force touch mode via URL parameter (?touch=1) for testing
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('touch') === '1') {
   isCoarsePointer = true;
-  console.log('🔧 Touch mode FORCED via URL parameter');
 }
 
 // Fallback: detect touch support
@@ -27,14 +26,6 @@ if (!isCoarsePointer && navigator.userAgentData && navigator.userAgentData.mobil
   isCoarsePointer = true;
 }
 
-// Debug log
-console.log('Touch detection:', {
-  isCoarsePointer,
-  ontouchstart: 'ontouchstart' in window,
-  maxTouchPoints: navigator.maxTouchPoints,
-  userAgent: navigator.userAgent
-});
-
 if (isCoarsePointer) {
   renderer.setPixelRatio(1);
 }
@@ -42,9 +33,10 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 app.appendChild(renderer.domElement);
 renderer.shadowMap.enabled = false;
 
-// Page loader overlay (fade out after first render)
+// Page loader overlay (fade out when everything is loaded)
 const pageLoader = document.getElementById('page-loader');
 let pageLoaderHidden = false;
+let sceneFullyLoaded = false;
 
 // Aggressive preloader for the carousel assets
 const CAROUSEL_ASSETS = [
@@ -65,6 +57,14 @@ function preloadCarouselAssets() {
   }
 }
 const carouselPreloadPromise = preloadCarouselAssets();
+
+// Preload carousel in hidden iframe during page load for faster transition
+window.addEventListener('load', () => {
+  const preloadFrame = document.createElement('iframe');
+  preloadFrame.style.cssText = 'display:none;position:absolute;width:0;height:0;border:none';
+  preloadFrame.src = './Windsurf%20carrousel/index.html';
+  document.body.appendChild(preloadFrame);
+});
 
 function navigateToCarouselAfterPreload() {
   // For desktop: show transition message and wait
@@ -114,11 +114,24 @@ let idleTimer = null;
 let isIdle = false;
 let mmScheduled = false;
 
-// Hide custom cursor on touch devices
-if (isCoarsePointer && customCursor) {
+// Hide custom cursor completely (keep default cursor)
+if (customCursor) {
   customCursor.style.display = 'none';
 }
+
 let lastMouseEvent = null;
+
+// Position cursor text at mouse position
+function updateCursorTextPosition(x, y) {
+  if (cursorText) {
+    cursorText.style.transform = `translate(${x + 15}px, ${y + 15}px)`;
+  }
+}
+
+// Initialize cursor text position at center
+if (cursorText) {
+  updateCursorTextPosition(window.innerWidth / 2, window.innerHeight / 2);
+}
 
 // Logo refresh button
 const logoBtn = document.getElementById('logo-btn');
@@ -274,12 +287,30 @@ const BLADE_WIDTH = 0.1;
 const BLADE_HEIGHT = 0.8;
 const BLADE_HEIGHT_VARIATION = 0.6;
 
-// Textures
-const grassTex = new THREE.TextureLoader().load('./assets/grass.jpg');
-const cloudTex = new THREE.TextureLoader().load('./assets/cloud.jpg');
+// Textures with loading tracking
+let texturesLoaded = 0;
+const totalTextures = 2;
+
+const textureLoader = new THREE.TextureLoader();
+const grassTex = textureLoader.load('./assets/grass.jpg', () => {
+  texturesLoaded++;
+  checkIfFullyLoaded();
+});
+const cloudTex = textureLoader.load('./assets/cloud.jpg', () => {
+  texturesLoaded++;
+  checkIfFullyLoaded();
+});
+
 cloudTex.wrapS = cloudTex.wrapT = THREE.RepeatWrapping;
 grassTex.wrapS = grassTex.wrapT = THREE.RepeatWrapping;
 grassTex.repeat.set(8, 8);
+
+// Check if everything is loaded
+function checkIfFullyLoaded() {
+  if (texturesLoaded === totalTextures && !sceneFullyLoaded) {
+    sceneFullyLoaded = true;
+  }
+}
 grassTex.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
 
 // Uniforms and material
@@ -541,10 +572,9 @@ window.addEventListener('mousemove', (e) => {
     mouseX = (ev.clientX / window.innerWidth) * 2 - 1;
     mouseY = (ev.clientY / window.innerHeight) * 2 - 1;
 
-    if (customCursor) {
-      customCursor.style.opacity = '1';
-      customCursor.style.transform = `translate(${ev.clientX}px, ${ev.clientY}px)`;
-    }
+    // Update cursor text position
+    updateCursorTextPosition(ev.clientX, ev.clientY);
+    
     if (cursorText && !cursorText.classList.contains('hidden')) {
       cursorText.classList.add('hidden');
       isIdle = false;
@@ -697,6 +727,8 @@ function animate() {
       
       // For desktop: normal transition with blocking
       transitionStarted = true;
+      // Hide cursor text during transition
+      if (cursorText) cursorText.style.display = 'none';
       forwardVel = 0;
       lockZPos = TARGET_Z;
       camera.position.z = TARGET_Z;
@@ -735,6 +767,8 @@ function animate() {
     if (camera.position.z <= TARGET_Z) {
       // For touch devices: navigate with fade transition (no white screen)
       if (isCoarsePointer) {
+        // Hide cursor text during transition
+        if (cursorText) cursorText.style.display = 'none';
         try { sessionStorage.setItem('fromIndex', '1'); sessionStorage.setItem('touchFadeIn', 'true'); } catch (_) {}
         transitionNavigated = true;
         window.location.href = CAROUSEL_URL;
@@ -768,8 +802,8 @@ function animate() {
 
   renderer.render(scene, camera);
 
-  // Hide page loader after first render
-  if (!pageLoaderHidden && pageLoader) {
+  // Hide page loader only when everything is fully loaded
+  if (!pageLoaderHidden && pageLoader && sceneFullyLoaded) {
     pageLoader.classList.add('hide');
     setTimeout(() => {
       if (pageLoader && pageLoader.parentElement) pageLoader.remove();

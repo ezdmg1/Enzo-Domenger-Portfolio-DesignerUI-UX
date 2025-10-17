@@ -315,10 +315,9 @@
       }
       
       .cursor-text {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
         color: white;
         font-size: 14px;
         font-weight: 600;
@@ -327,6 +326,8 @@
         opacity: 1;
         transition: opacity 0.3s ease;
         white-space: nowrap;
+        mix-blend-mode: difference;
+        will-change: transform;
       }
       
       .cursor-text.hidden {
@@ -369,12 +370,11 @@
       @keyframes spin {
         to { transform: rotate(360deg); }
       }
-
       /* Loading overlay (responsive) */
       #loading-overlay {
         position: fixed;
         inset: 0;
-        background: #000;
+        background: #ffffff;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -384,14 +384,13 @@
         width: 160px;
         height: 160px;
         border-radius: 50%;
-        border: 10px solid rgba(255,255,255,0.15);
-        border-top-color: #fff;
+        border: 10px solid rgba(255,255,255,0.3);
+        border-top-color: rgba(255,255,255,0.5);
         animation: spin 1s linear infinite;
       }
       @media (max-width: 480px) {
         .loading-spinner { width: 120px; height: 120px; border-width: 8px; }
       }
-      
       /* Gallery image loading skeleton */
       .gallery-image {
         position: relative;
@@ -488,7 +487,7 @@
   <body>
     <!-- Loading overlay: removed by main.js when model & video are ready -->
     <div id="loading-overlay" aria-live="polite" aria-busy="true">
-      <div class="loading-spinner" role="status" aria-label="Chargement"></div>
+      <div class="loading-spinner" role="status"></div>
     </div>
     <!-- Top-left logo placeholder. Replace src with your logo. Click refreshes the page. -->
     <a id="logo-btn" href="#" aria-label="Retour à l'accueil">
@@ -512,8 +511,10 @@
     <!-- Custom cursor -->
     <div id="custom-cursor" class="custom-cursor" aria-hidden="true">
       <div class="cursor-crosshair"></div>
-      <div id="cursor-text" class="cursor-text">scroll</div>
     </div>
+    
+    <!-- Cursor text (separate from custom cursor) -->
+    <div id="cursor-text" class="cursor-text">scroll</div>
     
     <!-- Action button for focused item -->
     <button id="action-button" class="action-button" aria-label="Découvrir le projet" title="Découvrir le projet (Entrée)">

@@ -27,46 +27,23 @@ try {
 
 // Check if we should fade in (for touch devices)
 const shouldFadeIn = sessionStorage.getItem('touchFadeIn') === 'true';
-console.log('🎬 Carousel loaded - shouldFadeIn:', shouldFadeIn);
 
 if (shouldFadeIn) {
   sessionStorage.removeItem('touchFadeIn');
-  console.log('✅ Creating fade-in overlay');
   
   // Add fade-in overlay immediately
   const fadeInOverlay = document.createElement('div');
-  fadeInOverlay.id = 'touch-fade-overlay';
-  fadeInOverlay.style.position = 'fixed';
-  fadeInOverlay.style.top = '0';
-  fadeInOverlay.style.left = '0';
-  fadeInOverlay.style.width = '100vw';
-  fadeInOverlay.style.height = '100vh';
-  fadeInOverlay.style.background = '#ffffff';
-  fadeInOverlay.style.opacity = '1';
-  fadeInOverlay.style.pointerEvents = 'none';
-  fadeInOverlay.style.zIndex = '999999';
-  fadeInOverlay.style.transition = 'opacity 1s ease-out';
+  fadeInOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#fff;opacity:1;pointer-events:none;z-index:999999;transition:opacity 0.8s ease-out';
   
-  // Add to body immediately
   if (document.body) {
     document.body.appendChild(fadeInOverlay);
-    console.log('✅ Overlay added to body');
-  } else {
-    document.addEventListener('DOMContentLoaded', () => {
-      document.body.appendChild(fadeInOverlay);
-      console.log('✅ Overlay added to body (after DOMContentLoaded)');
-    });
   }
   
-  // Fade out after scene is ready
+  // Fade out after scene loads
   setTimeout(() => {
-    console.log('🎨 Starting fade out');
     fadeInOverlay.style.opacity = '0';
-    setTimeout(() => {
-      console.log('🗑️ Removing overlay');
-      fadeInOverlay.remove();
-    }, 1000);
-  }, 500);
+    setTimeout(() => fadeInOverlay.remove(), 800);
+  }, 800);
 }
 
 // Startup white overlay element (fades OUT to reveal the scene)
@@ -74,17 +51,26 @@ const startupOverlay = document.getElementById('fade-overlay');
 let startupOverlayOpacity = 1;
 let overlayDismissed = false;
 
-// For touch devices with fade in, hide the white overlay immediately
-if (shouldFadeIn && startupOverlay) {
-  console.log('🚫 Hiding white startup overlay for touch');
-  startupOverlay.style.display = 'none';
-  overlayDismissed = true;
+// For touch devices with fade in, hide overlays immediately
+if (shouldFadeIn) {
+  if (startupOverlay) {
+    startupOverlay.style.display = 'none';
+    overlayDismissed = true;
+  }
+  
+  const loadingOverlay = document.getElementById('loading-overlay');
+  if (loadingOverlay) {
+    loadingOverlay.style.background = '#ffffff';
+    const spinner = loadingOverlay.querySelector('.loading-spinner');
+    if (spinner) spinner.style.display = 'none';
+  }
 }
 
 // Loading overlay spinner control
 const loadingOverlay = document.getElementById('loading-overlay');
 let modelReady = false;
 let videoReady = false;
+
 function maybeHideLoadingOverlay() {
   if (loadingOverlay && modelReady && videoReady) {
     loadingOverlay.remove();
@@ -613,10 +599,23 @@ const CURSOR_IDLE_DELAY_MS = 200; // Show "scroll" text after 200ms of inactivit
 let idleTimer = null;
 let isIdle = false;
 
-// Hide custom cursor on touch devices
-if (isCoarsePointer && customCursor) {
+// Hide custom cursor completely (keep default cursor)
+if (customCursor) {
   customCursor.style.display = 'none';
 }
+
+// Position cursor text at mouse position
+function updateCursorTextPosition(x, y) {
+  if (cursorText) {
+    cursorText.style.transform = `translate(${x + 15}px, ${y + 15}px)`;
+  }
+}
+
+// Initialize cursor text position at center
+if (cursorText) {
+  updateCursorTextPosition(window.innerWidth / 2, window.innerHeight / 2);
+}
+
 // Track cursor scale and last position to compose translate + scale without conflicts
 let cursorScale = 1;
 let lastMouseX = 0;
@@ -632,28 +631,23 @@ function applyCursorTransform() {
 
 // Update cursor position with transform for better performance
 window.addEventListener('mousemove', (e) => {
-  if (customCursor) {
-    lastMouseX = e.clientX;
-    lastMouseY = e.clientY;
-    applyCursorTransform();
-  }
+  // Update cursor text position
+  updateCursorTextPosition(e.clientX, e.clientY);
   
-  // User is moving, hide text
+  // Hide "scroll" text on movement
   if (cursorText && !cursorText.classList.contains('hidden')) {
     cursorText.classList.add('hidden');
     isIdle = false;
   }
   
-  // Reset idle timer
   clearTimeout(idleTimer);
   idleTimer = setTimeout(() => {
-    // Show "scroll" text after inactivity
-    if (cursorText && cameraProgress < 1) {
+    if (cursorText) {
       cursorText.classList.remove('hidden');
       isIdle = true;
     }
   }, CURSOR_IDLE_DELAY_MS);
-}, { passive: true });
+}, { passive: true, capture: false });
 
 // Shrink cursor while mouse button is pressed
 window.addEventListener('mousedown', () => {

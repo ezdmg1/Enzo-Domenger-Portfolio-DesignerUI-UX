@@ -84,7 +84,7 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .custom-cursor { position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; will-change: transform; opacity: 0; transition: opacity 0.1s; }
-    .cursor-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; opacity: 1; transition: opacity 0.3s ease; white-space: nowrap; }
+    .cursor-text { position: fixed; pointer-events: none; z-index: 9999; color: white; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; opacity: 1; transition: opacity 0.3s ease; white-space: nowrap; mix-blend-mode: difference; will-change: transform; }
     .cursor-text.hidden { opacity: 0; }
     .cursor-crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 20px; height: 20px; }
     .cursor-crosshair::before, .cursor-crosshair::after { content: ''; position: absolute; background: white; }
@@ -267,8 +267,10 @@
   </a>
   <div id="custom-cursor" class="custom-cursor">
     <div class="cursor-crosshair"></div>
-    <div id="cursor-text" class="cursor-text">scroll</div>
   </div>
+  
+  <!-- Cursor text (separate from custom cursor) -->
+  <div id="cursor-text" class="cursor-text">scroll</div>
   
   <!-- Touch swipe indicator (mobile/tablet only) -->
   <div id="swipe-indicator" class="swipe-indicator">
