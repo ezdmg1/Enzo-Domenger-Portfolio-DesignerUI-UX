@@ -41,7 +41,14 @@ function preloadCarouselAssets() {
 const carouselPreloadPromise = preloadCarouselAssets();
 
 function navigateToCarouselAfterPreload() {
-  const timeout = new Promise((resolve) => setTimeout(resolve, 3000));
+  // Show transition message
+  const transitionMessage = document.getElementById('transition-message');
+  if (transitionMessage) {
+    transitionMessage.style.display = 'block';
+  }
+  
+  // Shorter timeout for faster transition (1.5s instead of 3s)
+  const timeout = new Promise((resolve) => setTimeout(resolve, 1500));
   Promise.race([carouselPreloadPromise, timeout]).finally(() => {
     transitionNavigated = true;
     window.location.href = CAROUSEL_URL;
