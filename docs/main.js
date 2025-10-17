@@ -93,6 +93,11 @@ const cursorText = document.getElementById('cursor-text');
 let idleTimer = null;
 let isIdle = false;
 let mmScheduled = false;
+
+// Hide custom cursor on touch devices
+if (isCoarsePointer && customCursor) {
+  customCursor.style.display = 'none';
+}
 let lastMouseEvent = null;
 
 // Logo refresh button

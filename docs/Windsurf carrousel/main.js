@@ -7,6 +7,13 @@ const log = DEBUG ? console.log.bind(console) : () => {};
 
 log('🚀 main.js chargé - Version avec fix scroll modal');
 
+// Detect touch devices
+const isCoarsePointer = (function() {
+  try {
+    return (window.matchMedia && (window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(hover: none)').matches));
+  } catch (_) { return false; }
+})();
+
 // If this page was reloaded (F5/Ctrl+R), go back to the portfolio root
 try {
   const navEntries = performance.getEntriesByType && performance.getEntriesByType('navigation');
@@ -554,6 +561,11 @@ const cursorText = document.getElementById('cursor-text');
 const CURSOR_IDLE_DELAY_MS = 200; // Show "scroll" text after 200ms of inactivity
 let idleTimer = null;
 let isIdle = false;
+
+// Hide custom cursor on touch devices
+if (isCoarsePointer && customCursor) {
+  customCursor.style.display = 'none';
+}
 // Track cursor scale and last position to compose translate + scale without conflicts
 let cursorScale = 1;
 let lastMouseX = 0;
