@@ -437,9 +437,6 @@ const SWIPE_THRESHOLD = 60; // Minimum distance for horizontal swipe to trigger 
 window.addEventListener('touchstart', (e) => {
   if (!e.touches || e.touches.length === 0) return;
   
-  // Disable touch input during transition
-  if (transitionStarted) return;
-  
   touchStartY = e.touches[0].clientY;
   touchStartX = e.touches[0].clientX;
   touchEndX = touchStartX;
@@ -459,9 +456,6 @@ window.addEventListener('touchstart', (e) => {
 window.addEventListener('touchmove', (e) => {
   if (!e.touches || e.touches.length === 0 || touchStartY === null) return;
   
-  // Disable touch movement during transition
-  if (transitionStarted) return;
-  
   const currentY = e.touches[0].clientY;
   const currentX = e.touches[0].clientX;
   const deltaY = touchStartY - currentY;
@@ -470,6 +464,7 @@ window.addEventListener('touchmove', (e) => {
   touchEndX = currentX;
   touchEndY = currentY;
   
+  // Allow vertical swipe even during transition (but not horizontal)
   // Convert swipe to velocity (similar to wheel)
   if (Math.abs(deltaY) > 2) { // Minimum threshold to avoid jitter
     const dir = deltaY > 0 ? -1 : 1; // swipe up = forward (negative Z)
