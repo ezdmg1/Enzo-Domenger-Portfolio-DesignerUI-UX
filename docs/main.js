@@ -645,6 +645,14 @@ function animate() {
   if (!transitionStarted) {
     const predictedZ = camera.position.z + forwardVel * dt * 3;
     if (forwardVel < 0 && predictedZ <= TARGET_Z) {
+      // For touch devices: navigate immediately without blocking
+      if (isCoarsePointer) {
+        try { sessionStorage.setItem('fromIndex', '1'); } catch (_) {}
+        navigateToCarouselAfterPreload();
+        return; // Exit animation loop immediately
+      }
+      
+      // For desktop: normal transition with blocking
       transitionStarted = true;
       forwardVel = 0;
       lockZPos = TARGET_Z;
@@ -681,6 +689,14 @@ function animate() {
   // Safety: if we have reached/passed TARGET_Z (regardless of velocity), trigger now
   if (!transitionStarted) {
     if (camera.position.z <= TARGET_Z) {
+      // For touch devices: navigate immediately without blocking
+      if (isCoarsePointer) {
+        try { sessionStorage.setItem('fromIndex', '1'); } catch (_) {}
+        navigateToCarouselAfterPreload();
+        return; // Exit animation loop immediately
+      }
+      
+      // For desktop: normal transition with blocking
       transitionStarted = true;
       forwardVel = 0;
       lockZPos = TARGET_Z;
