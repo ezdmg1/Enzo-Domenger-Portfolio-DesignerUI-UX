@@ -1,0 +1,25 @@
+{
+  "name": "enzo-domenger-portfolio",
+  "version": "2.0.0",
+  "description": "Portfolio 3D interactif d'Enzo Domenger - Designer UI/UX",
+  "scripts": {
+    "optimize-images": "chmod +x optimize-images.sh && ./optimize-images.sh",
+    "minify": "terser main.js -o main.min.js -c -m && terser 'Windsurf carrousel/main.js' -o 'Windsurf carrousel/main.min.js' -c -m",
+    "build": "npm run optimize-images && npm run minify",
+    "lighthouse": "lighthouse https://ezdmg1.github.io/Enzo-Domenger-Portfolio-DesignerUI-UX/ --view --preset=desktop",
+    "lighthouse-mobile": "lighthouse https://ezdmg1.github.io/Enzo-Domenger-Portfolio-DesignerUI-UX/ --view --preset=mobile"
+  },
+  "devDependencies": {
+    "terser": "^5.27.0",
+    "lighthouse": "^11.5.0"
+  },
+  "keywords": [
+    "portfolio",
+    "threejs",
+    "webgl",
+    "ui-ux",
+    "design"
+  ],
+  "author": "Enzo Domenger",
+  "license": "MIT"
+}

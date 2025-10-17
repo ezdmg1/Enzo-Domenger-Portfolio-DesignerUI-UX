@@ -319,5 +319,20 @@
   </button>
   
   <script type="module" src="./main.js"></script>
+  
+  <!-- Service Worker pour améliorer le cache et les performances -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((registration) => {
+            console.log('✅ Service Worker enregistré:', registration.scope);
+          })
+          .catch((error) => {
+            console.log('❌ Erreur Service Worker:', error);
+          });
+      });
+    }
+  </script>
 </body>
 </html>

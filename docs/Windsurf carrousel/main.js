@@ -888,14 +888,19 @@ actionButton.addEventListener('click', () => {
         <div style="margin-bottom: 25px;">
           <h4 style="color: #a8d3ee; font-size: 18px; margin-bottom: 10px; border-bottom: 2px solid rgba(168,211,238,0.3); padding-bottom: 5px;">💼 Expérience</h4>
           <div style="margin-bottom: 15px;">
-            <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Designer UI/UX</p>
-            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Chez Léonard | Septembre 2025 - Mai 2026</p>
-            <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Conception de sites internet, la création d'affiches sur mesure ainsi que la refonte de logos et d’identités visuelles.</p>
-          </div>
-          <div style="margin-bottom: 15px;">
             <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Webdesigner - Stage</p>
             <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Agence Mekaa | Février 2026 - Avril 2026</p>
             <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Stage en webdesign au sein de l'agence Mekaa. Conception d'interfaces web, design graphique et expérience utilisateur.</p>
+          </div>
+          <div style="margin-bottom: 15px;">
+            <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Designer UI/UX</p>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Chez Léonard | Septembre 2025 - Mai 2026</p>
+            <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Conception de sites internet, la création d'affiches sur mesure ainsi que la refonte de logos et d'identités visuelles.</p>
+          </div>
+          <div style="margin-bottom: 15px;">
+            <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Motion Designer</p>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Their Memory | Mai 2025 - Septembre 2025</p>
+            <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Création de visuels graphiques pour la série documentaire Focus de guerre, diffusée sur YouTube.</p>
           </div>
           <div style="margin-bottom: 15px;">
             <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Motion Designer - Stage</p>
