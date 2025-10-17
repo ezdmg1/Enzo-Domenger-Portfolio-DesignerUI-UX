@@ -47,6 +47,16 @@ function navigateToCarouselAfterPreload() {
     transitionMessage.style.display = 'block';
   }
   
+  // For touch devices: automatically fade out the white overlay during transition
+  const fadeOverlay = document.getElementById('fade-overlay');
+  if (isCoarsePointer && fadeOverlay) {
+    // Start at full white, then fade to transparent over 1s
+    fadeOverlay.style.transition = 'opacity 1s ease-out';
+    setTimeout(() => {
+      fadeOverlay.style.opacity = '0';
+    }, 100); // Small delay to ensure white flash is visible first
+  }
+  
   // Shorter timeout for faster transition (1.5s instead of 3s)
   const timeout = new Promise((resolve) => setTimeout(resolve, 1500));
   Promise.race([carouselPreloadPromise, timeout]).finally(() => {
