@@ -178,31 +178,7 @@
         -webkit-backdrop-filter: blur(10px);
       }
       
-      .swipe-hint {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      
-      .swipe-hint svg:first-child {
-        animation: swipeLeft 2s ease-in-out infinite;
-        opacity: 0.6;
-      }
-      
-      .swipe-hint svg:last-child {
-        animation: swipeRight 2s ease-in-out infinite;
-        opacity: 0.6;
-      }
-      
-      .swipe-hint-vertical {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        opacity: 0.6;
-      }
-      
-      .swipe-hint-vertical svg {
+      .swipe-indicator > svg {
         animation: swipeBounce 2s ease-in-out infinite;
         opacity: 0.6;
       }
@@ -210,16 +186,6 @@
       @keyframes swipeFadeInOut {
         0%, 100% { opacity: 0; }
         50% { opacity: 0.9; }
-      }
-      
-      @keyframes swipeLeft {
-        0%, 100% { transform: translateX(0); }
-        50% { transform: translateX(-8px); }
-      }
-      
-      @keyframes swipeRight {
-        0%, 100% { transform: translateX(0); }
-        50% { transform: translateX(8px); }
       }
       
       @keyframes swipeBounce {
@@ -556,21 +522,10 @@
     
     <!-- Touch swipe indicator (mobile/tablet only) -->
     <div id="swipe-indicator" class="swipe-indicator">
-      <div class="swipe-hint">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
-        <span>Glissez</span>
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-          <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
-      </div>
-      <div class="swipe-hint-vertical">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-          <polyline points="18 15 12 9 6 15"></polyline>
-        </svg>
-        <span>pour zoomer</span>
-      </div>
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+      <span>Glissez pour zoomer</span>
     </div>
     
     <!-- Modal window -->

@@ -97,25 +97,11 @@ window.addEventListener('touchmove', (e) => {
 
 window.addEventListener('touchend', () => {
   if (!touching) return;
-  const dx = touchEndX - touchStartX;
   const dy = touchEndY - touchStartY;
   touching = false;
   
-  // Horizontal swipe to navigate items
-  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SWIPE_THRESHOLD) {
-    if (dx < 0) {
-      // swipe left -> next
-      const nextIndex = (currentIndex + 1) % itemCount;
-      rotateToIndex(nextIndex);
-    } else {
-      // swipe right -> prev
-      const prevIndex = (currentIndex - 1 + itemCount) % itemCount;
-      rotateToIndex(prevIndex);
-    }
-  }
-  
   // Vertical swipe to zoom (increased sensitivity)
-  if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > SWIPE_THRESHOLD) {
+  if (Math.abs(dy) > SWIPE_THRESHOLD) {
     if (dy < 0) {
       // swipe down -> zoom out
       cameraProgress = Math.max(cameraProgress - 0.25, 0);

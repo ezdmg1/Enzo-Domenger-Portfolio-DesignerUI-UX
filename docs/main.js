@@ -481,32 +481,6 @@ window.addEventListener('touchmove', (e) => {
 }, { passive: true });
 
 window.addEventListener('touchend', () => {
-  if (touchStartX !== null && touchEndX !== null && touchStartY !== null && touchEndY !== null) {
-    const dx = touchEndX - touchStartX;
-    const dy = touchEndY - touchStartY;
-    
-    // Horizontal swipe to trigger transition (when close to target)
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SWIPE_THRESHOLD) {
-      // Check if we're close enough to the target to trigger transition
-      const distanceToTarget = Math.abs(camera.position.z - TARGET_Z);
-      if (distanceToTarget < 3 && !transitionStarted) {
-        // Swipe left to enter carousel
-        if (dx < 0) {
-          transitionStarted = true;
-          forwardVel = 0;
-          lockZPos = TARGET_Z;
-          camera.position.z = TARGET_Z;
-          marker.visible = false;
-          if (markerGlow) markerGlow.visible = false;
-          if (markerGlowSprite) markerGlowSprite.visible = false;
-          try { sessionStorage.setItem('fromIndex', '1'); } catch (_) {}
-          fadeOverlay.style.opacity = '1';
-          navigateToCarouselAfterPreload();
-        }
-      }
-    }
-  }
-  
   touchStartY = null;
   touchStartX = null;
   touchEndX = null;
