@@ -611,9 +611,13 @@ function updateCursorTextPosition(x, y) {
   }
 }
 
-// Initialize cursor text position at center
+// Initialize cursor text position at center and hide on touch devices
 if (cursorText) {
-  updateCursorTextPosition(window.innerWidth / 2, window.innerHeight / 2);
+  if (isCoarsePointer) {
+    cursorText.style.display = 'none';
+  } else {
+    updateCursorTextPosition(window.innerWidth / 2, window.innerHeight / 2);
+  }
 }
 
 // Track cursor scale and last position to compose translate + scale without conflicts
@@ -1218,7 +1222,7 @@ const raycastThrottle = 16; // ~60fps
 let needsRaycast = false;
 
 window.addEventListener('mousedown', (event) => {
-  if (!controlsEnabled) return;
+  if (!controlsEnabled || isCoarsePointer) return; // Disable on touch devices
   
   // Check if clicking on an item
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -1240,7 +1244,7 @@ window.addEventListener('mousedown', (event) => {
 }, { passive: false });
 
 window.addEventListener('mousemove', (event) => {
-  if (!controlsEnabled) return; // Ignore if controls are disabled
+  if (!controlsEnabled || isCoarsePointer) return; // Ignore if controls are disabled or on touch devices
   
   if (isDraggingItem && selectedItem) {
     // Rotate individual item
@@ -1280,7 +1284,7 @@ window.addEventListener('mouseleave', () => {
 
 // Click on items to select
 window.addEventListener('click', (event) => {
-  if (!controlsEnabled) return;
+  if (!controlsEnabled || isCoarsePointer) return; // Disable on touch devices
   
   if (Math.abs(rotationVelocity) < 0.01) {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;

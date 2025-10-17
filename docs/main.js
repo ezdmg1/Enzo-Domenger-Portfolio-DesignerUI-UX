@@ -67,14 +67,8 @@ window.addEventListener('load', () => {
 });
 
 function navigateToCarouselAfterPreload() {
-  // For desktop: show transition message and wait
-  const transitionMessage = document.getElementById('transition-message');
-  if (transitionMessage) {
-    transitionMessage.style.display = 'block';
-  }
-  
-  // Shorter timeout for faster transition (1.5s instead of 3s)
-  const timeout = new Promise((resolve) => setTimeout(resolve, 1500));
+  // Fast transition (500ms)
+  const timeout = new Promise((resolve) => setTimeout(resolve, 500));
   Promise.race([carouselPreloadPromise, timeout]).finally(() => {
     transitionNavigated = true;
     window.location.href = CAROUSEL_URL;
@@ -96,7 +90,7 @@ fadeOverlay.style.inset = '0';
 fadeOverlay.style.background = '#ffffff';
 fadeOverlay.style.opacity = '0';
 fadeOverlay.style.pointerEvents = 'none';
-fadeOverlay.style.transition = 'opacity 0s linear'; // we animate manually in JS
+fadeOverlay.style.transition = 'opacity 0.3s ease-out'; // Fast fade transition
 fadeOverlay.style.zIndex = '9999'; // Ensure it's on top
 app.appendChild(fadeOverlay);
 
@@ -128,9 +122,13 @@ function updateCursorTextPosition(x, y) {
   }
 }
 
-// Initialize cursor text position at center
+// Initialize cursor text position at center and hide on touch devices
 if (cursorText) {
-  updateCursorTextPosition(window.innerWidth / 2, window.innerHeight / 2);
+  if (isCoarsePointer) {
+    cursorText.style.display = 'none';
+  } else {
+    updateCursorTextPosition(window.innerWidth / 2, window.innerHeight / 2);
+  }
 }
 
 // Logo refresh button
