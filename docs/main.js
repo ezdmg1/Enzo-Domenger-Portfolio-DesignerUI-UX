@@ -427,12 +427,19 @@ const TARGET_Z = -5.508294579027191; // exact stop Z requested
 
 // Touch swipe controls for mobile/tablets (no visible buttons)
 let touchStartY = null;
+let touchStartX = null;
+let touchEndX = null;
+let touchEndY = null;
 const swipeIndicator = document.getElementById('swipe-indicator');
 let hasInteracted = false;
+const SWIPE_THRESHOLD = 60; // Minimum distance for horizontal swipe to trigger transition
 
 window.addEventListener('touchstart', (e) => {
   if (!e.touches || e.touches.length === 0) return;
   touchStartY = e.touches[0].clientY;
+  touchStartX = e.touches[0].clientX;
+  touchEndX = touchStartX;
+  touchEndY = touchStartY;
   
   // Hide indicator on first touch
   if (!hasInteracted && swipeIndicator) {
@@ -448,7 +455,12 @@ window.addEventListener('touchstart', (e) => {
 window.addEventListener('touchmove', (e) => {
   if (!e.touches || e.touches.length === 0 || touchStartY === null) return;
   const currentY = e.touches[0].clientY;
+  const currentX = e.touches[0].clientX;
   const deltaY = touchStartY - currentY;
+  
+  // Track end position for swipe detection
+  touchEndX = currentX;
+  touchEndY = currentY;
   
   // Convert swipe to velocity (similar to wheel)
   if (Math.abs(deltaY) > 2) { // Minimum threshold to avoid jitter
@@ -461,7 +473,36 @@ window.addEventListener('touchmove', (e) => {
 }, { passive: true });
 
 window.addEventListener('touchend', () => {
+  if (touchStartX !== null && touchEndX !== null && touchStartY !== null && touchEndY !== null) {
+    const dx = touchEndX - touchStartX;
+    const dy = touchEndY - touchStartY;
+    
+    // Horizontal swipe to trigger transition (when close to target)
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SWIPE_THRESHOLD) {
+      // Check if we're close enough to the target to trigger transition
+      const distanceToTarget = Math.abs(camera.position.z - TARGET_Z);
+      if (distanceToTarget < 3 && !transitionStarted) {
+        // Swipe left to enter carousel
+        if (dx < 0) {
+          transitionStarted = true;
+          forwardVel = 0;
+          lockZPos = TARGET_Z;
+          camera.position.z = TARGET_Z;
+          marker.visible = false;
+          if (markerGlow) markerGlow.visible = false;
+          if (markerGlowSprite) markerGlowSprite.visible = false;
+          try { sessionStorage.setItem('fromIndex', '1'); } catch (_) {}
+          fadeOverlay.style.opacity = '1';
+          navigateToCarouselAfterPreload();
+        }
+      }
+    }
+  }
+  
   touchStartY = null;
+  touchStartX = null;
+  touchEndX = null;
+  touchEndY = null;
 }, { passive: true });
 
 window.addEventListener('mousemove', (e) => {

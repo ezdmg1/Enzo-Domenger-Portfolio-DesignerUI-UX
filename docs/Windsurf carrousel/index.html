@@ -161,7 +161,7 @@
         flex-direction: column;
         align-items: center;
         gap: 16px;
-        color: white;
+        color: rgba(255, 255, 255, 0.5);
         font-size: 14px;
         font-weight: 500;
         text-transform: uppercase;
@@ -170,7 +170,12 @@
         animation: swipeFadeInOut 3s ease-in-out infinite;
         pointer-events: none;
         z-index: 5000;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        background: rgba(0, 0, 0, 0.3);
+        padding: 16px 24px;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
       }
       
       .swipe-hint {
@@ -181,10 +186,12 @@
       
       .swipe-hint svg:first-child {
         animation: swipeLeft 2s ease-in-out infinite;
+        opacity: 0.6;
       }
       
       .swipe-hint svg:last-child {
         animation: swipeRight 2s ease-in-out infinite;
+        opacity: 0.6;
       }
       
       .swipe-hint-vertical {
@@ -192,10 +199,12 @@
         flex-direction: column;
         align-items: center;
         gap: 4px;
+        opacity: 0.6;
       }
       
       .swipe-hint-vertical svg {
         animation: swipeBounce 2s ease-in-out infinite;
+        opacity: 0.6;
       }
       
       @keyframes swipeFadeInOut {
