@@ -81,9 +81,27 @@ Pour améliorer encore le SEO:
 - `/docs/manifest.json`
 - `/docs/sitemap.xml`
 
-### Prochaines étapes
+### URL du portfolio
 
-1. Tester le site avec Google Search Console
-2. Vérifier les structured data avec le Rich Results Test de Google
-3. Soumettre le sitemap.xml à Google Search Console
-4. Vérifier l'indexation dans quelques jours
+**https://ezdmg1.github.io/Enzo-Domenger-Portfolio-DesignerUI-UX/**
+
+### Prochaines étapes - Tests SEO
+
+1. **Google Rich Results Test**
+   - URL: https://search.google.com/test/rich-results
+   - Tester avec: `https://ezdmg1.github.io/Enzo-Domenger-Portfolio-DesignerUI-UX/`
+
+2. **PageSpeed Insights**
+   - URL: https://pagespeed.web.dev/
+   - Tester avec: `https://ezdmg1.github.io/Enzo-Domenger-Portfolio-DesignerUI-UX/`
+
+3. **Google Search Console**
+   - URL: https://search.google.com/search-console
+   - Ajouter la propriété: `https://ezdmg1.github.io/Enzo-Domenger-Portfolio-DesignerUI-UX/`
+   - Soumettre le sitemap: `https://ezdmg1.github.io/Enzo-Domenger-Portfolio-DesignerUI-UX/sitemap.xml`
+
+4. **Mobile-Friendly Test**
+   - URL: https://search.google.com/test/mobile-friendly
+   - Tester avec: `https://ezdmg1.github.io/Enzo-Domenger-Portfolio-DesignerUI-UX/`
+
+5. Vérifier l'indexation dans quelques jours

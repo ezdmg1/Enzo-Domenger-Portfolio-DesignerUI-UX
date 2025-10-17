@@ -4,7 +4,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://enzo-domenger-portfolio.com/sitemap.xml
+Sitemap: https://ezdmg1.github.io/Enzo-Domenger-Portfolio-DesignerUI-UX/sitemap.xml
 
 # Bloquer les fichiers sensibles
 Disallow: /node_modules/
