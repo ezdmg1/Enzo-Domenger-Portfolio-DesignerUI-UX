@@ -176,6 +176,41 @@
       to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
     }
     
+    /* Touch enter button */
+    .touch-enter-btn {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 20px 40px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 50px;
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      cursor: pointer;
+      z-index: 4000;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: pulseButton 2s ease-in-out infinite;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .touch-enter-btn:active {
+      transform: translateX(-50%) scale(0.95);
+    }
+    
+    @keyframes pulseButton {
+      0%, 100% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
+      50% { box-shadow: 0 8px 48px rgba(255, 255, 255, 0.4); }
+    }
+    
     /* Touch device optimizations */
     @media (pointer: coarse) {
       /* Show swipe indicator on touch devices */
@@ -242,6 +277,14 @@
     </svg>
     <span>Glissez vers le haut</span>
   </div>
+  
+  <!-- Touch enter button (appears when close to cube) -->
+  <button id="touch-enter-btn" class="touch-enter-btn" style="display: none;">
+    <span>Entrer</span>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </button>
   
   <!-- Transition message -->
   <div id="transition-message" class="transition-message" style="display: none;">

@@ -25,10 +25,61 @@ try {
   // no-op
 }
 
+// Check if we should fade in (for touch devices)
+const shouldFadeIn = sessionStorage.getItem('touchFadeIn') === 'true';
+console.log('🎬 Carousel loaded - shouldFadeIn:', shouldFadeIn);
+
+if (shouldFadeIn) {
+  sessionStorage.removeItem('touchFadeIn');
+  console.log('✅ Creating fade-in overlay');
+  
+  // Add fade-in overlay immediately
+  const fadeInOverlay = document.createElement('div');
+  fadeInOverlay.id = 'touch-fade-overlay';
+  fadeInOverlay.style.position = 'fixed';
+  fadeInOverlay.style.top = '0';
+  fadeInOverlay.style.left = '0';
+  fadeInOverlay.style.width = '100vw';
+  fadeInOverlay.style.height = '100vh';
+  fadeInOverlay.style.background = '#ffffff';
+  fadeInOverlay.style.opacity = '1';
+  fadeInOverlay.style.pointerEvents = 'none';
+  fadeInOverlay.style.zIndex = '999999';
+  fadeInOverlay.style.transition = 'opacity 1s ease-out';
+  
+  // Add to body immediately
+  if (document.body) {
+    document.body.appendChild(fadeInOverlay);
+    console.log('✅ Overlay added to body');
+  } else {
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.appendChild(fadeInOverlay);
+      console.log('✅ Overlay added to body (after DOMContentLoaded)');
+    });
+  }
+  
+  // Fade out after scene is ready
+  setTimeout(() => {
+    console.log('🎨 Starting fade out');
+    fadeInOverlay.style.opacity = '0';
+    setTimeout(() => {
+      console.log('🗑️ Removing overlay');
+      fadeInOverlay.remove();
+    }, 1000);
+  }, 500);
+}
+
 // Startup white overlay element (fades OUT to reveal the scene)
 const startupOverlay = document.getElementById('fade-overlay');
 let startupOverlayOpacity = 1;
 let overlayDismissed = false;
+
+// For touch devices with fade in, hide the white overlay immediately
+if (shouldFadeIn && startupOverlay) {
+  console.log('🚫 Hiding white startup overlay for touch');
+  startupOverlay.style.display = 'none';
+  overlayDismissed = true;
+}
 
 // Loading overlay spinner control
 const loadingOverlay = document.getElementById('loading-overlay');
@@ -107,14 +158,14 @@ window.addEventListener('touchend', () => {
   const dy = touchEndY - touchStartY;
   touching = false;
   
-  // Vertical swipe to zoom (increased sensitivity)
+  // Vertical swipe to zoom (increased sensitivity) - INVERTED
   if (Math.abs(dy) > SWIPE_THRESHOLD) {
     if (dy < 0) {
-      // swipe down -> zoom out
-      cameraProgress = Math.max(cameraProgress - 0.25, 0);
+      // swipe up -> zoom in (advance) - FASTER
+      cameraProgress = Math.min(cameraProgress + 0.4, 1);
     } else {
-      // swipe up -> zoom in
-      cameraProgress = Math.min(cameraProgress + 0.25, 1);
+      // swipe down -> zoom out (go back) - FASTER
+      cameraProgress = Math.max(cameraProgress - 0.4, 0);
     }
   }
 }, { passive: true });

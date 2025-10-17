@@ -4,11 +4,37 @@ const app = document.getElementById('app');
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 // Mobile/tablets: lower pixel ratio to improve performance
-const isCoarsePointer = (function() {
+let isCoarsePointer = (function() {
   try {
     return (window.matchMedia && (window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(hover: none)').matches));
   } catch (_) { return false; }
 })();
+
+// Force touch mode via URL parameter (?touch=1)
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('touch') === '1') {
+  isCoarsePointer = true;
+  console.log('🔧 Touch mode FORCED via URL parameter');
+}
+
+// Fallback: detect touch support
+if (!isCoarsePointer && ('ontouchstart' in window || navigator.maxTouchPoints > 0)) {
+  isCoarsePointer = true;
+}
+
+// Force touch mode in Chrome DevTools responsive mode
+if (!isCoarsePointer && navigator.userAgentData && navigator.userAgentData.mobile) {
+  isCoarsePointer = true;
+}
+
+// Debug log
+console.log('Touch detection:', {
+  isCoarsePointer,
+  ontouchstart: 'ontouchstart' in window,
+  maxTouchPoints: navigator.maxTouchPoints,
+  userAgent: navigator.userAgent
+});
+
 if (isCoarsePointer) {
   renderer.setPixelRatio(1);
 }
@@ -41,13 +67,6 @@ function preloadCarouselAssets() {
 const carouselPreloadPromise = preloadCarouselAssets();
 
 function navigateToCarouselAfterPreload() {
-  // For touch devices: skip transition and go directly to carousel
-  if (isCoarsePointer) {
-    transitionNavigated = true;
-    window.location.href = CAROUSEL_URL;
-    return;
-  }
-  
   // For desktop: show transition message and wait
   const transitionMessage = document.getElementById('transition-message');
   if (transitionMessage) {
@@ -74,10 +93,11 @@ document.addEventListener('visibilitychange', () => {
 const fadeOverlay = document.createElement('div');
 fadeOverlay.style.position = 'fixed';
 fadeOverlay.style.inset = '0';
-fadeOverlay.style.background = '#d6d6d6';
+fadeOverlay.style.background = '#ffffff';
 fadeOverlay.style.opacity = '0';
 fadeOverlay.style.pointerEvents = 'none';
 fadeOverlay.style.transition = 'opacity 0s linear'; // we animate manually in JS
+fadeOverlay.style.zIndex = '9999'; // Ensure it's on top
 app.appendChild(fadeOverlay);
 
 let fadeActive = false;
@@ -106,6 +126,15 @@ if (logoBtn) {
   logoBtn.addEventListener('click', (ev) => {
     ev.preventDefault();
     window.location.reload();
+  });
+}
+
+// Touch enter button
+const touchEnterBtn = document.getElementById('touch-enter-btn');
+if (touchEnterBtn && isCoarsePointer) {
+  touchEnterBtn.addEventListener('click', () => {
+    try { sessionStorage.setItem('fromIndex', '1'); sessionStorage.setItem('touchFadeIn', 'true'); } catch (_) {}
+    window.location.href = './Windsurf%20carrousel/index.html';
   });
 }
 
@@ -483,7 +512,7 @@ window.addEventListener('touchmove', (e) => {
   touchEndX = currentX;
   touchEndY = currentY;
   
-  // Allow vertical swipe even during transition (but not horizontal)
+  // Normal movement: allow vertical swipe
   // Convert swipe to velocity (similar to wheel)
   if (Math.abs(deltaY) > 2) { // Minimum threshold to avoid jitter
     const dir = deltaY > 0 ? -1 : 1; // swipe up = forward (negative Z)
@@ -646,16 +675,25 @@ function animate() {
     camera.rotation.set(pitch, yaw, 0);
   }
 
+  // Show touch enter button when close to target
+  const touchEnterBtn = document.getElementById('touch-enter-btn');
+  if (isCoarsePointer && touchEnterBtn && !transitionStarted) {
+    const distanceToTarget = Math.abs(camera.position.z - TARGET_Z);
+    if (distanceToTarget < 5) {
+      touchEnterBtn.style.display = 'flex';
+    } else {
+      touchEnterBtn.style.display = 'none';
+    }
+  }
+  
   // Predict reaching the exact target Z before moving; trigger fade and lock at TARGET_Z
   if (!transitionStarted) {
     const predictedZ = camera.position.z + forwardVel * dt * 3;
     if (forwardVel < 0 && predictedZ <= TARGET_Z) {
-      // For touch devices: navigate immediately without blocking
+      // For touch devices: do nothing, wait for button click
       if (isCoarsePointer) {
-        try { sessionStorage.setItem('fromIndex', '1'); } catch (_) {}
-        navigateToCarouselAfterPreload();
-        return; // Exit animation loop immediately
-      }
+        // Don't auto-navigate, let user click the button
+      } else {
       
       // For desktop: normal transition with blocking
       transitionStarted = true;
@@ -669,6 +707,7 @@ function animate() {
       try { sessionStorage.setItem('fromIndex', '1'); } catch (_) {}
       fadeOverlay.style.opacity = '1';
       navigateToCarouselAfterPreload();
+      }
     }
   }
 
@@ -694,12 +733,13 @@ function animate() {
   // Safety: if we have reached/passed TARGET_Z (regardless of velocity), trigger now
   if (!transitionStarted) {
     if (camera.position.z <= TARGET_Z) {
-      // For touch devices: navigate immediately without blocking
+      // For touch devices: navigate with fade transition (no white screen)
       if (isCoarsePointer) {
-        try { sessionStorage.setItem('fromIndex', '1'); } catch (_) {}
-        navigateToCarouselAfterPreload();
-        return; // Exit animation loop immediately
-      }
+        try { sessionStorage.setItem('fromIndex', '1'); sessionStorage.setItem('touchFadeIn', 'true'); } catch (_) {}
+        transitionNavigated = true;
+        window.location.href = CAROUSEL_URL;
+        return;
+      } else {
       
       // For desktop: normal transition with blocking
       transitionStarted = true;
@@ -712,6 +752,7 @@ function animate() {
       try { sessionStorage.setItem('fromIndex', '1'); } catch (_) {}
       fadeOverlay.style.opacity = '1';
       navigateToCarouselAfterPreload();
+      }
     }
   }
 
