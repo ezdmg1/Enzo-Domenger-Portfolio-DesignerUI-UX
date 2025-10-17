@@ -427,9 +427,22 @@ const TARGET_Z = -5.508294579027191; // exact stop Z requested
 
 // Touch swipe controls for mobile/tablets (no visible buttons)
 let touchStartY = null;
+const swipeIndicator = document.getElementById('swipe-indicator');
+let hasInteracted = false;
+
 window.addEventListener('touchstart', (e) => {
   if (!e.touches || e.touches.length === 0) return;
   touchStartY = e.touches[0].clientY;
+  
+  // Hide indicator on first touch
+  if (!hasInteracted && swipeIndicator) {
+    hasInteracted = true;
+    swipeIndicator.style.transition = 'opacity 0.5s ease';
+    swipeIndicator.style.opacity = '0';
+    setTimeout(() => {
+      if (swipeIndicator) swipeIndicator.style.display = 'none';
+    }, 500);
+  }
 }, { passive: true });
 
 window.addEventListener('touchmove', (e) => {
@@ -440,7 +453,7 @@ window.addEventListener('touchmove', (e) => {
   // Convert swipe to velocity (similar to wheel)
   if (Math.abs(deltaY) > 2) { // Minimum threshold to avoid jitter
     const dir = deltaY > 0 ? -1 : 1; // swipe up = forward (negative Z)
-    forwardVel += dir * Math.abs(deltaY) * SCROLL_ACCEL * 0.3;
+    forwardVel += dir * Math.abs(deltaY) * SCROLL_ACCEL * 1.2; // Increased from 0.3 to 1.2 for faster response
     forwardVel = THREE.MathUtils.clamp(forwardVel, -MAX_VEL, MAX_VEL);
     lastScrollTime = performance.now();
     touchStartY = currentY; // Update for continuous swipe

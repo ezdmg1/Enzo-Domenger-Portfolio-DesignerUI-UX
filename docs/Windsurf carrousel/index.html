@@ -151,8 +151,78 @@
         transform: translateX(-50%) translateY(-2px);
       }
       
+      /* Swipe indicator for touch devices */
+      .swipe-indicator {
+        display: none;
+        position: fixed;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0;
+        animation: swipeFadeInOut 3s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 5000;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      }
+      
+      .swipe-hint {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      
+      .swipe-hint svg:first-child {
+        animation: swipeLeft 2s ease-in-out infinite;
+      }
+      
+      .swipe-hint svg:last-child {
+        animation: swipeRight 2s ease-in-out infinite;
+      }
+      
+      .swipe-hint-vertical {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+      
+      .swipe-hint-vertical svg {
+        animation: swipeBounce 2s ease-in-out infinite;
+      }
+      
+      @keyframes swipeFadeInOut {
+        0%, 100% { opacity: 0; }
+        50% { opacity: 0.9; }
+      }
+      
+      @keyframes swipeLeft {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(-8px); }
+      }
+      
+      @keyframes swipeRight {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(8px); }
+      }
+      
+      @keyframes swipeBounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+      }
+      
       /* Touch device optimizations */
       @media (pointer: coarse) {
+        /* Show swipe indicator on touch devices */
+        .swipe-indicator { display: flex; }
+        
         body { 
           overscroll-behavior: none;
           touch-action: manipulation;
@@ -474,7 +544,25 @@
     <button id="action-button" class="action-button" aria-label="Découvrir le projet" title="Découvrir le projet (Entrée)">
       <span>Découvrir</span>
     </button>
-
+    
+    <!-- Touch swipe indicator (mobile/tablet only) -->
+    <div id="swipe-indicator" class="swipe-indicator">
+      <div class="swipe-hint">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span>Glissez</span>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </div>
+      <div class="swipe-hint-vertical">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+        <span>pour zoomer</span>
+      </div>
+    </div>
     
     <!-- Modal window -->
     <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">

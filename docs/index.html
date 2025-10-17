@@ -107,8 +107,47 @@
       .loader .arc { inset: 10px; border-width: 12px; }
     }
     
+    /* Swipe indicator for touch devices */
+    .swipe-indicator {
+      display: none;
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0;
+      animation: swipeFadeInOut 3s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 3000;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    
+    .swipe-indicator svg {
+      animation: swipeBounce 2s ease-in-out infinite;
+    }
+    
+    @keyframes swipeFadeInOut {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 0.9; }
+    }
+    
+    @keyframes swipeBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
     /* Touch device optimizations */
     @media (pointer: coarse) {
+      /* Show swipe indicator on touch devices */
+      .swipe-indicator { display: flex; }
+      
       /* Prevent pull-to-refresh and overscroll */
       body { 
         overscroll-behavior: none;
@@ -162,6 +201,15 @@
     <div class="cursor-crosshair"></div>
     <div id="cursor-text" class="cursor-text">scroll</div>
   </div>
+  
+  <!-- Touch swipe indicator (mobile/tablet only) -->
+  <div id="swipe-indicator" class="swipe-indicator">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+    <span>Glissez vers le haut</span>
+  </div>
+  
   <script type="module" src="./main.js"></script>
 </body>
 </html>

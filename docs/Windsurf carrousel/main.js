@@ -67,6 +67,8 @@ let touchEndX = 0;
 let touchEndY = 0;
 let touching = false;
 const SWIPE_THRESHOLD = 50;
+const swipeIndicator = document.getElementById('swipe-indicator');
+let hasInteracted = false;
 
 window.addEventListener('touchstart', (e) => {
   if (!e.touches || e.touches.length === 0) return;
@@ -74,6 +76,16 @@ window.addEventListener('touchstart', (e) => {
   touchStartX = touchEndX = t.clientX;
   touchStartY = touchEndY = t.clientY;
   touching = true;
+  
+  // Hide indicator on first touch
+  if (!hasInteracted && swipeIndicator) {
+    hasInteracted = true;
+    swipeIndicator.style.transition = 'opacity 0.5s ease';
+    swipeIndicator.style.opacity = '0';
+    setTimeout(() => {
+      if (swipeIndicator) swipeIndicator.style.display = 'none';
+    }, 500);
+  }
 }, { passive: true });
 
 window.addEventListener('touchmove', (e) => {
@@ -102,14 +114,14 @@ window.addEventListener('touchend', () => {
     }
   }
   
-  // Vertical swipe to zoom
+  // Vertical swipe to zoom (increased sensitivity)
   if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > SWIPE_THRESHOLD) {
     if (dy < 0) {
       // swipe down -> zoom out
-      cameraProgress = Math.max(cameraProgress - 0.15, 0);
+      cameraProgress = Math.max(cameraProgress - 0.25, 0);
     } else {
       // swipe up -> zoom in
-      cameraProgress = Math.min(cameraProgress + 0.15, 1);
+      cameraProgress = Math.min(cameraProgress + 0.25, 1);
     }
   }
 }, { passive: true });
