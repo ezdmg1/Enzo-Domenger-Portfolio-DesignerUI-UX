@@ -1,11 +1,9 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-// Debug mode - set to false in production
+// Debug mode disabled in production
 const DEBUG = false;
-const log = DEBUG ? console.log.bind(console) : () => {};
-
-log('🚀 main.js chargé - Version avec fix scroll modal');
+const log = () => {};
 
 // Detect touch devices
 const isCoarsePointer = (function() {
@@ -592,17 +590,11 @@ window.addEventListener('resize', () => {
   }, RESIZE_DEBOUNCE_MS);
 });
 
-// Custom cursor management
-const customCursor = document.getElementById('custom-cursor');
+// Cursor text management
 const cursorText = document.getElementById('cursor-text');
-const CURSOR_IDLE_DELAY_MS = 200; // Show "scroll" text after 200ms of inactivity
+const CURSOR_IDLE_DELAY_MS = 200;
 let idleTimer = null;
 let isIdle = false;
-
-// Hide custom cursor completely (keep default cursor)
-if (customCursor) {
-  customCursor.style.display = 'none';
-}
 
 // Position cursor text at mouse position
 function updateCursorTextPosition(x, y) {
@@ -620,18 +612,7 @@ if (cursorText) {
   }
 }
 
-// Track cursor scale and last position to compose translate + scale without conflicts
-let cursorScale = 1;
-let lastMouseX = 0;
-let lastMouseY = 0;
-
-function applyCursorTransform() {
-  if (customCursor) {
-    const inv = cursorScale || 1;
-    customCursor.style.transform = `translate(${lastMouseX / inv}px, ${lastMouseY / inv}px) scale(${cursorScale})`;
-    customCursor.style.transformOrigin = 'center center';
-  }
-}
+// Removed unused cursor transform functions
 
 // Update cursor position with transform for better performance
 window.addEventListener('mousemove', (e) => {
@@ -653,16 +634,7 @@ window.addEventListener('mousemove', (e) => {
   }, CURSOR_IDLE_DELAY_MS);
 }, { passive: true, capture: false });
 
-// Shrink cursor while mouse button is pressed
-window.addEventListener('mousedown', () => {
-  cursorScale = 0.5;
-  applyCursorTransform();
-});
-
-window.addEventListener('mouseup', () => {
-  cursorScale = 1;
-  applyCursorTransform();
-});
+// Removed unused cursor scale handlers
 
 // Handle scroll to zoom camera
 let lastWheelTime = 0;
@@ -807,7 +779,6 @@ const projectGalleries = {
     './gallery/image1.webp',
     './gallery/image2.webp',
     './gallery/image3.webp',
-    './gallery/image5.webp',
     './gallery/image4.webp'
   ]
 };
@@ -818,7 +789,6 @@ const galleryAltTexts = {
     'Projet motion design - Illustration graphique et typographie créative',
     'Animation motion design - Transition fluide et effets visuels dynamiques',
     'Création graphique animée - Composition visuelle et mouvement',
-    'Motion design 3D - Rendu et animation de formes géométriques',
     'Projet design graphique - Composition visuelle et création artistique'
   ]
 };
@@ -1216,10 +1186,7 @@ const raycaster = new THREE.Raycaster();
 raycaster.params.Points.threshold = 0.1;
 const mouse = new THREE.Vector2();
 
-// Cache for raycasting to avoid recalculating on every frame
-let lastRaycastTime = 0;
-const raycastThrottle = 16; // ~60fps
-let needsRaycast = false;
+// Raycasting optimization
 
 window.addEventListener('mousedown', (event) => {
   if (!controlsEnabled || isCoarsePointer) return; // Disable on touch devices

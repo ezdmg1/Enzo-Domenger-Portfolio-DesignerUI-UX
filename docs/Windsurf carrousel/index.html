@@ -304,16 +304,7 @@
         border: 1px solid rgba(255, 255, 255, 0.3);
       }
       
-      /* Custom cursor */
-      .custom-cursor {
-        position: fixed;
-        pointer-events: none;
-        z-index: 9999;
-        mix-blend-mode: difference;
-        will-change: transform;
-        display: block; /* always show crosshair overlay */
-      }
-      
+      /* Cursor text */
       .cursor-text {
         position: fixed;
         pointer-events: none;
@@ -332,38 +323,6 @@
       
       .cursor-text.hidden {
         opacity: 0;
-      }
-      
-      .cursor-crosshair {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 20px;
-        height: 20px;
-      }
-      
-      .cursor-crosshair::before,
-      .cursor-crosshair::after {
-        content: '';
-        position: absolute;
-        background: white;
-      }
-      
-      .cursor-crosshair::before {
-        top: 50%;
-        left: 0;
-        width: 100%;
-        height: 1px;
-        transform: translateY(-50%);
-      }
-      
-      .cursor-crosshair::after {
-        top: 0;
-        left: 50%;
-        width: 1px;
-        height: 100%;
-        transform: translateX(-50%);
       }
       
       /* Loading spinner animation */
@@ -508,12 +467,7 @@
       </svg>
     </button>
     
-    <!-- Custom cursor -->
-    <div id="custom-cursor" class="custom-cursor" aria-hidden="true">
-      <div class="cursor-crosshair"></div>
-    </div>
-    
-    <!-- Cursor text (separate from custom cursor) -->
+    <!-- Cursor text -->
     <div id="cursor-text" class="cursor-text">scroll</div>
     
     <!-- Action button for focused item -->

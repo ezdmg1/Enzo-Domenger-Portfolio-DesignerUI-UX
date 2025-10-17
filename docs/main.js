@@ -83,36 +83,17 @@ document.addEventListener('visibilitychange', () => {
   isDocHidden = document.hidden;
 });
 
-// Fade-to-white overlay (DOM-based)
-const fadeOverlay = document.createElement('div');
-fadeOverlay.style.position = 'fixed';
-fadeOverlay.style.inset = '0';
-fadeOverlay.style.background = '#ffffff';
-fadeOverlay.style.opacity = '0';
-fadeOverlay.style.pointerEvents = 'none';
-fadeOverlay.style.transition = 'opacity 0.3s ease-out'; // Fast fade transition
-fadeOverlay.style.zIndex = '9999'; // Ensure it's on top
-app.appendChild(fadeOverlay);
-
-let fadeActive = false;
-let fadeProgress = 0; // 0..1
+// Removed unused fade overlay variables
 let transitionStarted = false;
 let transitionNavigated = false;
 const CAROUSEL_URL = './Windsurf%20carrousel/index.html';
 let lockZPos = null; // freeze camera Z once inside the cube
 
-// Custom cursor elements
-const customCursor = document.getElementById('custom-cursor');
+// Cursor text element
 const cursorText = document.getElementById('cursor-text');
 let idleTimer = null;
 let isIdle = false;
 let mmScheduled = false;
-
-// Hide custom cursor completely (keep default cursor)
-if (customCursor) {
-  customCursor.style.display = 'none';
-}
-
 let lastMouseEvent = null;
 
 // Position cursor text at mouse position
@@ -443,11 +424,7 @@ const marker = new THREE.Mesh(markerGeom, markerMat);
 marker.position.set(0, 2, -6.8046650777026265);
 scene.add(marker);
 
-// Diffuse glow using a soft sprite (radial gradient) for a more spread-out effect
-// Keep the previous mesh glow disabled to avoid hard edges
-const glowMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.0 });
-const markerGlow = new THREE.Mesh(markerGeom.clone(), glowMat);
-markerGlow.visible = false;
+// Removed unused marker glow mesh
 
 function createGlowSprite(sizePx = 256) {
   const canvas = document.createElement('canvas');
@@ -487,7 +464,6 @@ let mouseX = 0;
 let mouseY = 0;
 let yaw = 0;
 let pitch = 0;
-let mouseUpdateScheduled = false;
 const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MAX_ANGLE = prefersReduced ? 0 : Math.PI * 0.07; // disable sway if reduced motion
 const ROT_DAMP = 0.12;
@@ -504,20 +480,13 @@ const TARGET_Z = -5.508294579027191; // exact stop Z requested
 
 // Touch swipe controls for mobile/tablets (no visible buttons)
 let touchStartY = null;
-let touchStartX = null;
-let touchEndX = null;
-let touchEndY = null;
 const swipeIndicator = document.getElementById('swipe-indicator');
 let hasInteracted = false;
-const SWIPE_THRESHOLD = 60; // Minimum distance for horizontal swipe to trigger transition
 
 window.addEventListener('touchstart', (e) => {
   if (!e.touches || e.touches.length === 0) return;
   
   touchStartY = e.touches[0].clientY;
-  touchStartX = e.touches[0].clientX;
-  touchEndX = touchStartX;
-  touchEndY = touchStartY;
   
   // Hide indicator on first touch
   if (!hasInteracted && swipeIndicator) {
@@ -537,10 +506,6 @@ window.addEventListener('touchmove', (e) => {
   const currentX = e.touches[0].clientX;
   const deltaY = touchStartY - currentY;
   
-  // Track end position for swipe detection
-  touchEndX = currentX;
-  touchEndY = currentY;
-  
   // Normal movement: allow vertical swipe
   // Convert swipe to velocity (similar to wheel)
   if (Math.abs(deltaY) > 2) { // Minimum threshold to avoid jitter
@@ -554,9 +519,6 @@ window.addEventListener('touchmove', (e) => {
 
 window.addEventListener('touchend', () => {
   touchStartY = null;
-  touchStartX = null;
-  touchEndX = null;
-  touchEndY = null;
 }, { passive: true });
 
 window.addEventListener('mousemove', (e) => {
@@ -723,7 +685,7 @@ function animate() {
         // Don't auto-navigate, let user click the button
       } else {
       
-      // For desktop: normal transition with blocking
+      // For desktop: direct navigation without white overlay
       transitionStarted = true;
       // Hide cursor text during transition
       if (cursorText) cursorText.style.display = 'none';
@@ -731,11 +693,9 @@ function animate() {
       lockZPos = TARGET_Z;
       camera.position.z = TARGET_Z;
       marker.visible = false;
-      if (markerGlow) markerGlow.visible = false;
       if (markerGlowSprite) markerGlowSprite.visible = false;
-      // Show white immediately, then navigate to carousel
+      // Navigate directly without showing white overlay
       try { sessionStorage.setItem('fromIndex', '1'); } catch (_) {}
-      fadeOverlay.style.opacity = '1';
       navigateToCarouselAfterPreload();
       }
     }
@@ -773,22 +733,18 @@ function animate() {
         return;
       } else {
       
-      // For desktop: normal transition with blocking
+      // For desktop: direct navigation without white overlay
       transitionStarted = true;
       forwardVel = 0;
       lockZPos = TARGET_Z;
       camera.position.z = TARGET_Z;
       marker.visible = false;
-      if (markerGlow) markerGlow.visible = false;
-      // Show white immediately, then navigate to carousel
+      // Navigate directly without showing white overlay
       try { sessionStorage.setItem('fromIndex', '1'); } catch (_) {}
-      fadeOverlay.style.opacity = '1';
       navigateToCarouselAfterPreload();
       }
     }
   }
-
-  // No progressive fade here; we navigate immediately after forcing white
 
   // frame-rate independent damping
   const now = performance.now();
