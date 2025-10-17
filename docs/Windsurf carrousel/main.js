@@ -60,82 +60,27 @@ document.addEventListener('visibilitychange', () => {
   isDocHidden = document.hidden;
 });
 
-// Touch gestures (swipe navigation and pinch-to-zoom on mobile)
+// Touch swipe controls for mobile/tablets (no visible buttons)
 let touchStartX = 0;
 let touchStartY = 0;
 let touchEndX = 0;
 let touchEndY = 0;
 let touching = false;
-let initialPinchDistance = 0;
-const SWIPE_THRESHOLD = 40; // Minimum distance in pixels to trigger a swipe
-const PINCH_SENSITIVITY = 0.002; // Sensitivity for pinch-to-zoom
+const SWIPE_THRESHOLD = 50;
 
 window.addEventListener('touchstart', (e) => {
   if (!e.touches || e.touches.length === 0) return;
-  
-  // Single touch: swipe navigation
-  if (e.touches.length === 1) {
-    const t = e.touches[0];
-    touchStartX = touchEndX = t.clientX;
-    touchStartY = touchEndY = t.clientY;
-    touching = true;
-  }
-  
-  // Two fingers: pinch-to-zoom
-  if (e.touches.length === 2) {
-    const dx = e.touches[0].clientX - e.touches[1].clientX;
-    const dy = e.touches[0].clientY - e.touches[1].clientY;
-    initialPinchDistance = Math.sqrt(dx * dx + dy * dy);
-  }
+  const t = e.touches[0];
+  touchStartX = touchEndX = t.clientX;
+  touchStartY = touchEndY = t.clientY;
+  touching = true;
 }, { passive: true });
 
-// Touch zoom buttons (mobile/tablet): press-and-hold to adjust cameraProgress
-const zoomTouchInBtn = document.getElementById('zoom-touch-in');
-const zoomTouchOutBtn = document.getElementById('zoom-touch-out');
-let holdZoomIn = false;
-let holdZoomOut = false;
-
-function bindZoomHold(el, dir) {
-  if (!el) return;
-  const onDown = () => { if (dir > 0) holdZoomIn = true; else holdZoomOut = true; };
-  const onUp = () => { if (dir > 0) holdZoomIn = false; else holdZoomOut = false; };
-  el.addEventListener('touchstart', onDown, { passive: true });
-  el.addEventListener('touchend', onUp, { passive: true });
-  el.addEventListener('touchcancel', onUp, { passive: true });
-  el.addEventListener('pointerdown', onDown, { passive: true });
-  el.addEventListener('pointerup', onUp, { passive: true });
-  el.addEventListener('pointercancel', onUp, { passive: true });
-  el.addEventListener('mousedown', onDown, { passive: true });
-  el.addEventListener('mouseup', onUp, { passive: true });
-  el.addEventListener('mouseleave', onUp, { passive: true });
-}
-
-bindZoomHold(zoomTouchInBtn, +1);
-bindZoomHold(zoomTouchOutBtn, -1);
-
 window.addEventListener('touchmove', (e) => {
-  if (!e.touches || e.touches.length === 0) return;
-  
-  // Single touch: track swipe
-  if (e.touches.length === 1 && touching) {
-    const t = e.touches[0];
-    touchEndX = t.clientX;
-    touchEndY = t.clientY;
-  }
-  
-  // Two fingers: pinch-to-zoom
-  if (e.touches.length === 2 && initialPinchDistance > 0) {
-    const dx = e.touches[0].clientX - e.touches[1].clientX;
-    const dy = e.touches[0].clientY - e.touches[1].clientY;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    const delta = distance - initialPinchDistance;
-    
-    // Update camera zoom based on pinch gesture
-    cameraProgress += delta * PINCH_SENSITIVITY;
-    cameraProgress = Math.max(0, Math.min(1, cameraProgress));
-    
-    initialPinchDistance = distance;
-  }
+  if (!e.touches || e.touches.length === 0 || !touching) return;
+  const t = e.touches[0];
+  touchEndX = t.clientX;
+  touchEndY = t.clientY;
 }, { passive: true });
 
 window.addEventListener('touchend', () => {
@@ -143,7 +88,6 @@ window.addEventListener('touchend', () => {
   const dx = touchEndX - touchStartX;
   const dy = touchEndY - touchStartY;
   touching = false;
-  initialPinchDistance = 0;
   
   // Horizontal swipe to navigate items
   if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SWIPE_THRESHOLD) {
@@ -155,6 +99,17 @@ window.addEventListener('touchend', () => {
       // swipe right -> prev
       const prevIndex = (currentIndex - 1 + itemCount) % itemCount;
       rotateToIndex(prevIndex);
+    }
+  }
+  
+  // Vertical swipe to zoom
+  if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > SWIPE_THRESHOLD) {
+    if (dy < 0) {
+      // swipe down -> zoom out
+      cameraProgress = Math.max(cameraProgress - 0.15, 0);
+    } else {
+      // swipe up -> zoom in
+      cameraProgress = Math.min(cameraProgress + 0.15, 1);
     }
   }
 }, { passive: true });
@@ -767,55 +722,6 @@ document.getElementById('nav-right').addEventListener('click', () => {
   const nextIndex = (currentIndex + 1) % itemCount;
   rotateToIndex(nextIndex);
 });
-
-// Mobile up/down buttons (centered stack): forward/back control camera (zoom in/out)
-const navTouchForward = document.getElementById('nav-touch-forward');
-const navTouchBack = document.getElementById('nav-touch-back');
-if (navTouchForward) {
-  const zoomInStep = () => {
-    // Mirror wheel behavior: increase cameraProgress towards 1
-    cameraProgress = Math.min(cameraProgress + 0.12, 1);
-    // Dismiss startup overlay progressively similar to wheel
-    if (startupOverlay && !overlayDismissed) {
-      startupOverlayOpacity = Math.max(0, startupOverlayOpacity - 0.2);
-      startupOverlay.style.opacity = String(startupOverlayOpacity);
-      if (startupOverlayOpacity === 0) {
-        overlayDismissed = true;
-        startupOverlay.remove();
-      }
-    }
-  };
-  navTouchForward.addEventListener('click', zoomInStep, { passive: true });
-  navTouchForward.addEventListener('touchend', zoomInStep, { passive: true });
-}
-if (navTouchBack) {
-  const zoomOutStep = () => {
-    // Mirror wheel behavior: decrease cameraProgress towards 0
-    cameraProgress = Math.max(cameraProgress - 0.12, 0);
-  };
-  navTouchBack.addEventListener('click', zoomOutStep, { passive: true });
-  navTouchBack.addEventListener('touchend', zoomOutStep, { passive: true });
-}
-
-// Touch prev/next buttons (mobile/tablet)
-const touchPrev = document.getElementById('touch-prev');
-const touchNext = document.getElementById('touch-next');
-if (touchPrev) {
-  const goPrev = () => {
-    const prevIndex = (currentIndex - 1 + itemCount) % itemCount;
-    rotateToIndex(prevIndex);
-  };
-  touchPrev.addEventListener('click', goPrev, { passive: true });
-  touchPrev.addEventListener('touchend', goPrev, { passive: true });
-}
-if (touchNext) {
-  const goNext = () => {
-    const nextIndex = (currentIndex + 1) % itemCount;
-    rotateToIndex(nextIndex);
-  };
-  touchNext.addEventListener('click', goNext, { passive: true });
-  touchNext.addEventListener('touchend', goNext, { passive: true });
-}
 
 // Modal elements
 const modal = document.getElementById('modal');

@@ -150,35 +150,23 @@
       .action-button:active {
         transform: translateX(-50%) translateY(-2px);
       }
-
-      /* Touch navigation buttons: centered stack bottom (forward above back) */
-      .nav-touch-group { display: none; position: fixed; left: 50%; transform: translateX(-50%); bottom: 20px; z-index: 4000; flex-direction: column; gap: 12px; align-items: center; }
-      .nav-touch-btn { width: 112px; height: 112px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.17); color: #fff; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; }
-      .nav-touch-btn svg { pointer-events: none; }
-      @media (pointer: coarse), (hover: none) {
-        .nav-touch-group { display: flex; }
-        /* Keep native cursor; crosshair overlay remains visible */
-        /* Mobile styles for Découvrir and arrows: match button theme */
-        .action-button {
-          background: rgba(0,0,0,0.17);
-          border-color: rgba(255,255,255,0.3);
-          bottom: calc(var(--ntg-bottom) + (var(--ntg-size) * 2) + var(--ntg-gap) + 16px);
-          z-index: 4000;
+      
+      /* Touch device optimizations */
+      @media (pointer: coarse) {
+        body { 
+          overscroll-behavior: none;
+          touch-action: manipulation;
         }
+        /* Larger touch targets for arrows */
         .nav-arrow {
-          background: rgba(0,0,0,0.17);
-          border-color: rgba(255,255,255,0.3);
-          z-index: 4000;
+          width: 56px;
+          height: 56px;
+        }
+        .action-button {
+          padding: 16px 32px;
+          font-size: 18px;
         }
       }
-      
-      @media (max-width: 400px) {
-        :root { --ntg-bottom: 16px; --ntg-gap: 10px; --ntg-size: 96px; }
-        .nav-touch-group { bottom: 16px; gap: 10px; }
-        .nav-touch-btn { width: 96px; height: 96px; }
-      }
-      
-      
       
       /* Modal */
       .modal {
@@ -470,19 +458,6 @@
       </svg>
     </button>
     
-    <!-- Bottom touch navigation buttons (mobile/tablet) centered stack: next above prev -->
-    <div class="nav-touch-group" aria-hidden="false">
-      <button id="nav-touch-forward" class="nav-touch-btn" aria-label="Projet suivant">
-        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
-          <polyline points="6 15 12 9 18 15"></polyline>
-        </svg>
-      </button>
-      <button id="nav-touch-back" class="nav-touch-btn" aria-label="Projet précédent">
-        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
-          <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
-      </button>
-    </div>
     <button id="nav-right" class="nav-arrow nav-right" aria-label="Projet suivant" title="Projet suivant (Flèche droite)">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
         <polyline points="9 18 15 12 9 6"></polyline>
@@ -500,18 +475,6 @@
       <span>Découvrir</span>
     </button>
 
-    <!-- Touch zoom buttons (mobile/tablet) -->
-    <button id="zoom-touch-out" class="zoom-touch-btn zoom-touch-out" aria-label="Zoom arrière">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-      </svg>
-    </button>
-    <button id="zoom-touch-in" class="zoom-touch-btn zoom-touch-in" aria-label="Zoom avant">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-      </svg>
-    </button>
     
     <!-- Modal window -->
     <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">

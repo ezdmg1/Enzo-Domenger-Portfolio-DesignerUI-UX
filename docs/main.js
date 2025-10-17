@@ -56,32 +56,6 @@ document.addEventListener('visibilitychange', () => {
   isDocHidden = document.hidden;
 });
 
-// On-screen touch navigation buttons (mobile/tablet) - discrete tap impulses
-const navTouchForward = document.getElementById('nav-touch-forward');
-const navTouchBack = document.getElementById('nav-touch-back');
-const navTouchGroup = document.querySelector('.nav-touch-group');
-
-function addImpulse(dir) {
-  // Tap adds a fixed velocity impulse similar to a short wheel flick
-  const IMPULSE = 220; // tune step size
-  const magnitude = IMPULSE;
-  forwardVel += dir * magnitude * SCROLL_ACCEL;
-  forwardVel = THREE.MathUtils.clamp(forwardVel, -MAX_VEL, MAX_VEL);
-  lastScrollTime = performance.now();
-}
-
-function bindTap(el, dir) {
-  if (!el) return;
-  const fire = () => addImpulse(dir);
-  el.addEventListener('click', fire, { passive: true });
-  el.addEventListener('touchend', fire, { passive: true });
-}
-
-// Forward = move towards target (negative Z) => dir = -1
-bindTap(navTouchForward, -1);
-// Back = move away (positive Z) => dir = +1
-bindTap(navTouchBack, +1);
-
 // Fade-to-white overlay (DOM-based)
 const fadeOverlay = document.createElement('div');
 fadeOverlay.style.position = 'fixed';
@@ -451,6 +425,32 @@ const MIN_Z = marker.position.z - 5; // allow passing well beyond the cube
 const MAX_Z = 14.993426305035111; // camera must not go beyond this (more positive)
 const TARGET_Z = -5.508294579027191; // exact stop Z requested
 
+// Touch swipe controls for mobile/tablets (no visible buttons)
+let touchStartY = null;
+window.addEventListener('touchstart', (e) => {
+  if (!e.touches || e.touches.length === 0) return;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+window.addEventListener('touchmove', (e) => {
+  if (!e.touches || e.touches.length === 0 || touchStartY === null) return;
+  const currentY = e.touches[0].clientY;
+  const deltaY = touchStartY - currentY;
+  
+  // Convert swipe to velocity (similar to wheel)
+  if (Math.abs(deltaY) > 2) { // Minimum threshold to avoid jitter
+    const dir = deltaY > 0 ? -1 : 1; // swipe up = forward (negative Z)
+    forwardVel += dir * Math.abs(deltaY) * SCROLL_ACCEL * 0.3;
+    forwardVel = THREE.MathUtils.clamp(forwardVel, -MAX_VEL, MAX_VEL);
+    lastScrollTime = performance.now();
+    touchStartY = currentY; // Update for continuous swipe
+  }
+}, { passive: true });
+
+window.addEventListener('touchend', () => {
+  touchStartY = null;
+}, { passive: true });
+
 window.addEventListener('mousemove', (e) => {
   lastMouseEvent = e;
   if (mmScheduled) return;
@@ -463,6 +463,7 @@ window.addEventListener('mousemove', (e) => {
     mouseY = (ev.clientY / window.innerHeight) * 2 - 1;
 
     if (customCursor) {
+      customCursor.style.opacity = '1';
       customCursor.style.transform = `translate(${ev.clientX}px, ${ev.clientY}px)`;
     }
     if (cursorText && !cursorText.classList.contains('hidden')) {
@@ -477,33 +478,6 @@ window.addEventListener('mousemove', (e) => {
       }
     }, 200);
   });
-}, { passive: true });
-
-// Touch controls for mobile/tablets: emulate scroll movement
-let touchY = null;
-let lastTouchTime = 0;
-window.addEventListener('touchstart', (e) => {
-  if (!e.touches || e.touches.length === 0) return;
-  touchY = e.touches[0].clientY;
-  lastTouchTime = performance.now();
-}, { passive: true });
-
-window.addEventListener('touchmove', (e) => {
-  if (!e.touches || e.touches.length === 0 || touchY === null) return;
-  const y = e.touches[0].clientY;
-  const deltaY = touchY - y; // swipe up => positive (move forward)
-  // Map touch delta to wheel-like behavior
-  const magnitude = Math.abs(deltaY);
-  const dir = deltaY < 0 ? -1 : (deltaY > 0 ? 1 : 0);
-  forwardVel += dir * magnitude * SCROLL_ACCEL * 0.6; // slightly softer than wheel
-  forwardVel = THREE.MathUtils.clamp(forwardVel, -MAX_VEL, MAX_VEL);
-  lastScrollTime = performance.now();
-  lastTouchTime = lastScrollTime;
-  touchY = y;
-}, { passive: true });
-
-window.addEventListener('touchend', () => {
-  touchY = null;
 }, { passive: true });
 
 let resizeTimeout;
