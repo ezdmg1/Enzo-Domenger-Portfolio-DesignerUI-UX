@@ -21,14 +21,13 @@
     default-src 'self';
     script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' data: https: http:;
-    media-src 'self' https: http:;
-    connect-src 'self' https:;
+    img-src 'self' data: https: http: blob:;
+    media-src 'self' https: http: blob: data:;
+    connect-src 'self' https: blob: data:;
     font-src 'self';
     object-src 'none';
     base-uri 'self';
     form-action 'self';
-    frame-ancestors 'none';
     upgrade-insecure-requests;
   ">
   
@@ -57,7 +56,7 @@
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#000000">
   <!-- Prefetch next-page heavy assets to reduce load time -->
-  <link rel="prefetch" href="./portfolio/BLENDER_Template.glb" as="fetch" crossorigin>
+  <link rel="prefetch" href="./portfolio/BLENDER_Template_1.glb" as="fetch" crossorigin>
   <link rel="prefetch" href="./portfolio/COMP VIDEO.mp4" as="video" crossorigin>
   <link rel="prefetch" href="./portfolio/index.html">
   <!-- Preconnect to CDN used by carousel's module imports -->

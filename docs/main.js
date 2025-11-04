@@ -41,7 +41,7 @@ let sceneFullyLoaded = false;
 // Aggressive preloader for the carousel assets
 const CAROUSEL_ASSETS = [
   './portfolio/index.html',
-  './portfolio/BLENDER_Template.glb',
+  './portfolio/BLENDER_Template_1.glb',
   './portfolio/COMP VIDEO.mp4'
 ];
 function preloadCarouselAssets() {

@@ -4,14 +4,12 @@ const urlsToCache = [
   './',
   './index.html',
   './main.js',
-  './BLENDER_Template.glb',
+  './BLENDER_Template_1.glb',
   './COMP VIDEO.mp4',
   './gallery/image1.webp',
-  './gallery/image2.gif',
-  './gallery/image3.gif',
-  './gallery/image4.gif',
-  'https://unpkg.com/three@0.160.0/build/three.module.js',
-  'https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js'
+  './gallery/image2.webp',
+  './gallery/image3.webp',
+  './gallery/image4.webp'
 ];
 
 // Install event - cache assets

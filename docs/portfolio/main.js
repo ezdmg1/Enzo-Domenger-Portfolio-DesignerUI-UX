@@ -31,7 +31,7 @@ if (shouldFadeIn) {
   
   // Add fade-in overlay immediately
   const fadeInOverlay = document.createElement('div');
-  fadeInOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#fff;opacity:1;pointer-events:none;z-index:999999;transition:opacity 0.8s ease-out';
+  fadeInOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#d6d6d6;opacity:1;pointer-events:none;z-index:999999;transition:opacity 0.8s ease-out';
   
   if (document.body) {
     document.body.appendChild(fadeInOverlay);
@@ -58,7 +58,7 @@ if (shouldFadeIn) {
   
   const loadingOverlay = document.getElementById('loading-overlay');
   if (loadingOverlay) {
-    loadingOverlay.style.background = '#ffffff';
+    loadingOverlay.style.background = '#d6d6d6';
     const spinner = loadingOverlay.querySelector('.loading-spinner');
     if (spinner) spinner.style.display = 'none';
   }
