@@ -57,9 +57,9 @@
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#000000">
   <!-- Prefetch next-page heavy assets to reduce load time -->
-  <link rel="prefetch" href="./Windsurf carrousel/BLENDER_Template.glb" as="fetch" crossorigin>
-  <link rel="prefetch" href="./Windsurf carrousel/COMP VIDEO.mp4" as="video" crossorigin>
-  <link rel="prefetch" href="./Windsurf carrousel/index.html">
+  <link rel="prefetch" href="./portfolio/BLENDER_Template.glb" as="fetch" crossorigin>
+  <link rel="prefetch" href="./portfolio/COMP VIDEO.mp4" as="video" crossorigin>
+  <link rel="prefetch" href="./portfolio/index.html">
   <!-- Preconnect to CDN used by carousel's module imports -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   
@@ -129,7 +129,7 @@
     html,body { height:100%; margin:0; }
     body { cursor: none; }
     /* Keep crosshair (hide native cursor) on interactive elements */
-    a, button, [role="button"], #logo-btn { cursor: none !important; }
+    a, button, [role="button"], #logo-btn { cursor: pointer !important; }
     #app { position:fixed; inset:0; overflow:hidden; }
     canvas { display:block; }
 

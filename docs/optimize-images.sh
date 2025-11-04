@@ -45,16 +45,16 @@ fi
 
 # Optimiser et convertir le PNG de texture
 echo "📸 Optimisation de UV_Polaroid_frame_Template_TEST_NORMAL_V2.png..."
-if [ -f "Windsurf carrousel/Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.png" ]; then
-    cp "Windsurf carrousel/Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.png" "Windsurf carrousel/Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.png.backup"
-    optipng -o7 "Windsurf carrousel/Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.png"
-    cwebp -q 90 "Windsurf carrousel/Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.png" -o "Windsurf carrousel/Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.webp"
+if [ -f "portfolio/Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.png" ]; then
+    cp "portfolio/Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.png" "portfolio/Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.png.backup"
+    optipng -o7 "portfolio/Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.png"
+    cwebp -q 90 "portfolio/Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.png" -o "portfolio/Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.webp"
     echo "✅ PNG optimisé et converti en WebP"
 fi
 
 # Optimiser les images Polaroid
 echo "📸 Optimisation des images Polaroid..."
-for file in "Windsurf carrousel/Textures"/Polaroid_*.jpg; do
+for file in "portfolio/Textures"/Polaroid_*.jpg; do
     if [ -f "$file" ]; then
         cp "$file" "$file.backup"
         jpegoptim --max=85 --strip-all "$file"

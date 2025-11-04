@@ -20,7 +20,7 @@ npx http-server -p 8000
 
 ### 2️⃣ Ouvrir dans le Navigateur
 - **Page d'accueil** : http://localhost:8000/
-- **Page projets** : http://localhost:8000/Windsurf%20carrousel/
+- **Page projets** : http://localhost:8000/portfolio/
 
 ### 3️⃣ C'est Prêt ! 🎉
 Le portfolio fonctionne immédiatement en local.
@@ -31,7 +31,7 @@ Le portfolio fonctionne immédiatement en local.
 
 ### 🔴 Obligatoire
 - [ ] Remplacer "votre-site.com" par votre domaine dans :
-  - `Windsurf carrousel/index.html` (lignes 13, 16, 20, 23)
+  - `portfolio/index.html` (lignes 13, 16, 20, 23)
   - `sitemap.xml` ✅ Déjà fait
   - `robots.txt` ✅ Déjà fait
   
@@ -199,7 +199,7 @@ npx imagemin gallery/*.{jpg,png} --out-dir=gallery/optimized
 ### Le carrousel 3D est lent
 ```bash
 # Vérifier que le FPS est limité à 60
-# Ligne 804-827 dans Windsurf carrousel/main.js
+# Ligne 804-827 dans portfolio/main.js
 ```
 
 ### Lighthouse score bas

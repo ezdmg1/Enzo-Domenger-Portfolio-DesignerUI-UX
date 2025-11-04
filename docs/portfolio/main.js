@@ -175,7 +175,7 @@ camera.lookAt(0, 0, 0);
 // Camera animation state
 let cameraProgress = 0;    // Progress of zoom animation: 0 = far away, 1 = fully zoomed in
 const cameraStartZ = 25;   // Initial camera distance (far)
-const cameraEndZ = 10;     // Final camera distance (close to carousel)
+const cameraEndZ = isCoarsePointer ? 12 : 10;     // Final camera distance (slightly farther on mobile to stop earlier)
 let hasScrolled = false;   // Track if user has started scrolling
 
 // Renderer

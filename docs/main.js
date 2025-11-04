@@ -40,9 +40,9 @@ let sceneFullyLoaded = false;
 
 // Aggressive preloader for the carousel assets
 const CAROUSEL_ASSETS = [
-  './Windsurf carrousel/index.html',
-  './Windsurf carrousel/BLENDER_Template.glb',
-  './Windsurf carrousel/COMP VIDEO.mp4'
+  './portfolio/index.html',
+  './portfolio/BLENDER_Template.glb',
+  './portfolio/COMP VIDEO.mp4'
 ];
 function preloadCarouselAssets() {
   try {
@@ -62,7 +62,7 @@ const carouselPreloadPromise = preloadCarouselAssets();
 window.addEventListener('load', () => {
   const preloadFrame = document.createElement('iframe');
   preloadFrame.style.cssText = 'display:none;position:absolute;width:0;height:0;border:none';
-  preloadFrame.src = './Windsurf%20carrousel/index.html';
+  preloadFrame.src = './portfolio/index.html';
   document.body.appendChild(preloadFrame);
 });
 
@@ -86,7 +86,7 @@ document.addEventListener('visibilitychange', () => {
 // Removed unused fade overlay variables
 let transitionStarted = false;
 let transitionNavigated = false;
-const CAROUSEL_URL = './Windsurf%20carrousel/index.html';
+const CAROUSEL_URL = './portfolio/index.html';
 let lockZPos = null; // freeze camera Z once inside the cube
 
 // Cursor text element
@@ -99,7 +99,7 @@ let lastMouseEvent = null;
 // Position cursor text at mouse position
 function updateCursorTextPosition(x, y) {
   if (cursorText) {
-    cursorText.style.transform = `translate(${x + 15}px, ${y + 15}px)`;
+    cursorText.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
   }
 }
 
@@ -126,7 +126,14 @@ const touchEnterBtn = document.getElementById('touch-enter-btn');
 if (touchEnterBtn && isCoarsePointer) {
   touchEnterBtn.addEventListener('click', () => {
     try { sessionStorage.setItem('fromIndex', '1'); sessionStorage.setItem('touchFadeIn', 'true'); } catch (_) {}
-    window.location.href = './Windsurf%20carrousel/index.html';
+    // Lock camera immediately at trigger
+    transitionStarted = true;
+    forwardVel = 0;
+    lockZPos = TARGET_Z;
+    camera.position.z = TARGET_Z;
+    if (marker) marker.visible = true;
+    if (markerGlowSprite) markerGlowSprite.visible = true;
+    window.location.href = './portfolio/index.html';
   });
 }
 
@@ -694,8 +701,8 @@ function animate() {
       forwardVel = 0;
       lockZPos = TARGET_Z;
       camera.position.z = TARGET_Z;
-      marker.visible = false;
-      if (markerGlowSprite) markerGlowSprite.visible = false;
+      marker.visible = true;
+      if (markerGlowSprite) markerGlowSprite.visible = true;
       // Navigate directly without showing white overlay
       try { sessionStorage.setItem('fromIndex', '1'); } catch (_) {}
       navigateToCarouselAfterPreload();
@@ -730,6 +737,13 @@ function animate() {
         // Hide cursor text during transition
         if (cursorText) cursorText.style.display = 'none';
         try { sessionStorage.setItem('fromIndex', '1'); sessionStorage.setItem('touchFadeIn', 'true'); } catch (_) {}
+        // Lock camera immediately at trigger
+        transitionStarted = true;
+        forwardVel = 0;
+        lockZPos = TARGET_Z;
+        camera.position.z = TARGET_Z;
+        if (marker) marker.visible = true;
+        if (markerGlowSprite) markerGlowSprite.visible = true;
         transitionNavigated = true;
         window.location.href = CAROUSEL_URL;
         return;
@@ -740,7 +754,7 @@ function animate() {
       forwardVel = 0;
       lockZPos = TARGET_Z;
       camera.position.z = TARGET_Z;
-      marker.visible = false;
+      marker.visible = true;
       // Navigate directly without showing white overlay
       try { sessionStorage.setItem('fromIndex', '1'); } catch (_) {}
       navigateToCarouselAfterPreload();

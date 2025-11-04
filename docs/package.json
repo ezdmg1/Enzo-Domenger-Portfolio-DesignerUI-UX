@@ -4,7 +4,7 @@
   "description": "Portfolio 3D interactif d'Enzo Domenger - Designer UI/UX",
   "scripts": {
     "optimize-images": "chmod +x optimize-images.sh && ./optimize-images.sh",
-    "minify": "terser main.js -o main.min.js -c -m && terser 'Windsurf carrousel/main.js' -o 'Windsurf carrousel/main.min.js' -c -m",
+    "minify": "terser main.js -o main.min.js -c -m && terser 'portfolio/main.js' -o 'portfolio/main.min.js' -c -m",
     "build": "npm run optimize-images && npm run minify",
     "lighthouse": "lighthouse https://ezdmg1.github.io/Enzo-Domenger-Portfolio-DesignerUI-UX/ --view --preset=desktop",
     "lighthouse-mobile": "lighthouse https://ezdmg1.github.io/Enzo-Domenger-Portfolio-DesignerUI-UX/ --view --preset=mobile"
