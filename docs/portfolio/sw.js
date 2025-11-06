@@ -2,7 +2,6 @@
 const CACHE_NAME = 'portfolio-cache-v1';
 const urlsToCache = [
   './',
-  './index.html',
   './main.js',
   './BLENDER_Template_1.glb',
   './COMP VIDEO.mp4',

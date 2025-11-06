@@ -2,7 +2,6 @@
 const CACHE_VERSION = 'portfolio-v2.1';
 const CACHE_ASSETS = [
   './',
-  './index.html',
   './main.js',
   './assets/grass.jpg',
   './assets/cloud.jpg',
