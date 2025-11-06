@@ -17,7 +17,7 @@ try {
   const navEntries = performance.getEntriesByType && performance.getEntriesByType('navigation');
   const nav = navEntries && navEntries[0];
   if (nav && nav.type === 'reload') {
-    window.location.replace('../index.html');
+    window.location.replace('../');
   }
 } catch (_) {
   // no-op

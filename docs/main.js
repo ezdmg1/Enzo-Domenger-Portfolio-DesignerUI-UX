@@ -40,7 +40,7 @@ let sceneFullyLoaded = false;
 
 // Aggressive preloader for the carousel assets
 const CAROUSEL_ASSETS = [
-  './portfolio/index.html',
+  './portfolio/',
   './portfolio/BLENDER_Template_1.glb',
   './portfolio/COMP VIDEO.mp4'
 ];
@@ -62,7 +62,7 @@ const carouselPreloadPromise = preloadCarouselAssets();
 window.addEventListener('load', () => {
   const preloadFrame = document.createElement('iframe');
   preloadFrame.style.cssText = 'display:none;position:absolute;width:0;height:0;border:none';
-  preloadFrame.src = './portfolio/index.html';
+  preloadFrame.src = './portfolio/';
   document.body.appendChild(preloadFrame);
 });
 
@@ -86,7 +86,7 @@ document.addEventListener('visibilitychange', () => {
 // Removed unused fade overlay variables
 let transitionStarted = false;
 let transitionNavigated = false;
-const CAROUSEL_URL = './portfolio/index.html';
+const CAROUSEL_URL = './portfolio/';
 let lockZPos = null; // freeze camera Z once inside the cube
 
 // Cursor text element
@@ -133,7 +133,7 @@ if (touchEnterBtn && isCoarsePointer) {
     camera.position.z = TARGET_Z;
     if (marker) marker.visible = true;
     if (markerGlowSprite) markerGlowSprite.visible = true;
-    window.location.href = './portfolio/index.html';
+    window.location.href = './portfolio/';
   });
 }
 
