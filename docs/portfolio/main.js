@@ -903,14 +903,9 @@ actionButton.addEventListener('click', () => {
             <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Création de visuels graphiques pour la série documentaire Focus de guerre, diffusée sur YouTube.</p>
           </div>
           <div style="margin-bottom: 15px;">
-            <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Motion Designer - Stage</p>
-            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Club Architecture | 5 mois</p>
-            <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Vulgarisation de la conception générative par IA en architecture. Renforcement des compétences en motion design, gestion de projet et narration visuelle.</p>
-          </div>
-          <div style="margin-bottom: 15px;">
-            <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Motion Designer, Designer UI/UX & Infographiste 3D - Freelance</p>
+            <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Motion Designer, Designer UI/UX & Infographiste 3D</p>
             <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Projets variés | 2021-2025</p>
-            <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Projets diversifiés incluant jeux vidéos, captation vidéo (concerts), montage vidéo, conception d'interfaces utilisateur et création de design systems pour applications web et mobile.</p>
+            <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Projets diversifiés incluant jeux vidéos, captation vidéo (concerts) et montage vidéo</p>
           </div>
         </div>
 
