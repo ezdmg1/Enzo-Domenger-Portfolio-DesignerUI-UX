@@ -20,11 +20,11 @@
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
-    style-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     img-src 'self' data: https: http: blob:;
     media-src 'self' https: http: blob: data:;
     connect-src 'self' https: blob: data:;
-    font-src 'self';
+    font-src 'self' https://fonts.gstatic.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
@@ -45,6 +45,11 @@
   <meta property="twitter:description" content="Designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur, prototypage Figma et design system. Portfolio 3D interactif présentant mes projets UI/UX.">
   <meta property="twitter:image" content="https://ezdmg1.github.io/Enzo-Domenger-Portfolio-DesignerUI-UX/preview.png">
   
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="./assets/Logo_32_.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/Logo_32_.ico">
@@ -138,14 +143,14 @@
     #logo-btn:hover img { opacity: 1; }
 
     /* Page loader */
-    #page-loader { position: fixed; inset: 0; background: #000; color: #fff; display: flex; align-items: center; justify-content: center; z-index: 5000; transition: opacity .3s ease; font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif; }
+    #page-loader { position: fixed; inset: 0; background: #000; color: #fff; display: flex; align-items: center; justify-content: center; z-index: 5000; transition: opacity .3s ease; font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
     #page-loader.hide { opacity: 0; pointer-events: none; }
     .loader { position: relative; width: 192px; height: 192px; }
     .loader .bg { position: absolute; inset: 0; border-radius: 50%; background: rgba(0,0,0,0.35); }
     .loader .arc { position: absolute; inset: 12px; border-radius: 50%; border: 16px solid transparent; border-top-color: #000; border-right-color: #000; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .cursor-text { position: fixed; pointer-events: none; z-index: 9999; color: white; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; opacity: 1; transition: opacity 0.3s ease; white-space: nowrap; mix-blend-mode: difference; will-change: transform; }
+    .cursor-text { position: fixed; pointer-events: none; z-index: 9999; color: white; font-family: "Cormorant", serif; font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; opacity: 1; transition: opacity 0.3s ease; white-space: nowrap; mix-blend-mode: difference; will-change: transform; }
     .cursor-text.hidden { opacity: 0; }
   </style>
   <style>

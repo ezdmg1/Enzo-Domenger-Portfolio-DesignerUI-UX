@@ -24,9 +24,9 @@
 
       default-src 'self';
 
-      script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+      script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com;
 
-      style-src 'self' 'unsafe-inline';
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
 
       img-src 'self' data: https: http: blob:;
 
@@ -36,7 +36,7 @@
 
       frame-src https://www.youtube.com https://www.youtube-nocookie.com;
 
-      font-src 'self';
+      font-src 'self' https://fonts.gstatic.com;
 
       object-src 'none';
 
@@ -106,6 +106,12 @@
 
     <!-- Preconnect to external resources -->
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
     <link rel="dns-prefetch" href="https://www.youtube.com">
@@ -126,7 +132,7 @@
 
         overflow: hidden;
 
-        font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
         cursor: url('../assets/cursor-cross.svg') 2 2, crosshair;
 
@@ -178,9 +184,11 @@
 
         color: white;
 
-        font-size: 14px;
+        font-size: 16px;
 
         font-weight: 600;
+
+        letter-spacing: normal;
 
         cursor: url('../assets/cursor-cross.svg') 2 2, crosshair;
 
@@ -298,7 +306,7 @@
         background: rgba(255, 255, 255, 0.12);
         border-color: rgba(255, 255, 255, 0.3);
         padding: 12px 28px;
-        font-size: 15px;
+        font-size: 19px;
       }
 
       .hud-bottom .hud-btn.hud-btn--primary:hover {
@@ -692,7 +700,9 @@
 
         color: white;
 
-        font-size: 14px;
+        font-family: "Cormorant", serif;
+
+        font-size: 16px;
 
         font-weight: 600;
 
