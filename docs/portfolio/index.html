@@ -128,6 +128,8 @@
 
         font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
 
+        cursor: url('../assets/cursor-cross.svg') 2 2, crosshair;
+
       }
 
       canvas {
@@ -180,7 +182,7 @@
 
         font-weight: 600;
 
-        cursor: pointer;
+        cursor: url('../assets/cursor-cross.svg') 2 2, crosshair;
 
         transition: all 0.3s ease;
 
@@ -736,7 +738,7 @@
 
         inset: 0;
 
-        background: #d6d6d6;
+        background: #ffffff;
 
         display: flex;
 
@@ -748,25 +750,21 @@
 
       }
 
-      .loading-spinner {
+      #loading-overlay video {
 
-        width: 160px;
+        width: 140px;
 
-        height: 160px;
+        height: 140px;
 
-        border-radius: 50%;
+        object-fit: contain;
 
-        border: 10px solid rgba(255,255,255,0.3);
-
-        border-top-color: rgba(255,255,255,0.5);
-
-        animation: spin 1s linear infinite;
+        filter: invert(1);
 
       }
 
       @media (max-width: 480px) {
 
-        .loading-spinner { width: 120px; height: 120px; border-width: 8px; }
+        #loading-overlay video { width: 120px; height: 120px; }
 
       }
 
@@ -832,13 +830,31 @@
 
         inset: 0;
 
-        background: #d6d6d6;
+        background: #ffffff;
 
         opacity: 1;
 
         pointer-events: none;
 
         z-index: 3000;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+      }
+
+      #fade-overlay video {
+
+        width: 140px;
+
+        height: 140px;
+
+        object-fit: contain;
+
+        filter: invert(1);
 
       }
 
@@ -962,7 +978,7 @@
 
     <div id="loading-overlay" aria-live="polite" aria-busy="true">
 
-      <div class="loading-spinner" role="status"></div>
+      <video src="../assets/Loading_animation_1.webm" autoplay loop muted playsinline></video>
 
     </div>
 
@@ -974,9 +990,13 @@
 
     </a>
 
-    <!-- Startup white overlay: we fade this OUT in main.js to reveal the carousel -->
+    <!-- Startup overlay: fades OUT in main.js to reveal the carousel -->
 
-    <div id="fade-overlay"></div>
+    <div id="fade-overlay">
+
+      <video src="../assets/Loading_animation_1.webm" autoplay loop muted playsinline></video>
+
+    </div>
 
     <!-- Top-right HUD buttons -->
 

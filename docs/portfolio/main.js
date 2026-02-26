@@ -555,10 +555,25 @@ function createFallbackBoxes() {
   }
 }
 
-// Carousel state
-let currentIndex = 0;
-let targetRotation = 0;
-let currentRotation = 0;
+// Timestamp when cameraProgress first reached 1 (for the pause delay)
+let zoomCompletedAt = -1;
+
+// Carousel state — restore from URL param if returning from case study
+const _urlParams = new URLSearchParams(window.location.search);
+const _urlProjet = parseInt(_urlParams.get('projet'), 10);
+const _initialIndex = (!isNaN(_urlProjet) && _urlProjet >= 0 && _urlProjet < itemCount) ? _urlProjet : 0;
+let currentIndex = _initialIndex;
+let targetRotation = -(_initialIndex / itemCount) * Math.PI * 2;
+let currentRotation = targetRotation;
+// If returning from a case study, skip zoom phase and dismiss startup overlay
+if (_initialIndex > 0 || _urlParams.has('projet')) {
+  cameraProgress = 1;
+  zoomCompletedAt = performance.now();
+  if (startupOverlay) {
+    startupOverlay.style.display = 'none';
+    overlayDismissed = true;
+  }
+}
 
 // Mouse drag controls for rotating items
 let isDragging = false;
@@ -642,9 +657,8 @@ const WHEEL_THROTTLE_MS = 50;
 // Throttle for project navigation (avoid skipping multiple projects per scroll)
 const WHEEL_NAV_THROTTLE_MS = 500;
 let lastWheelNavTime = 0;
-// Timestamp when cameraProgress first reached 1 (for the pause delay)
-let zoomCompletedAt = -1;
-const ZOOM_TO_NAV_DELAY_MS = 800; // pause before navigation activates
+// pause before navigation activates
+const ZOOM_TO_NAV_DELAY_MS = 800;
 
 window.addEventListener('wheel', (event) => {
   log('Wheel event detected - controlsEnabled:', controlsEnabled, 'isMouseOverModal:', isMouseOverModal);
@@ -877,6 +891,9 @@ const projectDescriptions = [
 // Action button
 const actionButton = document.getElementById('action-button');
 actionButton.addEventListener('click', () => {
+  window.location.href = `./case-study.html?projet=${currentIndex}`;
+  return;
+
   const project = projectDescriptions[currentIndex];
   const videoId = projectVideos[currentIndex];
   
