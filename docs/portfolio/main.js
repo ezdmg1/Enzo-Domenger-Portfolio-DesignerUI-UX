@@ -332,12 +332,12 @@ const colors = [0xff6b6b, 0x4ecdc4, 0xffe66d, 0x95e1d3, 0xf38181, 0xaa96da];
 // Provide your own list; defaults use existing files in ./Textures/
 let itemTexturePaths = [
   // Noms réels trouvés dans le dossier Textures/
-  './Textures/Polaroid_Frame_Template_UV_1.jpg',
-  './Textures/Polaroid_Frame_Template_UV_2.jpg',
-  './Textures/Polaroid_Frame_Template_UV_3.jpg',
-  './Textures/Polaroid_Frame_Template_UV_4.jpg',
-  './Textures/Polaroid_Frame_Template_UV_5.jpg',
-  './Textures/Polaroid_Frame_Template_UV_6.jpg',
+  './Textures/Polaroid_Frame_Template_UV_1.webp',
+  './Textures/Polaroid_Frame_Template_UV_2.webp',
+  './Textures/Polaroid_Frame_Template_UV_3.webp',
+  './Textures/Polaroid_Frame_Template_UV_4.webp',
+  './Textures/Polaroid_Frame_Template_UV_5.webp',
+  './Textures/Polaroid_Frame_Template_UV_6.webp',
 ];
 
 // Trie par numéro de slot indiqué en fin de nom de fichier (avant l'extension)
@@ -373,7 +373,7 @@ const itemTextures = itemTexturePaths.map((path) => {
 });
 
 // Shared normal map applied to all items
-const sharedNormalMap = textureLoader.load('./Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.png' + TEX_BUSTER);
+const sharedNormalMap = textureLoader.load('./Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.webp' + TEX_BUSTER);
 // normal maps should not be in sRGB; keep default color space
 sharedNormalMap.flipY = false;
 
@@ -1136,16 +1136,127 @@ modal.addEventListener('mouseleave', () => {
   isMouseOverModal = false;
 });
 
+// ── About modal ──────────────────────────────────────────────────────────────
+const aboutModal = document.getElementById('about-modal');
+const aboutModalBody = document.getElementById('about-modal-body');
+const aboutModalClose = document.getElementById('about-modal-close');
+
+const cvHTML = `
+  <div style="color: white; line-height: 1.8;">
+    <div style="text-align: center; margin-bottom: 30px;">
+      <h3 style="font-size: 24px; margin-bottom: 10px;">Enzo Domenger</h3>
+      <p style="font-size: 16px; color: rgba(255,255,255,0.8); margin-bottom: 15px;">Designer UI/UX</p>
+      <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; font-size: 14px;">
+        <a href="mailto:enzo.domenger@gmail.com" style="color: #a8d3ee; text-decoration: none;">📧 Contact</a>
+        <a href="https://www.linkedin.com/in/enzo-domenger" target="_blank" rel="noopener noreferrer" style="color: #a8d3ee; text-decoration: none;">💼 LinkedIn</a>
+      </div>
+    </div>
+    <div style="margin-bottom: 25px;">
+      <h4 style="color: #a8d3ee; font-size: 18px; margin-bottom: 10px; border-bottom: 2px solid rgba(168,211,238,0.3); padding-bottom: 5px;">🎯 Profil</h4>
+      <p style="font-size: 14px; color: rgba(255,255,255,0.9);">Designer créatif spécialisé en UI/UX avec une forte expertise en motion design et en 3D. Passionné par la création d'expériences utilisateur immersives et l'innovation en design interactif.</p>
+    </div>
+    <div style="margin-bottom: 25px;">
+      <h4 style="color: #a8d3ee; font-size: 18px; margin-bottom: 10px; border-bottom: 2px solid rgba(168,211,238,0.3); padding-bottom: 5px;">💼 Expérience</h4>
+      <div style="margin-bottom: 15px;">
+        <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Webdesigner - Stage</p>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Agence Mekaa | Février 2026 - Avril 2026</p>
+        <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Stage en webdesign au sein de l'agence Mekaa. Conception d'interfaces web, design graphique et expérience utilisateur.</p>
+      </div>
+      <div style="margin-bottom: 15px;">
+        <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Designer UI/UX</p>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Chez Léonard | Septembre 2025 - Mai 2026</p>
+        <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Conception de sites internet, création d'affiches sur mesure et refonte de logos et d'identités visuelles.</p>
+      </div>
+      <div style="margin-bottom: 15px;">
+        <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Motion Designer</p>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Their Memory | Mai 2025 - Septembre 2025</p>
+        <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Création de visuels graphiques pour la série documentaire Focus de guerre, diffusée sur YouTube.</p>
+      </div>
+      <div style="margin-bottom: 15px;">
+        <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Motion Designer, Designer UI/UX & Infographiste 3D</p>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Projets variés | 2021-2025</p>
+        <p style="font-size: 14px; color: rgba(255,255,255,0.85);">Projets diversifiés incluant jeux vidéos, captation vidéo (concerts) et montage vidéo.</p>
+      </div>
+    </div>
+    <div style="margin-bottom: 25px;">
+      <h4 style="color: #a8d3ee; font-size: 18px; margin-bottom: 10px; border-bottom: 2px solid rgba(168,211,238,0.3); padding-bottom: 5px;">🎓 Formation</h4>
+      <div style="margin-bottom: 15px;">
+        <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Licence - Concepteur Designer UI</p>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.7);">Greta CFA Est Bretagne | 2025 - 2026</p>
+      </div>
+      <div style="margin-bottom: 15px;">
+        <p style="font-weight: 600; font-size: 15px; margin-bottom: 5px;">Licence - Animation, Technologie Interactive, Vidéographie et Effets Spéciaux</p>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.7);">3axes Institut | 2021 - 2024</p>
+      </div>
+    </div>
+    <div style="margin-bottom: 25px;">
+      <h4 style="color: #a8d3ee; font-size: 18px; margin-bottom: 10px; border-bottom: 2px solid rgba(168,211,238,0.3); padding-bottom: 5px;">🛠️ Compétences</h4>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 14px;">
+        <div>
+          <p style="font-weight: 600; margin-bottom: 8px;">Design</p>
+          <ul style="margin: 0; padding-left: 20px; color: rgba(255,255,255,0.85);">
+            <li>UI/UX Design</li><li>Motion Design</li><li>Design Graphique</li><li>Infographie 3D</li>
+          </ul>
+        </div>
+        <div>
+          <p style="font-weight: 600; margin-bottom: 8px;">Outils</p>
+          <ul style="margin: 0; padding-left: 20px; color: rgba(255,255,255,0.85);">
+            <li>Figma, Wordpress</li><li>After Effects, Premiere Pro</li><li>Illustrator, Photoshop</li><li>Blender, Cinema 4D</li>
+          </ul>
+        </div>
+        <div>
+          <p style="font-weight: 600; margin-bottom: 8px;">Développement</p>
+          <ul style="margin: 0; padding-left: 20px; color: rgba(255,255,255,0.85);">
+            <li>Three.js, WebGL</li><li>HTML/CSS/JavaScript</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom: 20px;">
+      <h4 style="color: #a8d3ee; font-size: 18px; margin-bottom: 10px; border-bottom: 2px solid rgba(168,211,238,0.3); padding-bottom: 5px;">🏆 Réalisations</h4>
+      <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: rgba(255,255,255,0.85);">
+        <li style="margin-bottom: 8px;">Sélection au Festival Regards Croisés - Film "Comme tout le monde"</li>
+        <li style="margin-bottom: 8px;">Portfolio 3D interactif avec Three.js et WebGL</li>
+        <li style="margin-bottom: 8px;">Projets de motion design et création de jeux vidéos avec une équipe de 15 personnes</li>
+      </ul>
+    </div>
+  </div>
+`;
+
+function openAboutModal() {
+  aboutModalBody.innerHTML = cvHTML;
+  aboutModal.classList.add('active');
+  controlsEnabled = false;
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => {
+    const first = aboutModal.querySelector('button, a');
+    if (first) first.focus();
+  }, 100);
+}
+
+function closeAboutModal() {
+  aboutModal.classList.remove('active');
+  controlsEnabled = true;
+  document.body.style.overflow = '';
+}
+
+document.getElementById('btn-about').addEventListener('click', openAboutModal);
+aboutModalClose.addEventListener('click', closeAboutModal);
+aboutModal.addEventListener('click', (e) => { if (e.target === aboutModal) closeAboutModal(); });
+
 // Close modal with Escape key and handle Tab focus trap
 window.addEventListener('keydown', (e) => {
+  if (aboutModal.classList.contains('active')) {
+    if (e.key === 'Escape') { closeAboutModal(); return; }
+  }
   if (!modal.classList.contains('active')) return;
-  
+
   // Close on Escape
   if (e.key === 'Escape') {
     closeModal();
     return;
   }
-  
+
   // Focus trap: keep Tab navigation within modal
   if (e.key === 'Tab') {
     const focusableElements = modal.querySelectorAll(
@@ -1154,7 +1265,7 @@ window.addEventListener('keydown', (e) => {
     const focusableArray = Array.from(focusableElements);
     const firstFocusable = focusableArray[0];
     const lastFocusable = focusableArray[focusableArray.length - 1];
-    
+
     // Shift + Tab on first element -> go to last
     if (e.shiftKey && document.activeElement === firstFocusable) {
       e.preventDefault();

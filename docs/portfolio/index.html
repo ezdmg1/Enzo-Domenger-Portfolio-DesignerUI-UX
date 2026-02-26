@@ -68,88 +68,125 @@
         display: block;
       }
       
-      /* Navigation arrows */
-      .nav-arrow {
+      /* Top-right HUD buttons */
+      .hud-top-right {
         position: fixed;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 60px;
-        height: 60px;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 50%;
+        top: 20px;
+        right: 20px;
         display: flex;
+        gap: 10px;
         align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
         z-index: 1000;
-        border: 2px solid rgba(255, 255, 255, 0.2);
-      }
-      
-      .nav-arrow:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateY(-50%) scale(1.1);
-        border-color: rgba(255, 255, 255, 0.4);
-      }
-      
-      .nav-arrow:active {
-        transform: translateY(-50%) scale(0.95);
-      }
-      
-      .nav-left {
-        left: 30px;
-      }
-      
-      .nav-right {
-        right: 30px;
-      }
-      
-      .nav-arrow svg {
-        pointer-events: none;
       }
 
-      
-      
-      /* Action button */
-      .action-button {
-        position: fixed;
-        bottom: 80px;
-        left: 50%;
-        transform: translateX(-50%) translateY(20px);
-        padding: 15px 40px;
+      .hud-btn {
+        padding: 10px 20px;
         background: rgba(255, 255, 255, 0.15);
         backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         border: 2px solid rgba(255, 255, 255, 0.3);
         border-radius: 30px;
         color: white;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.4s ease;
-        opacity: 0;
-        pointer-events: none;
-        z-index: 1000;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        font-family: inherit;
+        white-space: nowrap;
       }
-      
-      .action-button.visible {
-        opacity: 1;
-        pointer-events: all;
-        transform: translateX(-50%) translateY(0);
+
+      .hud-top-right .hud-btn {
+        background: rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        color: white;
+        border-color: rgba(255, 255, 255, 0.3);
       }
-      
-      .action-button:hover {
+
+      .hud-top-right .hud-btn:hover {
+        background: rgba(0, 0, 0, 0.55);
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+
+      .hud-btn:hover {
         background: rgba(255, 255, 255, 0.25);
         border-color: rgba(255, 255, 255, 0.5);
-        transform: translateX(-50%) translateY(-5px);
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
       }
-      
-      .action-button:active {
-        transform: translateX(-50%) translateY(-2px);
+
+      .hud-btn:active {
+        transform: translateY(0);
       }
-      
+
+      /* Bottom center HUD nav */
+      .hud-bottom {
+        position: fixed;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 40px;
+        padding: 10px 16px;
+      }
+
+      .hud-bottom .hud-btn {
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .hud-bottom .hud-btn:hover {
+        background: rgba(255, 255, 255, 0.20);
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+
+      .hud-bottom .hud-btn.hud-btn--primary {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.3);
+        padding: 12px 28px;
+        font-size: 15px;
+      }
+
+      .hud-bottom .hud-btn.hud-btn--primary:hover {
+        background: rgba(255, 255, 255, 0.20);
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+
+      /* About/CV modal overlay */
+      #about-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 3000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+
+      #about-modal.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      #about-modal .modal-content {
+        transform: scale(0.9) translateY(20px);
+        transition: transform 0.3s ease;
+      }
+
+      #about-modal.active .modal-content {
+        transform: scale(1) translateY(0);
+      }
+
       /* Swipe indicator for touch devices */
       .swipe-indicator {
         display: none;
@@ -176,22 +213,22 @@
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
       }
-      
+
       .swipe-indicator > svg {
         animation: swipeBounce 2s ease-in-out infinite;
         opacity: 0.6;
       }
-      
+
       @keyframes swipeFadeInOut {
         0%, 100% { opacity: 0; }
         50% { opacity: 0.9; }
       }
-      
+
       @keyframes swipeBounce {
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-8px); }
       }
-      
+
       /* Touch device optimizations */
       @media (pointer: coarse) {
         /* Show swipe indicator on touch devices */
@@ -201,17 +238,20 @@
           overscroll-behavior: none;
           touch-action: manipulation;
         }
-        /* Larger touch targets for arrows */
-        .nav-arrow {
-          width: 56px;
-          height: 56px;
+        .hud-top-right {
+          top: 12px;
+          right: 12px;
+          gap: 6px;
         }
-        .action-button {
-          padding: 16px 32px;
-          font-size: 18px;
+        .hud-btn {
+          padding: 9px 14px;
+          font-size: 13px;
+        }
+        .hud-bottom {
+          bottom: 24px;
         }
       }
-      
+
       /* Modal */
       .modal {
         position: fixed;
@@ -228,14 +268,14 @@
         z-index: 2000;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
+        transition: opacity 0.3s ease;
       }
-      
+
       .modal.active {
         opacity: 1;
         pointer-events: all;
       }
-      
+
       .modal-content {
         background: rgba(0, 0, 0, 0.6);
         backdrop-filter: blur(20px);
@@ -252,11 +292,11 @@
         transition: transform 0.3s ease;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
       }
-      
+
       .modal.active .modal-content {
         transform: scale(1) translateY(0);
       }
-      
+
       .modal-close {
         position: absolute;
         top: 15px;
@@ -274,27 +314,27 @@
         border-radius: 50%;
         transition: all 0.2s ease;
       }
-      
+
       .modal-close:hover {
         background: rgba(255, 255, 255, 0.1);
         transform: rotate(90deg);
       }
-      
+
       .modal-content h2 {
         color: white;
         margin: 0 0 20px 0;
         font-size: 28px;
       }
-      
+
       .modal-body {
         color: rgba(255, 255, 255, 0.9);
         line-height: 1.6;
       }
-      
+
       .modal-body p {
         margin: 10px 0;
       }
-      
+
       .modal-video {
         width: 100%;
         aspect-ratio: 16 / 9;
@@ -302,7 +342,7 @@
         margin-bottom: 20px;
         border: 1px solid rgba(255, 255, 255, 0.3);
       }
-      
+
       /* Cursor text */
       .cursor-text {
         position: fixed;
@@ -319,11 +359,11 @@
         mix-blend-mode: difference;
         will-change: transform;
       }
-      
+
       .cursor-text.hidden {
         opacity: 0;
       }
-      
+
       /* Loading spinner animation */
       @keyframes spin {
         to { transform: rotate(360deg); }
@@ -354,7 +394,7 @@
         position: relative;
         min-height: 200px;
       }
-      
+
       .gallery-image[style*="opacity: 0"] {
         background: linear-gradient(
           90deg,
@@ -365,7 +405,7 @@
         background-size: 200% 100%;
         animation: skeleton-loading 1.5s infinite;
       }
-      
+
       @keyframes skeleton-loading {
         0% { background-position: 200% 0; }
         100% { background-position: -200% 0; }
@@ -453,26 +493,22 @@
     </a>
     <!-- Startup white overlay: we fade this OUT in main.js to reveal the carousel -->
     <div id="fade-overlay"></div>
-    <!-- Navigation arrows -->
-    <button id="nav-left" class="nav-arrow nav-left" aria-label="Projet précédent" title="Projet précédent (Flèche gauche)">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
-        <polyline points="15 18 9 12 15 6"></polyline>
-      </svg>
-    </button>
-    
-    <button id="nav-right" class="nav-arrow nav-right" aria-label="Projet suivant" title="Projet suivant (Flèche droite)">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
-        <polyline points="9 18 15 12 9 6"></polyline>
-      </svg>
-    </button>
-    
+    <!-- Top-right HUD buttons -->
+    <div class="hud-top-right">
+      <button id="btn-about" class="hud-btn" aria-label="À propos">À propos</button>
+      <a id="btn-cv" class="hud-btn" href="../assets/CV_Enzo_Domenger.pdf" download aria-label="Télécharger mon CV">Télécharger mon CV</a>
+      <a id="btn-linkedin" class="hud-btn" href="https://www.linkedin.com/in/enzo-domenger" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">LinkedIn</a>
+    </div>
+
+    <!-- Bottom center HUD navigation -->
+    <div class="hud-bottom">
+      <button id="nav-left" class="hud-btn" aria-label="Projet précédent" title="Projet précédent (Flèche gauche)">Précédent</button>
+      <button id="action-button" class="hud-btn hud-btn--primary" aria-label="Voir le projet" title="Voir le projet (Entrée)">Voir le projet</button>
+      <button id="nav-right" class="hud-btn" aria-label="Projet suivant" title="Projet suivant (Flèche droite)">Suivant</button>
+    </div>
+
     <!-- Cursor text -->
     <div id="cursor-text" class="cursor-text">scroll</div>
-    
-    <!-- Action button for focused item -->
-    <button id="action-button" class="action-button" aria-label="Découvrir le projet" title="Découvrir le projet (Entrée)">
-      <span>Découvrir</span>
-    </button>
     
     <!-- Touch swipe indicator (mobile/tablet only) -->
     <div id="swipe-indicator" class="swipe-indicator">
@@ -482,6 +518,15 @@
       <span>Glissez pour zoomer</span>
     </div>
     
+    <!-- About / CV modal -->
+    <div id="about-modal" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
+      <div class="modal-content">
+        <button id="about-modal-close" class="modal-close" aria-label="Fermer">&times;</button>
+        <h2 id="about-modal-title" style="color:white; margin:0 0 20px 0; font-size:26px;">À propos</h2>
+        <div id="about-modal-body" class="modal-body"></div>
+      </div>
+    </div>
+
     <!-- Modal window -->
     <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <div class="modal-content">

@@ -3,8 +3,8 @@ const CACHE_VERSION = 'portfolio-v2.1';
 const CACHE_ASSETS = [
   './',
   './main.js',
-  './assets/grass.jpg',
-  './assets/cloud.jpg',
+  './assets/grass.webp',
+  './assets/cloud.webp',
   './assets/logo(180).png',
   './assets/Logo_32_.ico',
   './manifest.json'

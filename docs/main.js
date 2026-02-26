@@ -278,11 +278,11 @@ let texturesLoaded = 0;
 const totalTextures = 2;
 
 const textureLoader = new THREE.TextureLoader();
-const grassTex = textureLoader.load('./assets/grass.jpg', () => {
+const grassTex = textureLoader.load('./assets/grass.webp', () => {
   texturesLoaded++;
   checkIfFullyLoaded();
 });
-const cloudTex = textureLoader.load('./assets/cloud.jpg', () => {
+const cloudTex = textureLoader.load('./assets/cloud.webp', () => {
   texturesLoaded++;
   checkIfFullyLoaded();
 });
