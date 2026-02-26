@@ -1,149 +1,296 @@
 <!DOCTYPE html>
+
 <html lang="fr">
+
   <head>
+
     <meta charset="utf-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <meta name="description" content="Portfolio 3D interactif d'Enzo Domenger, designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur, prototypage et design system. Découvrez mes projets créatifs.">
+
     <meta name="keywords" content="portfolio UI/UX, designer UI/UX freelance, Three.js portfolio, portfolio 3D interactif, design d'interface, expérience utilisateur, UX design, UI design, prototypage Figma, design system, WebGL portfolio, creative portfolio, designer Paris, Enzo Domenger">
+
     <meta name="author" content="Enzo Domenger">
+
     <meta name="robots" content="index, follow">
+
     
+
     <!-- Content Security Policy -->
+
     <meta http-equiv="Content-Security-Policy" content="
+
       default-src 'self';
+
       script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+
       style-src 'self' 'unsafe-inline';
+
       img-src 'self' data: https: http: blob:;
+
       media-src 'self' https: http: blob: data:;
+
       connect-src 'self' https: blob: data:;
+
       frame-src https://www.youtube.com https://www.youtube-nocookie.com;
+
       font-src 'self';
+
       object-src 'none';
+
       base-uri 'self';
+
       form-action 'self';
+
       upgrade-insecure-requests;
+
     ">
+
     
+
     <!-- Open Graph / Facebook -->
+
     <meta property="og:type" content="website">
+
     <meta property="og:url" content="https://enzo-domenger-portfolio.com/projets">
+
     <meta property="og:title" content="Enzo Domenger - Portfolio Designer UI/UX 3D Interactif">
+
     <meta property="og:description" content="Designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur et prototypage. Découvrez mes projets créatifs en design UI/UX et design interactif.">
+
     <meta property="og:image" content="https://enzo-domenger-portfolio.com/preview.png">
+
     
+
     <!-- Twitter -->
+
     <meta property="twitter:card" content="summary_large_image">
+
     <meta property="twitter:url" content="https://enzo-domenger-portfolio.com/projets">
+
     <meta property="twitter:title" content="Enzo Domenger - Portfolio Designer UI/UX 3D Interactif">
+
     <meta property="twitter:description" content="Designer UI/UX freelance spécialisé en design d'interface, expérience utilisateur et prototypage. Découvrez mes projets créatifs.">
+
     <meta property="twitter:image" content="https://enzo-domenger-portfolio.com/preview.png">
+
     
+
     <!-- Favicon -->
+
     <link rel="icon" type="image/x-icon" href="../assets/Logo_32_.ico">
+
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/Logo_32_.ico">
+
     <link rel="icon" type="image/png" sizes="16x16" href="../assets/Logo_32_.ico">
+
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/logo(180).png">
+
     <link rel="shortcut icon" href="../assets/Logo_32_.ico">
+
     
+
     <!-- PWA Manifest -->
+
     <link rel="manifest" href="../manifest.json">
+
     <meta name="theme-color" content="#000000">
+
     <meta name="apple-mobile-web-app-capable" content="yes">
+
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
     
+
     <!-- Preconnect to external resources -->
+
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
     <link rel="dns-prefetch" href="https://www.youtube.com">
+
     <link rel="dns-prefetch" href="https://img.youtube.com">
+
     
+
     <title>Enzo Domenger - Portfolio Designer UI/UX</title>
+
     <style>
+
       :root { --ntg-bottom: 20px; --ntg-gap: 12px; --ntg-size: 112px; }
+
       body { 
+
         margin: 0; 
+
         overflow: hidden;
+
         font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+
       }
+
       canvas {
+
         display: block;
+
       }
+
       
+
       /* Top-right HUD buttons */
+
       .hud-top-right {
+
         position: fixed;
+
         top: 20px;
+
         right: 20px;
+
         display: flex;
+
         gap: 10px;
+
         align-items: center;
+
         z-index: 1000;
+
       }
+
+
 
       .hud-btn {
+
         padding: 10px 20px;
+
         background: rgba(255, 255, 255, 0.15);
+
         backdrop-filter: blur(10px);
+
         -webkit-backdrop-filter: blur(10px);
+
         border: 2px solid rgba(255, 255, 255, 0.3);
+
         border-radius: 30px;
+
         color: white;
+
         font-size: 14px;
+
         font-weight: 600;
+
         cursor: pointer;
+
         transition: all 0.3s ease;
+
         font-family: inherit;
+
         white-space: nowrap;
+
       }
+
+
 
       .hud-top-right .hud-btn {
+
         background: rgba(0, 0, 0, 0.35);
+
         backdrop-filter: blur(12px);
+
         -webkit-backdrop-filter: blur(12px);
+
         color: white;
+
         border-color: rgba(255, 255, 255, 0.3);
+
       }
+
+
 
       .hud-top-right .hud-btn:hover {
+
         background: rgba(0, 0, 0, 0.55);
+
         border-color: rgba(255, 255, 255, 0.5);
+
       }
+
+
 
       .hud-btn:hover {
+
         background: rgba(255, 255, 255, 0.25);
+
         border-color: rgba(255, 255, 255, 0.5);
+
         transform: translateY(-2px);
+
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+
       }
+
+
 
       .hud-btn:active {
+
         transform: translateY(0);
+
       }
+
+
 
       /* Bottom center HUD nav */
+
       .hud-bottom {
+
         position: fixed;
+
         bottom: 40px;
+
         left: 50%;
+
         transform: translateX(-50%);
+
         display: flex;
+
         gap: 10px;
+
         align-items: center;
+
         z-index: 1000;
+
         background: rgba(0, 0, 0, 0.35);
+
         backdrop-filter: blur(12px);
+
         -webkit-backdrop-filter: blur(12px);
+
         border-radius: 40px;
+
         padding: 10px 16px;
+
       }
+
+
 
       .hud-bottom .hud-btn {
+
         background: rgba(255, 255, 255, 0.12);
+
       }
 
+
+
       .hud-bottom .hud-btn:hover {
+
         background: rgba(255, 255, 255, 0.20);
+
         border-color: rgba(255, 255, 255, 0.5);
+
       }
+
+
 
       .hud-bottom .hud-btn.hud-btn--primary {
         background: rgba(255, 255, 255, 0.12);
@@ -157,411 +304,820 @@
         border-color: rgba(255, 255, 255, 0.5);
       }
 
+
+
       /* About/CV modal overlay */
+
       #about-modal {
+
         position: fixed;
+
         inset: 0;
+
         background: rgba(0, 0, 0, 0.45);
+
         backdrop-filter: blur(20px);
+
         -webkit-backdrop-filter: blur(20px);
+
         display: flex;
+
         align-items: center;
+
         justify-content: center;
+
         z-index: 3000;
+
         opacity: 0;
+
         pointer-events: none;
+
         transition: opacity 0.3s ease;
+
       }
+
+
 
       #about-modal.active {
+
         opacity: 1;
+
         pointer-events: all;
+
       }
+
+
 
       #about-modal .modal-content {
+
         transform: scale(0.9) translateY(20px);
+
         transition: transform 0.3s ease;
+
       }
+
+
 
       #about-modal.active .modal-content {
+
         transform: scale(1) translateY(0);
+
       }
+
+
 
       /* Swipe indicator for touch devices */
+
       .swipe-indicator {
+
         display: none;
+
         position: fixed;
+
         bottom: 40px;
+
         left: 50%;
+
         transform: translateX(-50%);
+
         flex-direction: column;
+
         align-items: center;
+
         gap: 16px;
+
         color: rgba(255, 255, 255, 0.5);
+
         font-size: 14px;
+
         font-weight: 500;
+
         text-transform: uppercase;
+
         letter-spacing: 1px;
+
         opacity: 0;
+
         animation: swipeFadeInOut 3s ease-in-out infinite;
+
         pointer-events: none;
+
         z-index: 5000;
+
         text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+
         background: rgba(0, 0, 0, 0.3);
+
         padding: 16px 24px;
+
         border-radius: 12px;
+
         backdrop-filter: blur(10px);
+
         -webkit-backdrop-filter: blur(10px);
+
       }
+
+
 
       .swipe-indicator > svg {
+
         animation: swipeBounce 2s ease-in-out infinite;
+
         opacity: 0.6;
+
       }
+
+
 
       @keyframes swipeFadeInOut {
+
         0%, 100% { opacity: 0; }
+
         50% { opacity: 0.9; }
+
       }
+
+
 
       @keyframes swipeBounce {
+
         0%, 100% { transform: translateY(0); }
+
         50% { transform: translateY(-8px); }
+
       }
+
+
 
       /* Touch device optimizations */
+
       @media (pointer: coarse) {
+
         /* Show swipe indicator on touch devices */
+
         .swipe-indicator { display: flex; }
+
         
+
         body { 
+
           overscroll-behavior: none;
+
           touch-action: manipulation;
+
         }
+
         .hud-top-right {
+
           top: 12px;
+
           right: 12px;
+
           gap: 6px;
+
         }
+
         .hud-btn {
+
           padding: 9px 14px;
+
           font-size: 13px;
+
         }
+
         .hud-bottom {
+
           bottom: 24px;
+
         }
+
       }
+
+
 
       /* Modal */
+
       .modal {
+
         position: fixed;
+
         top: 0;
+
         left: 0;
+
         width: 100%;
+
         height: 100%;
+
         background: rgba(0, 0, 0, 0.3);
+
         backdrop-filter: blur(20px);
+
         -webkit-backdrop-filter: blur(20px);
+
         display: flex;
+
         align-items: center;
+
         justify-content: center;
+
         z-index: 2000;
+
         opacity: 0;
+
         pointer-events: none;
+
         transition: opacity 0.3s ease;
+
       }
+
+
 
       .modal.active {
+
         opacity: 1;
+
         pointer-events: all;
+
       }
+
+
 
       .modal-content {
+
         background: rgba(0, 0, 0, 0.6);
+
         backdrop-filter: blur(20px);
+
         -webkit-backdrop-filter: blur(20px);
+
         border: 2px solid rgba(255, 255, 255, 0.8);
+
         border-radius: 20px;
+
         padding: 40px;
+
         max-width: 800px;
+
         width: 90%;
+
         max-height: 80vh;
+
         overflow-y: auto;
+
         position: relative;
+
         transform: scale(0.9) translateY(20px);
+
         transition: transform 0.3s ease;
+
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+
       }
+
+
 
       .modal.active .modal-content {
+
         transform: scale(1) translateY(0);
+
       }
+
+
 
       .modal-close {
+
         position: absolute;
+
         top: 15px;
+
         right: 15px;
+
         background: none;
+
         border: none;
+
         color: white;
+
         font-size: 32px;
+
         cursor: pointer;
+
         width: 40px;
+
         height: 40px;
+
         display: flex;
+
         align-items: center;
+
         justify-content: center;
+
         border-radius: 50%;
+
         transition: all 0.2s ease;
+
       }
+
+
 
       .modal-close:hover {
+
         background: rgba(255, 255, 255, 0.1);
+
         transform: rotate(90deg);
+
       }
+
+
 
       .modal-content h2 {
+
         color: white;
+
         margin: 0 0 20px 0;
+
         font-size: 28px;
+
       }
+
+
 
       .modal-body {
+
         color: rgba(255, 255, 255, 0.9);
+
         line-height: 1.6;
+
       }
+
+
 
       .modal-body p {
+
         margin: 10px 0;
+
       }
+
+
 
       .modal-video {
+
         width: 100%;
+
         aspect-ratio: 16 / 9;
+
         border-radius: 10px;
+
         margin-bottom: 20px;
+
         border: 1px solid rgba(255, 255, 255, 0.3);
+
       }
+
+
 
       /* Cursor text */
+
       .cursor-text {
+
         position: fixed;
+
         pointer-events: none;
+
         z-index: 9999;
+
         color: white;
+
         font-size: 14px;
+
         font-weight: 600;
+
         text-transform: uppercase;
+
         letter-spacing: 2px;
+
         opacity: 1;
+
         transition: opacity 0.3s ease;
+
         white-space: nowrap;
+
         mix-blend-mode: difference;
+
         will-change: transform;
+
       }
+
+
 
       .cursor-text.hidden {
+
         opacity: 0;
+
       }
+
+
 
       /* Loading spinner animation */
+
       @keyframes spin {
+
         to { transform: rotate(360deg); }
+
       }
+
       /* Loading overlay (responsive) */
+
       #loading-overlay {
+
         position: fixed;
+
         inset: 0;
+
         background: #d6d6d6;
+
         display: flex;
+
         align-items: center;
+
         justify-content: center;
+
         z-index: 5000;
+
       }
+
       .loading-spinner {
+
         width: 160px;
+
         height: 160px;
+
         border-radius: 50%;
+
         border: 10px solid rgba(255,255,255,0.3);
+
         border-top-color: rgba(255,255,255,0.5);
+
         animation: spin 1s linear infinite;
+
       }
+
       @media (max-width: 480px) {
+
         .loading-spinner { width: 120px; height: 120px; border-width: 8px; }
+
       }
+
       /* Gallery image loading skeleton */
+
       .gallery-image {
+
         position: relative;
+
         min-height: 200px;
+
       }
+
+
 
       .gallery-image[style*="opacity: 0"] {
+
         background: linear-gradient(
+
           90deg,
+
           #2a2a2a 25%,
+
           #3a3a3a 50%,
+
           #2a2a2a 75%
+
         );
+
         background-size: 200% 100%;
+
         animation: skeleton-loading 1.5s infinite;
+
       }
+
+
 
       @keyframes skeleton-loading {
+
         0% { background-position: 200% 0; }
+
         100% { background-position: -200% 0; }
+
       }
+
+
 
       /* Top-left logo button */
+
       #logo-btn { position: fixed; top: 12px; left: 12px; z-index: 4001; }
+
       #logo-btn img { width: 44px; height: 44px; display: block; opacity: 0.9; }
+
       #logo-btn:hover img { opacity: 1; }
 
+
+
       /* Startup overlay (will fade OUT) */
+
       #fade-overlay {
+
         position: fixed;
+
         inset: 0;
+
         background: #d6d6d6;
+
         opacity: 1;
+
         pointer-events: none;
+
         z-index: 3000;
+
       }
+
     </style>
+
     <script type="importmap">
+
       {
+
         "imports": {
+
           "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+
           "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+
         }
+
       }
+
     </script>
+
     
+
     <!-- JSON-LD Schema.org markup for SEO -->
+
     <script type="application/ld+json">
+
     {
+
       "@context": "https://schema.org",
+
       "@type": "CreativeWork",
+
       "name": "Portfolio Designer UI/UX 3D - Enzo Domenger",
+
       "description": "Portfolio interactif 3D présentant des projets en design UI/UX, design d'interface, expérience utilisateur, prototypage Figma et design system",
+
       "keywords": "portfolio UI/UX, designer UI/UX freelance, design d'interface, UX design, UI design, prototypage Figma, design system, WebGL portfolio, Three.js",
+
       "author": {
+
         "@type": "Person",
+
         "name": "Enzo Domenger",
+
         "jobTitle": "Designer UI/UX Freelance & Spécialiste Design Interactif",
+
         "url": "https://enzo-domenger-portfolio.com",
+
         "sameAs": [
+
           "https://www.linkedin.com/in/enzo-domenger",
+
           "https://www.behance.net/enzo-domenger"
+
         ]
+
       },
+
       "workExample": [
+
         {
+
           "@type": "CreativeWork",
+
           "name": "Club Architecture - IA Générative",
+
           "description": "Projet de vulgarisation de la conception générative par l'IA en architecture",
+
           "video": {
+
             "@type": "VideoObject",
+
             "name": "Club Architecture",
+
             "thumbnailUrl": "https://img.youtube.com/vi/T1v0eDGNcOg/maxresdefault.jpg",
+
             "uploadDate": "2024-01-01",
+
             "contentUrl": "https://www.youtube.com/watch?v=T1v0eDGNcOg"
+
           }
+
         },
+
         {
+
           "@type": "CreativeWork",
+
           "name": "Garry Kasparov - Intelligence Artificielle",
+
           "description": "Motion design sur la conférence TED de Garry Kasparov",
+
           "video": {
+
             "@type": "VideoObject",
+
             "name": "But was it intelligent?",
+
             "thumbnailUrl": "https://img.youtube.com/vi/F3rhjsh-SmQ/maxresdefault.jpg",
+
             "uploadDate": "2024-01-01",
+
             "contentUrl": "https://www.youtube.com/watch?v=F3rhjsh-SmQ"
+
           }
+
         }
+
       ]
+
     }
+
     </script>
+
   </head>
+
   <body>
+
     <!-- Loading overlay: removed by main.js when model & video are ready -->
+
     <div id="loading-overlay" aria-live="polite" aria-busy="true">
+
       <div class="loading-spinner" role="status"></div>
+
     </div>
+
     <!-- Top-left logo placeholder. Replace src with your logo. Click refreshes the page. -->
+
     <a id="logo-btn" href="#" aria-label="Retour à l'accueil">
+
       <img id="logo-img" alt="Logo Portfolio Enzo Domenger - Motion Designer & Architecte" src="../assets/logo(180).png">
+
     </a>
+
     <!-- Startup white overlay: we fade this OUT in main.js to reveal the carousel -->
+
     <div id="fade-overlay"></div>
+
     <!-- Top-right HUD buttons -->
+
     <div class="hud-top-right">
+
       <button id="btn-about" class="hud-btn" aria-label="À propos">À propos</button>
+
       <a id="btn-cv" class="hud-btn" href="../assets/CV_Enzo_Domenger.pdf" download aria-label="Télécharger mon CV">Télécharger mon CV</a>
+
       <a id="btn-linkedin" class="hud-btn" href="https://www.linkedin.com/in/enzo-domenger" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">LinkedIn</a>
+
     </div>
+
+
 
     <!-- Bottom center HUD navigation -->
+
     <div class="hud-bottom">
+
       <button id="nav-left" class="hud-btn" aria-label="Projet précédent" title="Projet précédent (Flèche gauche)">Précédent</button>
+
       <button id="action-button" class="hud-btn hud-btn--primary" aria-label="Voir le projet" title="Voir le projet (Entrée)">Voir le projet</button>
+
       <button id="nav-right" class="hud-btn" aria-label="Projet suivant" title="Projet suivant (Flèche droite)">Suivant</button>
+
     </div>
+
+
 
     <!-- Cursor text -->
+
     <div id="cursor-text" class="cursor-text">scroll</div>
+
     
+
     <!-- Touch swipe indicator (mobile/tablet only) -->
+
     <div id="swipe-indicator" class="swipe-indicator">
+
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+
         <polyline points="18 15 12 9 6 15"></polyline>
+
       </svg>
+
       <span>Glissez pour zoomer</span>
-    </div>
-    
-    <!-- About / CV modal -->
-    <div id="about-modal" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
-      <div class="modal-content">
-        <button id="about-modal-close" class="modal-close" aria-label="Fermer">&times;</button>
-        <h2 id="about-modal-title" style="color:white; margin:0 0 20px 0; font-size:26px;">À propos</h2>
-        <div id="about-modal-body" class="modal-body"></div>
-      </div>
+
     </div>
 
-    <!-- Modal window -->
-    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    
+
+    <!-- About / CV modal -->
+
+    <div id="about-modal" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
+
       <div class="modal-content">
-        <button id="modal-close" class="modal-close" aria-label="Fermer la fenêtre" title="Fermer (Échap)">&times;</button>
-        <h2 id="modal-title">Élément</h2>
-        <div id="modal-body" class="modal-body">
-          <p>Contenu de l'élément sélectionné</p>
-        </div>
+
+        <button id="about-modal-close" class="modal-close" aria-label="Fermer">&times;</button>
+
+        <h2 id="about-modal-title" style="color:white; margin:0 0 20px 0; font-size:26px;">À propos</h2>
+
+        <div id="about-modal-body" class="modal-body"></div>
+
       </div>
+
     </div>
+
+
+
+    <!-- Modal window -->
+
+    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+      <div class="modal-content">
+
+        <button id="modal-close" class="modal-close" aria-label="Fermer la fenêtre" title="Fermer (Échap)">&times;</button>
+
+        <h2 id="modal-title">Élément</h2>
+
+        <div id="modal-body" class="modal-body">
+
+          <p>Contenu de l'élément sélectionné</p>
+
+        </div>
+
+      </div>
+
+    </div>
+
     
+
     <script type="module" src="./main.js?v=2"></script>
+
     
+
     <!-- Register Service Worker -->
+
     <script>
+
       // Désactiver temporairement le Service Worker pour forcer le rechargement
+
       if ('serviceWorker' in navigator) {
+
         navigator.serviceWorker.getRegistrations().then(function(registrations) {
+
           for(let registration of registrations) {
+
             registration.unregister();
+
             console.log('🔄 Service Worker unregistered');
+
           }
+
         });
+
       }
+
       
+
       // Décommenter pour réactiver le Service Worker plus tard
+
       /*
+
       if ('serviceWorker' in navigator) {
+
         window.addEventListener('load', () => {
+
           navigator.serviceWorker.register('./sw.js')
+
             .then(reg => console.log('✅ Service Worker registered:', reg.scope))
+
             .catch(err => console.error('❌ Service Worker registration failed:', err));
+
         });
+
       }
+
       */
+
     </script>
+
   </body>
+
 </html>

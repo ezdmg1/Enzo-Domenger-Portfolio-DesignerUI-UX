@@ -636,9 +636,16 @@ window.addEventListener('mousemove', (e) => {
 
 // Removed unused cursor scale handlers
 
-// Handle scroll to zoom camera
+// Handle scroll to zoom camera then navigate projects
 let lastWheelTime = 0;
 const WHEEL_THROTTLE_MS = 50;
+// Throttle for project navigation (avoid skipping multiple projects per scroll)
+const WHEEL_NAV_THROTTLE_MS = 500;
+let lastWheelNavTime = 0;
+// Timestamp when cameraProgress first reached 1 (for the pause delay)
+let zoomCompletedAt = -1;
+const ZOOM_TO_NAV_DELAY_MS = 800; // pause before navigation activates
+
 window.addEventListener('wheel', (event) => {
   log('Wheel event detected - controlsEnabled:', controlsEnabled, 'isMouseOverModal:', isMouseOverModal);
   
@@ -649,12 +656,31 @@ window.addEventListener('wheel', (event) => {
   }
   
   const now = performance.now();
-  if (now - lastWheelTime < WHEEL_THROTTLE_MS) {
+  
+  // Phase 2 : already fully zoomed in → navigate between projects
+  if (cameraProgress >= 1) {
+    // Record first time we reached max zoom
+    if (zoomCompletedAt < 0) zoomCompletedAt = now;
+    // Wait for the pause delay before enabling navigation
+    if (now - zoomCompletedAt < ZOOM_TO_NAV_DELAY_MS) return;
+    if (now - lastWheelNavTime < WHEEL_NAV_THROTTLE_MS) return;
+    lastWheelNavTime = now;
+    
+    if (event.deltaY < 0) {
+      // scroll up → projet suivant (droite)
+      const nextIndex = (currentIndex + 1) % itemCount;
+      rotateToIndex(nextIndex);
+    } else {
+      // scroll down → projet précédent (gauche)
+      const prevIndex = (currentIndex - 1 + itemCount) % itemCount;
+      rotateToIndex(prevIndex);
+    }
     return;
   }
-  lastWheelTime = now;
   
-  log('✅ Scroll autorisé - deltaY:', event.deltaY);
+  // Phase 1 : zoom in only (no zoom back out)
+  if (now - lastWheelTime < WHEEL_THROTTLE_MS) return;
+  lastWheelTime = now;
   
   if (!hasScrolled) {
     hasScrolled = true;
@@ -665,11 +691,8 @@ window.addEventListener('wheel', (event) => {
     cursorText.classList.add('hidden');
   }
   
-  // Decrease progress on scroll (zoom out)
-  if (event.deltaY > 0) {
-    cameraProgress = Math.max(cameraProgress - 0.12, 0);
-  } else {
-    // Allow scrolling back in
+  // Scroll up only zooms in — scroll down does nothing during zoom phase
+  if (event.deltaY < 0) {
     cameraProgress = Math.min(cameraProgress + 0.12, 1);
   }
   
