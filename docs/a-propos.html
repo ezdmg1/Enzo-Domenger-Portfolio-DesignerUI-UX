@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>À propos - Enzo Domenger</title>
+  <meta name="description" content="À propos d'Enzo Domenger - Designer UI/UX freelance spécialisé en design d'interface et expérience utilisateur. Découvrez mon parcours, mes compétences et mon CV.">
+  <link rel="icon" type="image/x-icon" href="./assets/Logo_32_.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/logo(180).png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'South Amsterdam';
+      src: url('./assets/South Amsterdam Demo.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #F5F5F5;
+      color: #221E1F;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: url('./assets/cursor-cross.svg') 2 2, crosshair;
+      position: relative;
+    }
+
+    /* ── Page wrapper ── */
+    .page {
+      padding: 80px 256px;
+      position: relative;
+    }
+
+    /* ── Back button ── */
+    #back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 18px;
+      background: #221E1F;
+      border-radius: 30px;
+      color: #f5f4ef;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      font-family: inherit;
+      border: none;
+      position: fixed;
+      top: 32px;
+      left: 32px;
+      z-index: 1000;
+    }
+    #back-btn:hover {
+      background: #3a3537;
+      transform: translateX(-3px);
+    }
+    #back-btn svg { flex-shrink: 0; }
+
+    /* ── Page header ── */
+    .page-header {
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: visible;
+      padding-top: 32px;
+
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      margin-bottom: 24px;
+      overflow: visible;
+    }
+
+    .hero h1 {
+      font-family: 'South Amsterdam', Georgia, serif;
+      font-size: clamp(42px, 8vw, 76px);
+      font-weight: 500;
+      line-height: 1.0;
+      color: #221E1F;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 20px;
+      letter-spacing: -0.5px;
+    }
+
+    /* ── Meta bar ── */
+    .meta-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: #3a3537;
+    }
+
+    /* ── Content sections ── */
+    .content-section {
+      margin-bottom: 64px;
+      max-width: 800px;
+    }
+
+    .content-section h2 {
+      font-family: 'South Amsterdam', Georgia, serif;
+      font-size: clamp(36px, 6vw, 58px);
+      font-weight: 400;
+      font-style: italic;
+      color: #221E1F;
+      margin-bottom: 24px;
+      line-height: 1.1;
+    }
+
+    .content-section p {
+      font-size: 15px;
+      color: #3a3537;
+      line-height: 1.85;
+      margin-bottom: 16px;
+    }
+
+    /* ── CV items ── */
+    .cv-section { margin-bottom: 40px; }
+    .cv-section h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #221E1F;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #59C0EC;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .cv-item { margin-bottom: 24px; }
+    .cv-item-title { 
+      font-weight: 600; 
+      font-size: 16px; 
+      margin-bottom: 4px; 
+      color: #221E1F; 
+    }
+    .cv-item-meta { 
+      font-size: 13px; 
+      color: #59C0EC; 
+      margin-bottom: 8px; 
+      font-weight: 500;
+    }
+    .cv-item-desc { 
+      font-size: 14px; 
+      color: #3a3537; 
+      line-height: 1.6; 
+    }
+
+    /* ── Skills ── */
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .skill-pill {
+      padding: 6px 16px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #3a3537;
+      font-weight: 500;
+    }
+
+    /* ── Scroll line ── */
+    #scroll-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      overflow: visible;
+    }
+    #scroll-line svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* ── Fade in ── */
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .page { padding: 80px 32px; }
+      #back-btn { top: 16px; left: 16px; padding: 6px 14px; font-size: 12px; }
+      .page-header { padding-top: 16px; padding-bottom: 32px; margin-bottom: 32px; }
+      .hero h1 { font-size: clamp(28px, 6vw, 42px); }
+      #scroll-line { display: none; }
+      .content-section { max-width: 100%; }
+    }
+
+    /* Mobile & tablet: restore native cursor */
+    @media (pointer: coarse), (hover: none) {
+      body { cursor: auto; }
+      a, button, [role="button"], #back-btn { cursor: auto !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="scroll-line">
+    <svg viewBox="0 0 400 1000" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path id="scroll-path"
+        d="M240 0 C 320 80, 390 200, 380 320 C 370 420, 260 440, 160 460 C 40 480, -20 520, 20 640 C 50 730, 120 800, 80 920 C 60 970, 30 990, 10 1000"
+        stroke="#FED83C" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+    </svg>
+  </div>
+
+  <a id="back-btn" href="./portfolio/?projet=0" aria-label="Retour au portfolio">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    Retour
+  </a>
+
+  <div class="page fade-in">
+    <div class="page-header">
+      <section class="hero">
+        <h1>Qui je suis</h1>
+      </section>
+    </div>
+
+    <!-- Profil -->
+    <section class="content-section">
+      <h2>Profil</h2>
+      <p>Designer créatif spécialisé en UI/UX avec une forte expertise en motion design et en 3D. Passionné par la création d'expériences utilisateur immersives et l'innovation en design interactif. Mon approche combine la rigueur du design system avec la liberté créative pour produire des solutions visuelles cohérentes et impactantes.</p>
+    </section>
+
+    <!-- Expérience -->
+    <section class="content-section">
+      <h2>Experience</h2>
+      <div class="cv-section">
+        <div class="cv-item">
+          <div class="cv-item-title">Webdesigner — Stage</div>
+          <div class="cv-item-meta">Agence Mekaa · Février 2026 – Avril 2026</div>
+          <div class="cv-item-desc">Stage en webdesign au sein de l'agence Mekaa. Conception d'interfaces web, design graphique et expérience utilisateur. Travail sur des projets de refonte de sites et création de solutions UI/UX innovantes pour des clients variés.</div>
+        </div>
+        <div class="cv-item">
+          <div class="cv-item-title">Designer Graphique & Web</div>
+          <div class="cv-item-meta">Chez Léonard · Septembre 2025 – Mai 2026</div>
+          <div class="cv-item-desc">Conception de sites internet, création d'affiches sur mesure et refonte de logos et d'identités visuelles. Gestion complète de projets de création d'identité visuelle pour des petites structures et associations.</div>
+        </div>
+        <div class="cv-item">
+          <div class="cv-item-title">Designer Graphique & Web</div>
+          <div class="cv-item-meta">Hop'n'craic · novembre 2025 – Février 2026</div>
+          <div class="cv-item-desc">Prise en charge à 360° de la communication d'un projet de micro-brasserie : stratégie de marque, identité visuelle, production print et vidéo, conception UX et développement WordPress.</div>
+        </div>
+        <div class="cv-item">
+          <div class="cv-item-title">Motion Designer</div>
+          <div class="cv-item-meta">Their Memory · Mai 2025 – Septembre 2025</div>
+          <div class="cv-item-desc">Création de visuels graphiques pour la série documentaire Focus de guerre, diffusée sur YouTube. Directeur artistique et motion designer pour des contenus vidéo haute définition.</div>
+        </div>
+        <div class="cv-item">
+          <div class="cv-item-title">Motion Designer</div>
+            <div class="cv-item-meta">Club Architecture · 2024</div>
+          <div class="cv-item-desc">Réalisation d'une vidéo pédagogique sur la conception générative, de la recherche documentaire à la post-production, au sein de Club.
+        <div class="cv-item">
+          <div class="cv-item-title">Motion Designer, Designer UI/UX & Infographiste 3D</div>
+          <div class="cv-item-meta">Projets variés · 2021 – 2025</div>
+          <div class="cv-item-desc">Projets diversifiés incluant jeux vidéos, captation vidéo (concerts) et montage vidéo. Travail autonome et collaboratif sur des projets créatifs multidisciplinaires.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Formation -->
+    <section class="content-section">
+      <h2>Formations</h2>
+      <div class="cv-section">
+        <div class="cv-item">
+          <div class="cv-item-title">Licence — Concepteur Designer UI</div>
+          <div class="cv-item-meta">Greta CFA Est Bretagne · 2025 – 2026</div>
+          <div class="cv-item-desc">Formation spécialisée en design UI avec focus sur les méthodologies modernes, les design systems et les outils de prototypage.</div>
+        </div>
+        <div class="cv-item">
+          <div class="cv-item-title">Licence — Animation, Technologie Interactive, Vidéographie et Effets Spéciaux</div>
+          <div class="cv-item-meta">3axes Institut · 2021 – 2024</div>
+          <div class="cv-item-desc">Formation complète en animation 3D, motion design, vidéographie et développement web. Apprentissage des technologies immersives et du design interactif.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Compétences -->
+    <section class="content-section">
+      <h2>Competences</h2>
+      <div class="cv-section">
+        <h3>Design & Création</h3>
+        <div class="skills">
+          <span class="skill-pill">UI/UX Design</span>
+          <span class="skill-pill">Motion Design</span>
+          <span class="skill-pill">Design Graphique</span>
+          <span class="skill-pill">Infographie 3D</span>
+          <span class="skill-pill">Wireframing</span>
+          <span class="skill-pill">Prototypage</span>
+          <span class="skill-pill">Design System</span>
+          <span class="skill-pill">User Research</span>
+        </div>
+      </div>
+      <div class="cv-section">
+        <h3>Outils & Logiciels</h3>
+        <div class="skills">
+          <span class="skill-pill">Figma</span>
+        <span class="skill-pill">Wordpress</span>
+          <span class="skill-pill">Webflow</span>
+          <span class="skill-pill">Adobe Creative Suite</span>
+          <span class="skill-pill">After Effects</span>
+          <span class="skill-pill">Premiere Pro</span>
+          <span class="skill-pill">Photoshop</span>
+          <span class="skill-pill">Illustrator</span>
+          <span class="skill-pill">Blender</span>
+          <span class="skill-pill">Cinema 4D</span>
+          <span class="skill-pill">3ds Max</span>
+        </div>
+      </div>
+      <div class="cv-section">
+        <h3>Développement & Technologie</h3>
+        <div class="skills">
+          <span class="skill-pill">HTML/CSS/JavaScript</span>
+          <span class="skill-pill">Three.js</span>
+          <span class="skill-pill">Web 3D</span>
+          <span class="skill-pill">Responsive Design</span>
+          <span class="skill-pill">Accessibilité Web</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Réalisations -->
+    <section class="content-section">
+      <h2>Realisations et Distinctions</h2>
+      <div class="cv-section">
+        <div class="cv-item">
+          <div class="cv-item-title">Sélection au Festival Regards Croisés</div>
+          <div class="cv-item-meta">2024</div>
+          <div class="cv-item-desc">Film « Comme tout le monde » en compétition dans la catégorie Milieu protégé et adapté en collaboration avec Margot Legrand et ESAT Les Ateliers De L'Espoir.</div>
+        </div>
+        <div class="cv-item">
+          <div class="cv-item-title">Portfolio 3D Interactif</div>
+          <div class="cv-item-meta">2024 - 2026</div>
+          <div class="cv-item-desc">Création d'un portfolio 3D interactif utilisant Three.js et WebGL. Exploration des technologies WebGL et des interfaces 3D pour une expérience utilisateur innovante.</div>
+        </div>
+        <div class="cv-item">
+          <div class="cv-item-title">Projets Collaboratifs</div>
+          <div class="cv-item-meta">2021 - 2025</div>
+          <div class="cv-item-desc">Motion design et création de jeux vidéos avec une équipe de 15 personnes. Gestion de projet et production de contenu créatif multidisciplinaire.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="content-section" style="margin-bottom: 120px;">
+      <h2>Entrons en Contact</h2>
+      <p>Vous disposez d'un projet intéressant ou souhaitez discuter d'une collaboration ? N'hésitez pas à me contacter.</p>
+      <div class="skills" style="margin-top: 24px;">
+        <a href="mailto:enzo.domenger@gmail.com" style="padding: 12px 28px; background: #221E1F; border: none; border-radius: 30px; color: #f5f4ef; font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; transition: all 0.25s ease; display: inline-flex; align-items: center; gap: 8px;" onmouseover="this.style.background='#3a3537'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='#221E1F'; this.style.transform='translateY(0)';">
+          ✉️ Email
+        </a>
+        <a href="https://www.linkedin.com/in/enzo-domenger" target="_blank" rel="noopener noreferrer" style="padding: 12px 28px; background: #fff; border: 1.5px solid #221E1F; border-radius: 30px; color: #221E1F; font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; transition: all 0.25s ease; display: inline-flex; align-items: center; gap: 8px;" onmouseover="this.style.background='#221E1F'; this.style.color='#f5f4ef';" onmouseout="this.style.background='#fff'; this.style.color='#221E1F';">
+          💼 LinkedIn
+        </a>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // Scroll-driven line animation
+    (function() {
+      const path = document.getElementById('scroll-path');
+      if (!path) return;
+      const len = path.getTotalLength();
+      path.style.strokeDasharray = len;
+      path.style.strokeDashoffset = len;
+
+      function onScroll() {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0;
+        path.style.strokeDashoffset = len * (1 - progress);
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+  </script>
+
+</body>
+</html>

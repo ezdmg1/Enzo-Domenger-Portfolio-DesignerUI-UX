@@ -8,174 +8,293 @@
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/logo(180).png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    @font-face {
+      font-family: 'South Amsterdam';
+      src: url('../assets/South Amsterdam Demo.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: #0d0d0d;
-      color: #fff;
+      background: #F5F5F5;
+      color: #221E1F;
       font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
       cursor: url('../assets/cursor-cross.svg') 2 2, crosshair;
+      position: relative;
+    }
+
+    /* ── Page wrapper ── */
+    .page {
+      padding: 80px 128px;
+      position: relative;
     }
 
     /* ── Back button ── */
     #back-btn {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 100;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 20px;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 2px solid rgba(255, 255, 255, 0.3);
+      gap: 6px;
+      padding: 7px 18px;
+      background: #221E1F;
       border-radius: 30px;
-      color: white;
-      font-size: 14px;
-      font-weight: 600;
+      color: #f5f4ef;
+      font-size: 13px;
+      font-weight: 500;
       cursor: pointer;
       text-decoration: none;
-      transition: all 0.3s ease;
+      transition: all 0.25s ease;
       font-family: inherit;
+      border: none;
+      position: fixed;
+      top: 32px;
+      left: 32px;
+      z-index: 1000;
     }
     #back-btn:hover {
-      background: rgba(0, 0, 0, 0.7);
-      border-color: rgba(255, 255, 255, 0.5);
+      background: #3a3537;
       transform: translateX(-3px);
     }
     #back-btn svg { flex-shrink: 0; }
 
+    /* ── Project header (100vh) ── */
+    .project-header {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+      padding-top: 32px;
+      padding-bottom: 48px;
+    }
+
     /* ── Hero ── */
     .hero {
       position: relative;
-      width: 100%;
-      min-height: 50vh;
-      display: flex;
-      align-items: flex-end;
-      padding: 60px 8vw 48px;
-      background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.85) 100%), #111;
-      overflow: hidden;
+      margin-bottom: 24px;
+      overflow: visible;
     }
-    .hero-bg {
+
+    .hero-deco {
       position: absolute;
-      inset: 0;
-      background: #111;
+      top: -20px;
+      right: -40px;
+      width: 160px;
+      pointer-events: none;
       z-index: 0;
     }
-    .hero-content {
+
+    .hero h1 {
+      font-family: 'South Amsterdam', Georgia, serif;
+      font-size: clamp(42px, 8vw, 76px);
+      font-weight: 500;
+      line-height: 1.0;
+      color: #221E1F;
       position: relative;
       z-index: 1;
-      max-width: 900px;
+      margin-bottom: 20px;
+      letter-spacing: -0.5px;
     }
-    .hero-tag {
-      display: inline-block;
-      padding: 4px 14px;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.7);
-      margin-bottom: 16px;
-    }
-    .hero h1 {
-      font-size: clamp(28px, 5vw, 56px);
-      font-weight: 700;
-      line-height: 1.1;
-      margin-bottom: 16px;
-    }
-    .hero-description {
-      font-size: clamp(15px, 1.8vw, 18px);
-      color: rgba(255,255,255,0.7);
-      line-height: 1.7;
-      max-width: 680px;
-    }
-    .hero-meta {
-      margin-top: 28px;
+
+    /* ── Meta bar ── */
+    .meta-bar {
       display: flex;
+      align-items: center;
       flex-wrap: wrap;
       gap: 12px;
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: #3a3537;
     }
-    .meta-chip {
+    .meta-visit-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      background: transparent;
+      border: 1.5px solid #221E1F;
+      border-radius: 30px;
+      color: #221E1F;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .meta-visit-btn:hover {
+      background: #221E1F;
+      color: #f5f4ef;
+    }
+    .meta-sep {
+      width: 1px;
+      height: 16px;
+      background: #ccc;
+    }
+    .meta-role {
       display: flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 14px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 20px;
+      color: #59C0EC;
       font-size: 13px;
-      color: rgba(255,255,255,0.8);
+    }
+    .meta-role svg { flex-shrink: 0; color: #59C0EC; }
+    .meta-categories {
+      color: #3a3537;
+      font-size: 13px;
+    }
+    .meta-date {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #59C0EC;
+      font-size: 13px;
+      margin-left: auto;
+    }
+    .meta-date svg { flex-shrink: 0; color: #59C0EC; }
+
+    /* ── Hero image card ── */
+    .hero-image-card {
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #d9d9d9;
+      margin-bottom: 0;
+      position: relative;
+    }
+    .hero-image-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .hero-image-card .placeholder-icon {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-image-card .placeholder-icon svg {
+      color: #aaa;
     }
 
-    /* ── Content ── */
-    .content {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 64px 8vw;
+    /* ── Context section ── */
+    .context-section {
+      padding: 128px 80px 128px 736px;
+      margin-bottom: 64px;
+      text-align: left;
+      position: relative;
+    }
+    .context-deco-left {
+      position: absolute;
+      left: -80px;
+      top: 60px;
+      width: 80px;
+      pointer-events: none;
+    }
+    .context-deco-right {
+      position: absolute;
+      right: -60px;
+      bottom: -40px;
+      width: 60px;
+      pointer-events: none;
+    }
+    .context-section h2 {
+      font-family: 'South Amsterdam', Georgia, serif;
+      font-size: clamp(36px, 6vw, 58px);
+      font-weight: 400;
+      font-style: italic;
+      color: #221E1F;
+      margin-bottom: 24px;
+      line-height: 1.1;
+    }
+    .context-section p {
+      font-size: 13.5px;
+      color: #3a3537;
+      line-height: 1.85;
+      text-align: left;
     }
 
-    /* Video embed */
-    .video-wrap {
+    /* ── Gallery section (scroll stack) ── */
+    .gallery-section {
+      position: relative;
+    }
+
+    .stack-item {
+      position: sticky;
+      top: 0;
+      padding-top: 24px;
+      transform-origin: top center;
+      will-change: transform;
+    }
+
+    .gallery-card {
+      width: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #d9d9d9;
+      position: relative;
+      transform-origin: top center;
+      transition: transform 0.1s linear;
+    }
+    .gallery-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .gallery-card .placeholder-icon {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gallery-card .placeholder-icon svg {
+      color: #aaa;
+    }
+
+    .gallery-card-wide {
+      aspect-ratio: 16/6;
+    }
+    .gallery-card-tall {
+      aspect-ratio: 4/3;
+    }
+    .gallery-card-full {
+      aspect-ratio: 16/7;
+    }
+
+    .gallery-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* ── Video embed ── */
+    .video-card {
       width: 100%;
       aspect-ratio: 16/9;
-      border-radius: 16px;
+      border-radius: 20px;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.1);
-      margin-bottom: 48px;
-      background: #000;
+      background: #221E1F;
     }
-    .video-wrap iframe {
+    .video-card iframe {
       width: 100%;
       height: 100%;
       border: none;
     }
 
-    /* Gallery grid */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 48px;
-    }
-    .gallery-grid img {
-      width: 100%;
-      border-radius: 12px;
-      object-fit: cover;
-      border: 1px solid rgba(255,255,255,0.08);
-      transition: transform 0.3s ease;
-    }
-    .gallery-grid img:hover { transform: scale(1.02); }
-    .gallery-grid img:nth-child(3) { grid-column: span 2; }
-
-    /* Section blocks */
-    .section {
-      margin-bottom: 48px;
-    }
-    .section h2 {
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      color: #fff;
-    }
-    .section p {
-      font-size: 15px;
-      color: rgba(255,255,255,0.8);
-      line-height: 1.8;
-      margin-bottom: 12px;
-    }
-
-    /* Skills pills */
+    /* ── Skills pills ── */
     .skills {
       display: flex;
       flex-wrap: wrap;
@@ -183,66 +302,67 @@
       margin-top: 12px;
     }
     .skill-pill {
-      padding: 6px 16px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.15);
+      padding: 5px 14px;
+      background: #fff;
+      border: 1px solid #ddd;
       border-radius: 20px;
-      font-size: 13px;
-      color: rgba(255,255,255,0.85);
+      font-size: 12px;
+      color: #3a3537;
     }
 
-    /* CV content */
+    /* ── CV content ── */
     .cv-section { margin-bottom: 32px; }
     .cv-section h3 {
-      font-size: 16px;
-      font-weight: 700;
-      color: rgba(168,211,238,1);
+      font-size: 15px;
+      font-weight: 600;
+      color: #221E1F;
       margin-bottom: 14px;
       padding-bottom: 6px;
-      border-bottom: 1px solid rgba(168,211,238,0.2);
+      border-bottom: 1px solid #ddd;
     }
     .cv-item { margin-bottom: 18px; }
-    .cv-item-title { font-weight: 600; font-size: 15px; margin-bottom: 3px; }
-    .cv-item-meta { font-size: 13px; color: rgba(255,255,255,0.55); margin-bottom: 6px; }
-    .cv-item-desc { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.6; }
+    .cv-item-title { font-weight: 600; font-size: 15px; margin-bottom: 3px; color: #221E1F; }
+    .cv-item-meta { font-size: 13px; color: #7a7375; margin-bottom: 6px; }
+    .cv-item-desc { font-size: 14px; color: #3a3537; line-height: 1.6; }
 
-    /* Nav between projects */
+    /* ── Project nav ── */
     .project-nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 32px 0;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      margin-top: 16px;
+      padding: 32px 0 0;
+      border-top: 1px solid #ddd;
+      margin-top: 48px;
       gap: 12px;
     }
     .nav-btn {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 12px 24px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.15);
+      padding: 10px 22px;
+      background: #fff;
+      border: 1.5px solid #ddd;
       border-radius: 30px;
-      color: white;
-      font-size: 14px;
-      font-weight: 600;
+      color: #221E1F;
+      font-size: 13px;
+      font-weight: 500;
       cursor: pointer;
       text-decoration: none;
-      transition: all 0.3s ease;
+      transition: all 0.25s ease;
       font-family: inherit;
     }
     .nav-btn:hover {
-      background: rgba(255,255,255,0.13);
-      border-color: rgba(255,255,255,0.3);
+      background: #221E1F;
+      color: #f5f4ef;
+      border-color: #221E1F;
     }
     .nav-btn.disabled {
       opacity: 0.3;
       pointer-events: none;
     }
-    .nav-btn-label { font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; }
+    .nav-btn-label { font-size: 10px; color: #7a7375; text-transform: uppercase; letter-spacing: 1px; }
 
-    /* Loading state */
+    /* ── Loading state ── */
     #loading {
       display: flex;
       flex-direction: column;
@@ -250,7 +370,7 @@
       justify-content: center;
       min-height: 60vh;
       gap: 16px;
-      color: rgba(255,255,255,0.5);
+      color: #7a7375;
     }
     .loading-video {
       width: 120px;
@@ -258,7 +378,7 @@
       object-fit: contain;
     }
 
-    /* Fade in */
+    /* ── Fade in ── */
     .fade-in {
       animation: fadeIn 0.5s ease forwards;
     }
@@ -267,21 +387,45 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    @media (max-width: 600px) {
-      .gallery-grid { grid-template-columns: 1fr; }
-      .gallery-grid img:nth-child(3) { grid-column: span 1; }
+    /* ── Scroll line ── */
+    #scroll-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      overflow: visible;
+    }
+    #scroll-line svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    @media (max-width: 640px) {
+      .page { padding: 80px; }
+      .gallery-row { grid-template-columns: 1fr; }
+      .meta-date { margin-left: 0; }
       .project-nav { flex-direction: column; }
+      .context-deco-left, .context-deco-right, .gallery-deco-left, .hero-deco { display: none; }
+      #scroll-line { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <a id="back-btn" href="#"><!-- set dynamically -->
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="15 18 9 12 15 6"></polyline>
+  <div id="scroll-line">
+    <svg viewBox="0 0 400 1000" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path id="scroll-path"
+        d="M240 0 C 320 80, 390 200, 380 320 C 370 420, 260 440, 160 460 C 40 480, -20 520, 20 640 C 50 730, 120 800, 80 920 C 60 970, 30 990, 10 1000"
+        stroke="#FED83C" stroke-width="1.5" stroke-linecap="round" fill="none"/>
     </svg>
-    Retour
-  </a>
+  </div>
 
   <div id="app">
     <div id="loading">
@@ -292,59 +436,90 @@
   <script>
     const TOTAL_PROJECTS = 6;
 
+
+    /* ── Icon SVGs ── */
+    const ICON_BACK = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
+    const ICON_ROLE = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+    const ICON_CAL = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+    const ICON_LINK = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
+    const ICON_IMG = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`;
+    const ICON_PREV = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
+    const ICON_NEXT = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+
     const projects = [
       {
-        tag: 'CV',
-        title: 'Enzo Domenger — Designer UI/UX',
-        description: 'Designer créatif spécialisé en UI/UX avec une forte expertise en motion design et en 3D. Passionné par la création d\'expériences utilisateur immersives et l\'innovation en design interactif.',
-        technologies: ['UI/UX Design', 'Motion Design', 'Three.js', 'WebGL'],
-        type: 'cv'
+        role: 'Designer Graphique & Web',
+        title: 'Chez Leonard',
+        categories: 'Identité visuelle, Web, Print & Vidéo',
+        date: '2025/2026',
+        url: 'https://chezleonard.fr',
+        description: `Chez Léonard, c'est un café associatif à Andouillé-Neuville, animé par des bénévoles, où les gens se retrouvent pour des concerts, des ateliers ou juste un verre en bonne compagnie. Malgré une vie associative bien remplie, l'asso n'avait aucune identité visuelle et aucun site. Je me suis chargé de tout remettre à plat : créer l'identité de zéro, concevoir le site sous WordPress, faire du print et assurer la production photo et vidéo du lieu. Je suis parti des couleurs du lieu pour construire une charte chaleureuse et cohérente, et un site pensé dès le départ pour être géré seul, sans compétences techniques.`,
+        heroImage: '../portfolio/images/chez-leonard/chez-leonard-1.webp',
+        galleryImages: [
+          '../portfolio/images/chez-leonard/chez-leonard-2.webp',
+          '../portfolio/images/chez-leonard/chez-leonard-3.webp',
+          '../portfolio/images/chez-leonard/chez-leonard-4.webp',
+          '../portfolio/images/chez-leonard/chez-leonard-5.webp',
+        ],
+        type: 'case-study'
       },
       {
-        tag: 'Motion Design',
-        title: 'Club Architecture — IA Générative',
-        description: 'Cette vidéo illustre un projet de vulgarisation de la conception générative par l\'IA en architecture. Durant mon stage de cinq mois, j\'ai renforcé mes compétences en motion design, gestion de projet et narration visuelle, tout en apprenant à structurer et simplifier des concepts complexes.',
+        role: 'Designer Graphique & Web',
+        title: 'Hop\'n\'Craic',
+        categories: 'Web, Print & Vidéo',
+        date: '2025/2026',
+        url: 'https://www.hopncraic.ct.ws/',
+        description: `Hop'n'Craic, c'est la micro-brasserie irlandaise de Steve Bennett, maître brasseur de Galway reconverti à Fougères. Zéro identité au départ, un projet plein de personnalité à valoriser. Nous avons pris en charge l'ensemble : naming, identité visuelle, supports print, vidéo promo et site WordPress. En nous appuyant sur les personas et un parcours utilisateur défini en amont pour que le site raconte vraiment l'histoire de la brasserie.`,
+        heroImage: '../portfolio/images/hop/hop-1.webp',
+        technologies: ['Figma', 'Wordpress', 'After Effects', 'Premiere Pro', 'Illustrator'],
+        galleryImages: [
+          '../portfolio/images/hop/hop-2.webp',
+          '../portfolio/images/hop/hop-3.webp',
+          '../portfolio/images/hop/hop-4.webp',
+          '../portfolio/images/hop/hop-5.webp',
+        ],
+        type: 'case-study'
+      },
+      {
+        role: 'Motion Designer',
+        title: 'Club Architecture',
+        categories: 'Vidéo',
+        date: '2024',
+        heroImage: `https://www.youtube.com/embed/T1v0eDGNcOg?autoplay=1&mute=1&loop=1&playlist=T1v0eDGNcOg&controls=0`,
+        description: `Cette vidéo illustre un projet de vulgarisation de la conception générative par l'IA en architecture. Durant mon stage de cinq mois, j'ai renforcé mes compétences en motion design, gestion de projet et narration visuelle, tout en apprenant à structurer et simplifier des concepts complexes.`,
+        context: `Cette vidéo illustre un projet de vulgarisation de la conception générative par l'IA en architecture. Durant mon stage de cinq mois, j'ai renforcé mes compétences en motion design, gestion de projet et narration visuelle, tout en apprenant à structurer et simplifier des concepts complexes.`,
         technologies: ['After Effects', 'Premiere Pro', 'Illustrator', 'Blender', '3ds Max', 'Revit'],
-        type: 'video',
-        videoId: 'T1v0eDGNcOg'
       },
       {
-        tag: 'Motion Design',
+        role: 'Motion Designer',
         title: 'But was it intelligent? — Garry Kasparov',
-        description: 'Animation motion design avec bande sonore de la conférence TED de Garry Kasparov sur l\'intelligence artificielle. Création typographique et effets visuels explorant la relation homme-machine à travers l\'histoire de Deep Blue. Motion design narratif mêlant animation 2D et composition graphique.',
+        categories: 'Vidéo',
+        date: '2024',
+        heroImage: `https://www.youtube.com/embed/F3rhjsh-SmQ?autoplay=1&mute=1&loop=1&playlist=F3rhjsh-SmQ&controls=0`,
+        description: 'Animation motion design avec bande sonore de la conférence TED de Garry Kasparov sur l\'intelligence artificielle. Création typographique et effets visuels explorant la relation homme-machine à travers l\'histoire de Deep Blue.',
+        context: 'Animation motion design avec bande sonore de la conférence TED de Garry Kasparov sur l\'intelligence artificielle. Création typographique et effets visuels explorant la relation homme-machine à travers l\'histoire de Deep Blue. Motion design narratif mêlant animation 2D et composition graphique.',
         technologies: ['After Effects', 'Premiere Pro', 'Illustrator', 'Photoshop'],
-        type: 'video',
-        videoId: 'F3rhjsh-SmQ'
       },
       {
-        tag: 'Motion Design 3D',
+        role: 'Motion Designer 3D',
         title: 'Angel Mugler — Parfum',
+        categories: 'Vidéo, 3D',
+        date: '2024',
+        heroImage: `https://www.youtube.com/embed/X-lIDver-5k?autoplay=1&mute=1&loop=1&playlist=X-lIDver-5k&controls=0`,
         description: 'Motion design sur le parfum Angel Mugler. J\'ai exploré les effets visuels et les dynamiques de mouvement, en jouant avec les matériaux, la lumière et la transparence pour sublimer les reflets du verre et créer une ambiance immersive.',
+        context: 'Motion design sur le parfum Angel Mugler. J\'ai exploré les effets visuels et les dynamiques de mouvement, en jouant avec les matériaux, la lumière et la transparence pour sublimer les reflets du verre et créer une ambiance immersive.',
         technologies: ['Cinema 4D', 'After Effects', 'Premiere Pro'],
-        type: 'video',
-        videoId: 'X-lIDver-5k'
       },
       {
-        tag: 'Vidéo',
+        role: 'Réalisateur & Monteur',
         title: 'Comme tout le monde',
+        categories: 'Vidéo',
+        date: '2024',
+        heroImage: `https://www.youtube.com/embed/Yx5Jlxr_iuA?autoplay=1&mute=1&loop=1&playlist=Yx5Jlxr_iuA&controls=0`,
         description: 'J\'ai eu l\'opportunité de participer au FESTIVAL REGARDS CROISÉS en collaboration avec Margot Legrand et ESAT Les Ateliers De L\'Espoir. Notre film « Comme tout le monde » a été sélectionné en compétition dans la catégorie Milieu protégé et adapté.',
+        context: 'J\'ai eu l\'opportunité de participer au FESTIVAL REGARDS CROISÉS en collaboration avec Margot Legrand et ESAT Les Ateliers De L\'Espoir. Notre film « Comme tout le monde » a été sélectionné en compétition dans la catégorie Milieu protégé et adapté.',
         technologies: ['Captation vidéo', 'Premiere Pro'],
-        type: 'video',
-        videoId: 'Yx5Jlxr_iuA'
       },
-      {
-        tag: 'Design Graphique',
-        title: 'Autres Projets — Motion Design & Design Graphique',
-        description: 'Collection de projets variés en motion design, illustration graphique et animation. Explorations créatives mêlant typographie animée, compositions visuelles et effets de transition. Projets personnels et expérimentations en design graphique et animation 2D/3D.',
-        technologies: ['After Effects', 'Illustrator', 'Photoshop', 'Animation 2D/3D'],
-        type: 'gallery',
-        images: [
-          './gallery/image1.webp',
-          './gallery/image2.webp',
-          './gallery/image3.webp',
-          './gallery/image4.webp'
-        ]
-      }
     ];
 
     function getProjectIndex() {
@@ -354,93 +529,162 @@
       return idx;
     }
 
-    function buildCV() {
+    function imgOrPlaceholder(src, cls, alt) {
+      if (src) {
+        return `<div class="gallery-card ${cls}"><img src="${src}" alt="${alt}" loading="lazy" decoding="async"></div>`;
+      }
+      return `<div class="gallery-card ${cls}"><div class="placeholder-icon">${ICON_IMG}</div></div>`;
+    }
+
+    function buildHeaderImage(project) {
+      if (project.heroImage) {
+        // Auto-detect YouTube URLs and render as video player instead of image
+        if (project.heroImage.includes('youtube.com/embed/')) {
+          const videoId = project.heroImage.match(/youtube\.com\/embed\/([^?]+)/)?.[1];
+          if (videoId) {
+            return `<div class="hero-image-card">
+              <iframe 
+                src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&modestbranding=1"
+                title="${project.title} - Vidéo de présentation"
+                aria-label="Vidéo de présentation du projet ${project.title}"
+                allow="autoplay; fullscreen; encrypted-media"
+                allowfullscreen
+                loading="lazy"
+                style="border:none; width:100%; height:100%; position:absolute; top:0; left:0;"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              ></iframe>
+              <div class="placeholder-icon" style="display:none;">
+                ${ICON_IMG}
+              </div>
+            </div>`;
+          }
+        }
+        // Regular image
+        return `<div class="hero-image-card"><img src="${project.heroImage}" alt="${project.title}" loading="lazy" decoding="async"></div>`;
+      }
+      if (project.type === 'case-study') {
+        return `<div class="hero-image-card"><div class="placeholder-icon">${ICON_IMG}</div></div>`;
+      }
+      return '';
+    }
+
+    function stackCard(src, cls, alt) {
+      const inner = src
+        ? `<img src="${src}" alt="${alt}" loading="lazy" decoding="async">`
+        : `<div class="placeholder-icon">${ICON_IMG}</div>`;
+      return `<div class="stack-item"><div class="gallery-card ${cls}">${inner}</div></div>`;
+    }
+
+    function buildCaseStudyGallery(project) {
+      const imgs = project.galleryImages || [null, null, null, null];
+
       return `
-        <div class="cv-section">
-          <h3>🎯 Profil</h3>
-          <p>Designer créatif spécialisé en UI/UX avec une forte expertise en motion design et en 3D. Passionné par la création d'expériences utilisateur immersives et l'innovation en design interactif.</p>
+        <div class="context-section">
+          <h2>contexte</h2>
+          <p>${project.description}</p>
         </div>
-        <div class="cv-section">
-          <h3>💼 Expérience</h3>
-          <div class="cv-item">
-            <div class="cv-item-title">Webdesigner — Stage</div>
-            <div class="cv-item-meta">Agence Mekaa · Février 2026 – Avril 2026</div>
-            <div class="cv-item-desc">Stage en webdesign au sein de l'agence Mekaa. Conception d'interfaces web, design graphique et expérience utilisateur.</div>
-          </div>
-          <div class="cv-item">
-            <div class="cv-item-title">Designer UI/UX</div>
-            <div class="cv-item-meta">Chez Léonard · Septembre 2025 – Mai 2026</div>
-            <div class="cv-item-desc">Conception de sites internet, création d'affiches sur mesure et refonte de logos et d'identités visuelles.</div>
-          </div>
-          <div class="cv-item">
-            <div class="cv-item-title">Motion Designer</div>
-            <div class="cv-item-meta">Their Memory · Mai 2025 – Septembre 2025</div>
-            <div class="cv-item-desc">Création de visuels graphiques pour la série documentaire Focus de guerre, diffusée sur YouTube.</div>
-          </div>
-          <div class="cv-item">
-            <div class="cv-item-title">Motion Designer, Designer UI/UX & Infographiste 3D</div>
-            <div class="cv-item-meta">Projets variés · 2021 – 2025</div>
-            <div class="cv-item-desc">Projets diversifiés incluant jeux vidéos, captation vidéo (concerts) et montage vidéo.</div>
-          </div>
-        </div>
-        <div class="cv-section">
-          <h3>🎓 Formation</h3>
-          <div class="cv-item">
-            <div class="cv-item-title">Licence — Concepteur Designer UI</div>
-            <div class="cv-item-meta">Greta CFA Est Bretagne · 2025 – 2026</div>
-          </div>
-          <div class="cv-item">
-            <div class="cv-item-title">Licence — Animation, Technologie Interactive, Vidéographie et Effets Spéciaux</div>
-            <div class="cv-item-meta">3axes Institut · 2021 – 2024</div>
-          </div>
-        </div>
-        <div class="cv-section">
-          <h3>🛠️ Compétences</h3>
-          <div class="skills">
-            <span class="skill-pill">UI/UX Design</span>
-            <span class="skill-pill">Motion Design</span>
-            <span class="skill-pill">Design Graphique</span>
-            <span class="skill-pill">Infographie 3D</span>
-            <span class="skill-pill">Figma</span>
-            <span class="skill-pill">Wordpress</span>
-            <span class="skill-pill">After Effects</span>
-            <span class="skill-pill">Premiere Pro</span>
-            <span class="skill-pill">Illustrator</span>
-            <span class="skill-pill">Photoshop</span>
-            <span class="skill-pill">Blender</span>
-            <span class="skill-pill">Cinema 4D</span>
-            <span class="skill-pill">Three.js</span>
-            <span class="skill-pill">HTML/CSS/JS</span>
-          </div>
-        </div>
-        <div class="cv-section">
-          <h3>🏆 Réalisations</h3>
-          <p>· Sélection au Festival Regards Croisés — Film "Comme tout le monde"</p>
-          <p>· Portfolio 3D interactif avec Three.js et WebGL</p>
-          <p>· Projets de motion design et création de jeux vidéos avec une équipe de 15 personnes</p>
+
+        <div class="gallery-section" id="scroll-stack">
+          ${stackCard(imgs[0], 'gallery-card-wide', 'Image 1')}
+          ${stackCard(imgs[1], 'gallery-card-wide', 'Image 2')}
+          ${stackCard(imgs[2], 'gallery-card-wide', 'Image 3')}
+          ${stackCard(imgs[3], 'gallery-card-wide', 'Image 4')}
         </div>
       `;
     }
 
-    function buildMedia(project) {
-      if (project.type === 'video') {
-        return `
-          <div class="video-wrap">
-            <iframe
-              src="https://www.youtube.com/embed/${project.videoId}"
-              title="${project.title}"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen>
-            </iframe>
+    function buildVideoContent(project) {
+      return `
+        <div class="video-card">
+          <iframe
+            src="https://www.youtube.com/embed/${project.videoId}"
+            title="${project.title}"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+
+        <div class="context-section">
+          <h2>contexte</h2>
+          <p>${project.context || project.description}</p>
+        </div>
+
+        <div class="skills" style="margin-top:-32px;margin-bottom:48px;">
+          ${project.technologies.map(t => `<span class="skill-pill">${t}</span>`).join('')}
+        </div>
+      `;
+    }
+
+    function buildCV() {
+      return `
+        <div class="context-section" style="margin-top:0;">
+          <h2>profil.</h2>
+          <p>Designer créatif spécialisé en UI/UX avec une forte expertise en motion design et en 3D. Passionné par la création d'expériences utilisateur immersives et l'innovation en design interactif.</p>
+        </div>
+
+        <div style="max-width:600px;margin:0 auto 48px;">
+          <div class="cv-section">
+            <h3>Expérience</h3>
+            <div class="cv-item">
+              <div class="cv-item-title">Webdesigner — Stage</div>
+              <div class="cv-item-meta">Agence Mekaa · Février 2026 – Avril 2026</div>
+              <div class="cv-item-desc">Stage en webdesign au sein de l'agence Mekaa. Conception d'interfaces web, design graphique et expérience utilisateur.</div>
+            </div>
+            <div class="cv-item">
+              <div class="cv-item-title">Designer UI/UX</div>
+              <div class="cv-item-meta">Chez Léonard · Septembre 2025 – Mai 2026</div>
+              <div class="cv-item-desc">Conception de sites internet, création d'affiches sur mesure et refonte de logos et d'identités visuelles.</div>
+            </div>
+            <div class="cv-item">
+              <div class="cv-item-title">Motion Designer</div>
+              <div class="cv-item-meta">Their Memory · Mai 2025 – Septembre 2025</div>
+              <div class="cv-item-desc">Création de visuels graphiques pour la série documentaire Focus de guerre, diffusée sur YouTube.</div>
+            </div>
+            <div class="cv-item">
+              <div class="cv-item-title">Motion Designer, Designer UI/UX & Infographiste 3D</div>
+              <div class="cv-item-meta">Projets variés · 2021 – 2025</div>
+              <div class="cv-item-desc">Projets diversifiés incluant jeux vidéos, captation vidéo (concerts) et montage vidéo.</div>
+            </div>
           </div>
-        `;
-      }
-      if (project.type === 'gallery') {
-        const imgs = project.images.map((src, i) =>
-          `<img src="${src}" alt="Image ${i + 1} — ${project.title}" loading="lazy">`
-        ).join('');
-        return `<div class="gallery-grid">${imgs}</div>`;
-      }
+          <div class="cv-section">
+            <h3>Formation</h3>
+            <div class="cv-item">
+              <div class="cv-item-title">Licence — Concepteur Designer UI</div>
+              <div class="cv-item-meta">Greta CFA Est Bretagne · 2025 – 2026</div>
+            </div>
+            <div class="cv-item">
+              <div class="cv-item-title">Licence — Animation, Technologie Interactive, Vidéographie et Effets Spéciaux</div>
+              <div class="cv-item-meta">3axes Institut · 2021 – 2024</div>
+            </div>
+          </div>
+          <div class="cv-section">
+            <h3>Compétences</h3>
+            <div class="skills" style="margin-top:8px;">
+              <span class="skill-pill">UI/UX Design</span>
+              <span class="skill-pill">Motion Design</span>
+              <span class="skill-pill">Design Graphique</span>
+              <span class="skill-pill">Infographie 3D</span>
+              <span class="skill-pill">Figma</span>
+              <span class="skill-pill">Wordpress</span>
+              <span class="skill-pill">Webflow</span>
+              <span class="skill-pill">After Effects</span>
+              <span class="skill-pill">Premiere Pro</span>
+              <span class="skill-pill">Illustrator</span>
+              <span class="skill-pill">Photoshop</span>
+              <span class="skill-pill">Blender</span>
+              <span class="skill-pill">Cinema 4D</span>
+              <span class="skill-pill">Three.js</span>
+              <span class="skill-pill">HTML/CSS/JS</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildContent(project) {
+      if (project.type === 'cv') return buildCV();
+      if (project.type === 'video') return buildVideoContent(project);
+      if (project.type === 'case-study') return buildCaseStudyGallery(project);
       return '';
     }
 
@@ -449,66 +693,119 @@
       const prevIdx = idx - 1;
       const nextIdx = idx + 1;
 
-      const mediaHTML = buildMedia(project);
-      const bodyHTML = project.type === 'cv' ? buildCV() : `
-        <div class="section">
-          <h2>À propos du projet</h2>
-          <p>${project.description}</p>
-        </div>
-        <div class="section">
-          <h2>Technologies utilisées</h2>
-          <div class="skills">
-            ${project.technologies.map(t => `<span class="skill-pill">${t}</span>`).join('')}
-          </div>
+      document.title = `${project.title} — Enzo Domenger`;
+
+      const visitBtn = project.url
+        ? `<a class="meta-visit-btn" href="${project.url}" target="_blank" rel="noopener">${ICON_LINK} Visiter le site</a><div class="meta-sep"></div>`
+        : '';
+
+      const metaBar = `
+        <div class="meta-bar">
+          ${visitBtn}
+          <span class="meta-role">${ICON_ROLE} ${project.role}</span>
+          <div class="meta-sep"></div>
+          <span class="meta-categories">${project.categories}</span>
+          <span class="meta-date">${ICON_CAL} Date : ${project.date}</span>
         </div>
       `;
 
-      const chips = project.technologies.map(t =>
-        `<span class="meta-chip">${t}</span>`
-      ).join('');
-
-      document.title = `${project.title} — Enzo Domenger`;
+      let backBtn = document.getElementById('back-btn');
+      if (!backBtn) {
+        backBtn = document.createElement('a');
+        backBtn.id = 'back-btn';
+        document.body.appendChild(backBtn);
+      }
+      backBtn.href = `./?projet=${idx}`;
+      backBtn.innerHTML = `${ICON_BACK} Retour`;
+      backBtn.setAttribute('aria-label', 'Retour à la liste des projets');
 
       document.getElementById('app').innerHTML = `
-        <div class="fade-in">
-          <div class="hero">
-            <div class="hero-bg"></div>
-            <div class="hero-content">
-              <span class="hero-tag">${project.tag}</span>
+        <div class="page fade-in">
+
+          <div class="project-header">
+            <section class="hero">
               <h1>${project.title}</h1>
-              <p class="hero-description">${project.description}</p>
-              <div class="hero-meta">${chips}</div>
-            </div>
+            </section>
+
+            ${metaBar}
+
+            ${buildHeaderImage(project)}
           </div>
 
-          <div class="content">
-            ${mediaHTML}
-            ${bodyHTML}
+          ${buildContent(project)}
 
-            <nav class="project-nav">
-              <a href="?projet=${prevIdx}" class="nav-btn ${prevIdx < 0 ? 'disabled' : ''}">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                <div>
-                  <div class="nav-btn-label">Précédent</div>
-                  <div>${prevIdx >= 0 ? projects[prevIdx].title : '—'}</div>
-                </div>
-              </a>
-              <a href="?projet=${nextIdx}" class="nav-btn ${nextIdx >= TOTAL_PROJECTS ? 'disabled' : ''}">
-                <div style="text-align:right">
-                  <div class="nav-btn-label">Suivant</div>
-                  <div>${nextIdx < TOTAL_PROJECTS ? projects[nextIdx].title : '—'}</div>
-                </div>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-              </a>
-            </nav>
-          </div>
+          <nav class="project-nav">
+            <a href="?projet=${prevIdx}" class="nav-btn ${prevIdx < 0 ? 'disabled' : ''}">
+              ${ICON_PREV}
+              <div>
+                <div class="nav-btn-label">Précédent</div>
+                <div>${prevIdx >= 0 ? projects[prevIdx].title : '—'}</div>
+              </div>
+            </a>
+            <a href="?projet=${nextIdx}" class="nav-btn ${nextIdx >= TOTAL_PROJECTS ? 'disabled' : ''}">
+              <div style="text-align:right">
+                <div class="nav-btn-label">Suivant</div>
+                <div>${nextIdx < TOTAL_PROJECTS ? projects[nextIdx].title : '—'}</div>
+              </div>
+              ${ICON_NEXT}
+            </a>
+          </nav>
         </div>
       `;
     }
 
     const currentIdx = getProjectIndex();
-    document.getElementById('back-btn').href = `./?projet=${currentIdx}`;
     render(currentIdx);
+
+    /* ── Scroll Stack ── */
+    function initScrollStack() {
+      const stack = document.getElementById('scroll-stack');
+      if (!stack) return;
+      const items = Array.from(stack.querySelectorAll('.stack-item'));
+      if (items.length < 2) return;
+
+      const SCALE_STEP = 0.06;
+
+      function onScroll() {
+        items.forEach((item, i) => {
+          if (i === items.length - 1) return;
+          const card = item.querySelector('.gallery-card');
+          const rect = item.getBoundingClientRect();
+          const itemH = rect.height;
+          if (itemH === 0) return;
+
+          const overlap = -rect.top;
+          const progress = Math.max(0, Math.min(1, overlap / itemH));
+          const scale = 1 - progress * SCALE_STEP * (items.length - 1 - i);
+          card.style.transform = `scale(${scale})`;
+        });
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    }
+
+    setTimeout(initScrollStack, 100);
+
+    /* ── Scroll-driven line ── */
+    (function() {
+      const path = document.getElementById('scroll-path');
+      if (!path) return;
+      const len = path.getTotalLength();
+      path.style.strokeDasharray = len;
+      path.style.strokeDashoffset = len;
+
+      function onScroll() {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0;
+        path.style.strokeDashoffset = len * (1 - progress);
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+
   </script>
 </body>
 </html>

@@ -857,9 +857,9 @@ function preloadGalleryImages() {
 // Project descriptions
 const projectDescriptions = [
   {
-    title: 'CV - Enzo Domenger',
-    description: 'Designer UI/UX & Motion Designer passionné par la création d\'expériences visuelles immersives et interactives. Spécialisé en design d\'interface, prototypage et animation.',
-    technologies: 'UI/UX Design, Motion Design, Three.js, WebGL'
+    title: 'Chez Léonard',
+    description: 'Identité visuelle complète, site WordPress, print et production photo/vidéo pour ce café associatif. Du logo à la charte graphique et un site pensé pour être administré par les bénévoles.',
+    technologies: 'Figma, WordPress, Illustrator, Photoshop, Premiere Pro'
   },
   {
     title: 'Club architecture',
@@ -882,9 +882,9 @@ const projectDescriptions = [
     technologies: 'Captation vidéo, Premiere Pro'
   },
   {
-    title: 'Autres Projets - Motion Design & Design Graphique',
-    description: 'Collection de projets variés en motion design, illustration graphique et animation. Explorations créatives mêlant typographie animée, compositions visuelles et effets de transition. Projets personnels et expérimentations en design graphique et animation 2D/3D.',
-    technologies: 'After Effects, Illustrator, Photoshop, Animation 2D/3D'
+    title: 'CV - Enzo Domenger',
+    description: 'Designer UI/UX & Motion Designer passionné par la création d\'expériences visuelles immersives et interactives. Spécialisé en design d\'interface, prototypage et animation.',
+    technologies: 'UI/UX Design, Motion Design, Three.js, WebGL'
   }
 ];
 
@@ -1280,7 +1280,8 @@ function closeAboutModal() {
   document.body.style.overflow = '';
 }
 
-document.getElementById('btn-about').addEventListener('click', openAboutModal);
+// Note: btn-about is now a link to the dedicated /a-propos.html page
+// The about modal is kept for potential future use
 aboutModalClose.addEventListener('click', closeAboutModal);
 aboutModal.addEventListener('click', (e) => { if (e.target === aboutModal) closeAboutModal(); });
 
