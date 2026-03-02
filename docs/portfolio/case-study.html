@@ -92,7 +92,7 @@
 
     .hero h1 {
       font-family: 'South Amsterdam', Georgia, serif;
-      font-size: clamp(42px, 8vw, 76px);
+      font-size: clamp(64px, 8vw, 76px);
       font-weight: 500;
       line-height: 1.0;
       color: #221E1F;
@@ -171,9 +171,11 @@
       position: relative;
     }
     .hero-image-card img {
-      width: 100%;
-      height: 100%;
+      width: 110%; /* enlarge beyond container padding */
+      height: 110%;
       object-fit: cover;
+      object-position: left center; /* crop favoring left side */
+      transform: translateX(-5%); /* shift left to compensate */
       display: block;
     }
     .hero-image-card .placeholder-icon {
@@ -247,9 +249,11 @@
       transition: transform 0.1s linear;
     }
     .gallery-card img {
-      width: 100%;
-      height: 100%;
+      width: 110%; /* enlarge ignoring padding */
+      height: 110%;
       object-fit: cover;
+      object-position: left center; /* left-centric crop */
+      transform: translateX(-5%);
       display: block;
     }
 
@@ -408,12 +412,19 @@
     }
 
     @media (max-width: 640px) {
-      .page { padding: 80px; }
+      /* less vertical padding on small screens */
+      .page { padding: 60px 40px; }
       .gallery-row { grid-template-columns: 1fr; }
       .meta-date { margin-left: 0; }
-      .project-nav { flex-direction: column; }
+      .project-nav { flex-direction: column; gap: 16px; }
       .context-deco-left, .context-deco-right, .gallery-deco-left, .hero-deco { display: none; }
       #scroll-line { display: none; }
+      /* larger tap targets and text on mobile */
+      #back-btn { padding: 10px 22px; font-size: 14px; }
+      .meta-bar { font-size: 15px; gap: 10px; }
+      .context-section { padding: 50px 24px 50px 24px; }
+      .project-nav .nav-btn { padding: 12px 28px; }
+      .gallery-section { touch-action: pan-y; }
     }
   </style>
 </head>
