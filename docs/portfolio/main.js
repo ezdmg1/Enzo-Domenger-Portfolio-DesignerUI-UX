@@ -562,10 +562,31 @@ let zoomCompletedAt = -1;
 // Carousel state — restore from URL param if returning from case study
 const _urlParams = new URLSearchParams(window.location.search);
 const _urlProjet = parseInt(_urlParams.get('projet'), 10);
-const _initialIndex = (!isNaN(_urlProjet) && _urlProjet >= 0 && _urlProjet < itemCount) ? _urlProjet : 0;
+let _initialIndex = 0;
+if (!isNaN(_urlProjet) && _urlProjet >= 0 && _urlProjet < itemCount) {
+  _initialIndex = _urlProjet;
+} else {
+  const stored = sessionStorage.getItem('lastProject');
+  if (stored !== null) {
+    const idx = parseInt(stored, 10);
+    if (!isNaN(idx) && idx >= 0 && idx < itemCount) {
+      _initialIndex = idx;
+    }
+  }
+}
 let currentIndex = _initialIndex;
 let targetRotation = -(_initialIndex / itemCount) * Math.PI * 2;
 let currentRotation = targetRotation;
+// Ensure the carousel is visually aligned when the page is shown (back navigation / bfcache)
+function alignCarousel() {
+  targetRotation = - (currentIndex / itemCount) * Math.PI * 2;
+  currentRotation = targetRotation;
+  if (carouselGroup) carouselGroup.rotation.y = currentRotation;
+}
+
+// Immediately align once items exist (in case they are already created)
+alignCarousel();
+
 // If returning from a case study, skip zoom phase and dismiss startup overlay
 if (_initialIndex > 0 || _urlParams.has('projet')) {
   cameraProgress = 1;
@@ -575,6 +596,11 @@ if (_initialIndex > 0 || _urlParams.has('projet')) {
     overlayDismissed = true;
   }
 }
+
+// Re-align when the page is restored from bfcache
+window.addEventListener('pageshow', () => {
+  alignCarousel();
+});
 
 // Mouse drag controls for rotating items
 let isDragging = false;

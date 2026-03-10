@@ -162,8 +162,8 @@
     /* ── Hero image card ── */
     .hero-image-card {
       width: 100%;
-      flex: 1;
-      min-height: 0;
+      flex: none;
+      height: auto;
       border-radius: 20px;
       overflow: hidden;
       background: #d9d9d9;
@@ -171,11 +171,11 @@
       position: relative;
     }
     .hero-image-card img {
-      width: 110%; /* enlarge beyond container padding */
-      height: 110%;
-      object-fit: cover;
-      object-position: left center; /* crop favoring left side */
-      transform: translateX(-5%); /* shift left to compensate */
+      /* full width, fit image without cropping */
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      object-position: center;
       display: block;
     }
     .hero-image-card .placeholder-icon {
@@ -249,11 +249,11 @@
       transition: transform 0.1s linear;
     }
     .gallery-card img {
-      width: 110%; /* enlarge ignoring padding */
-      height: 110%;
+      /* full width to touch left/right edges */
+      width: 100%;
+      height: auto;
       object-fit: cover;
-      object-position: left center; /* left-centric crop */
-      transform: translateX(-5%);
+      object-position: center;
       display: block;
     }
 
@@ -411,6 +411,20 @@
       overflow: visible;
     }
 
+    /* Desktop: center images in their containers */
+    @media (min-width: 641px) {
+      .hero-image-card {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .gallery-card {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+
     @media (max-width: 640px) {
       /* less vertical padding on small screens */
       .page { padding: 60px 40px; }
@@ -553,7 +567,7 @@
         if (project.heroImage.includes('youtube.com/embed/')) {
           const videoId = project.heroImage.match(/youtube\.com\/embed\/([^?]+)/)?.[1];
           if (videoId) {
-            return `<div class="hero-image-card">
+            return `<div class="hero-image-card" style="aspect-ratio:16/9; max-width:60%; margin:0 auto;">
               <iframe 
                 src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&modestbranding=1"
                 title="${project.title} - Vidéo de présentation"
@@ -593,6 +607,7 @@
         <div class="context-section">
           <h2>contexte</h2>
           <p>${project.description}</p>
+          ${project.context ? `<p>${project.context}</p>` : ''}
         </div>
 
         <div class="gallery-section" id="scroll-stack">
@@ -606,15 +621,6 @@
 
     function buildVideoContent(project) {
       return `
-        <div class="video-card">
-          <iframe
-            src="https://www.youtube.com/embed/${project.videoId}"
-            title="${project.title}"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen>
-          </iframe>
-        </div>
-
         <div class="context-section">
           <h2>contexte</h2>
           <p>${project.context || project.description}</p>
@@ -694,7 +700,13 @@
 
     function buildContent(project) {
       if (project.type === 'cv') return buildCV();
-      if (project.type === 'video') return buildVideoContent(project);
+      if (project.heroImage && project.heroImage.includes('youtube.com/embed/')) {
+        const videoId = project.heroImage.match(/youtube\.com\/embed\/([^?]+)/)?.[1];
+        if (videoId) {
+          project.videoId = videoId;
+          return buildVideoContent(project);
+        }
+      }
       if (project.type === 'case-study') return buildCaseStudyGallery(project);
       return '';
     }
@@ -705,6 +717,11 @@
       const nextIdx = idx + 1;
 
       document.title = `${project.title} — Enzo Domenger`;
+
+      // Store the current project for back navigation
+      try {
+        sessionStorage.setItem('lastProject', idx.toString());
+      } catch (_) {}
 
       const visitBtn = project.url
         ? `<a class="meta-visit-btn" href="${project.url}" target="_blank" rel="noopener">${ICON_LINK} Visiter le site</a><div class="meta-sep"></div>`
@@ -767,6 +784,13 @@
 
     const currentIdx = getProjectIndex();
     render(currentIdx);
+
+    // Set height based on project
+    const project = projects[currentIdx];
+    const projectHeader = document.querySelector('.project-header');
+    if (projectHeader) {
+      projectHeader.style.height = (project.title === 'Chez Léonard' || project.title === 'Hop\'n\'craic') ? '100vh' : 'auto';
+    }
 
     /* ── Scroll Stack ── */
     function initScrollStack() {
