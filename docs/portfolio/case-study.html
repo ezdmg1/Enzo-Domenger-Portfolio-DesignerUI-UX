@@ -170,6 +170,10 @@
       margin-bottom: 0;
       position: relative;
     }
+
+    .hero-video-card {
+      aspect-ratio: 16 / 9;
+    }
     .hero-image-card img {
       /* full width, fit image without cropping */
       width: 100%;
@@ -418,6 +422,10 @@
         justify-content: center;
         align-items: center;
       }
+      .hero-video-card {
+        max-width: 60%;
+        margin: 0 auto;
+      }
       .gallery-card {
         display: flex;
         justify-content: center;
@@ -439,6 +447,26 @@
       .context-section { padding: 50px 24px 50px 24px; }
       .project-nav .nav-btn { padding: 12px 28px; }
       .gallery-section { touch-action: pan-y; }
+
+      .hero-video-card {
+        max-width: 100%;
+        margin: 0;
+      }
+
+      .gallery-card-wide,
+      .gallery-card-tall,
+      .gallery-card-full {
+        aspect-ratio: auto;
+      }
+      .gallery-card {
+        height: auto;
+      }
+      .gallery-card picture,
+      .gallery-card img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
     }
   </style>
 </head>
@@ -560,9 +588,31 @@
       return idx;
     }
 
+    const MOBILE_IMAGE_FOLDERS = ['/chez-leonard/', '/hop/', '/overlay/'];
+
+    function getMobileSrc(src) {
+      if (!src) return src;
+      if (src.includes('youtube.com/embed/')) return src;
+      if (src.includes('-mb.')) return src;
+      if (!MOBILE_IMAGE_FOLDERS.some(folder => src.includes(folder))) return src;
+      return src.replace(/(\.[a-zA-Z0-9]+)$/, '-mb$1');
+    }
+
+    function pictureOrImg(src, alt, imgClass) {
+      const mobileSrc = getMobileSrc(src);
+      const cls = imgClass ? ` class="${imgClass}"` : '';
+      if (mobileSrc && mobileSrc !== src) {
+        return `<picture>
+          <source media="(max-width: 640px)" srcset="${mobileSrc}">
+          <img src="${src}" alt="${alt}" loading="lazy" decoding="async"${cls}>
+        </picture>`;
+      }
+      return `<img src="${src}" alt="${alt}" loading="lazy" decoding="async"${cls}>`;
+    }
+
     function imgOrPlaceholder(src, cls, alt) {
       if (src) {
-        return `<div class="gallery-card ${cls}"><img src="${src}" alt="${alt}" loading="lazy" decoding="async"></div>`;
+        return `<div class="gallery-card ${cls}">${pictureOrImg(src, alt)}</div>`;
       }
       return `<div class="gallery-card ${cls}"><div class="placeholder-icon">${ICON_IMG}</div></div>`;
     }
@@ -573,7 +623,7 @@
         if (project.heroImage.includes('youtube.com/embed/')) {
           const videoId = project.heroImage.match(/youtube\.com\/embed\/([^?]+)/)?.[1];
           if (videoId) {
-            return `<div class="hero-image-card" style="aspect-ratio:16/9; max-width:60%; margin:0 auto;">
+            return `<div class="hero-image-card hero-video-card">
               <iframe 
                 src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&modestbranding=1"
                 title="${project.title} - Vidéo de présentation"
@@ -591,7 +641,7 @@
           }
         }
         // Regular image
-        return `<div class="hero-image-card"><img src="${project.heroImage}" alt="${project.title}" loading="lazy" decoding="async"></div>`;
+        return `<div class="hero-image-card">${pictureOrImg(project.heroImage, project.title)}</div>`;
       }
       if (project.type === 'case-study') {
         return `<div class="hero-image-card"><div class="placeholder-icon">${ICON_IMG}</div></div>`;
@@ -601,7 +651,7 @@
 
     function stackCard(src, cls, alt) {
       const inner = src
-        ? `<img src="${src}" alt="${alt}" loading="lazy" decoding="async">`
+        ? pictureOrImg(src, alt)
         : `<div class="placeholder-icon">${ICON_IMG}</div>`;
       return `<div class="stack-item"><div class="gallery-card ${cls}">${inner}</div></div>`;
     }
