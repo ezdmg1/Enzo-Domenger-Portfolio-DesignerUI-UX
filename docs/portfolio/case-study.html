@@ -4,6 +4,40 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Étude de cas - Enzo Domenger</title>
+  <meta name="description" content="Études de cas du portfolio d'Enzo Domenger, Designer UI/UX : design d'interface, UX design et design system.">
+  <meta name="keywords" content="Designer UI/UX, Portfolio designer, Design d'interface, UX design France, Enzo Domenger designer">
+  <meta name="author" content="Enzo Domenger">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" id="canonical-link" href="https://enzo.domenger.bzh/portfolio/case-study.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" id="og-url" content="https://enzo.domenger.bzh/portfolio/case-study.html">
+  <meta property="og:title" id="og-title" content="Étude de cas - Enzo Domenger">
+  <meta property="og:description" id="og-description" content="Études de cas du portfolio d'Enzo Domenger, Designer UI/UX.">
+  <meta property="og:image" content="https://enzo.domenger.bzh/preview.png">
+  <meta property="og:locale" content="fr_FR">
+
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" id="twitter-url" content="https://enzo.domenger.bzh/portfolio/case-study.html">
+  <meta property="twitter:title" id="twitter-title" content="Étude de cas - Enzo Domenger">
+  <meta property="twitter:description" id="twitter-description" content="Études de cas du portfolio d'Enzo Domenger, Designer UI/UX.">
+  <meta property="twitter:image" content="https://enzo.domenger.bzh/preview.png">
+
+  <script type="application/ld+json" id="jsonld-case-study">
+  {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "name": "Études de cas — Enzo Domenger",
+    "url": "https://enzo.domenger.bzh/portfolio/case-study.html",
+    "author": {
+      "@type": "Person",
+      "name": "Enzo Domenger",
+      "jobTitle": "Designer UI/UX",
+      "url": "https://enzo.domenger.bzh/"
+    },
+    "inLanguage": "fr-FR"
+  }
+  </script>
   <link rel="icon" type="image/x-icon" href="../assets/Logo_32_.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/logo(180).png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -772,12 +806,28 @@
       const prevIdx = idx - 1;
       const nextIdx = idx + 1;
 
+      const canonicalUrl = `https://enzo.domenger.bzh/portfolio/case-study.html?projet=${idx}`;
       document.title = `${project.title} — Enzo Domenger`;
 
-      // Store the current project for back navigation
-      try {
-        sessionStorage.setItem('lastProject', idx.toString());
-      } catch (_) {}
+      const canonicalLink = document.getElementById('canonical-link');
+      if (canonicalLink) canonicalLink.href = canonicalUrl;
+
+      const ogUrl = document.getElementById('og-url');
+      if (ogUrl) ogUrl.setAttribute('content', canonicalUrl);
+      const ogTitle = document.getElementById('og-title');
+      if (ogTitle) ogTitle.setAttribute('content', `${project.title} — Enzo Domenger`);
+      const ogDesc = document.getElementById('og-description');
+      if (ogDesc) ogDesc.setAttribute('content', (project.description || '').slice(0, 155));
+
+      const twUrl = document.getElementById('twitter-url');
+      if (twUrl) twUrl.setAttribute('content', canonicalUrl);
+      const twTitle = document.getElementById('twitter-title');
+      if (twTitle) twTitle.setAttribute('content', `${project.title} — Enzo Domenger`);
+      const twDesc = document.getElementById('twitter-description');
+      if (twDesc) twDesc.setAttribute('content', (project.description || '').slice(0, 155));
+
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.setAttribute('content', (project.description || '').slice(0, 155));
 
       const visitBtn = project.url
         ? `<a class="meta-visit-btn" href="${project.url}" target="_blank" rel="noopener">${ICON_LINK} Visiter le site</a><div class="meta-sep"></div>`
