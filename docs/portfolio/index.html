@@ -394,6 +394,8 @@
 
         color: rgba(255, 255, 255, 0.5);
 
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
         font-size: 14px;
 
         font-weight: 500;
@@ -494,7 +496,13 @@
 
         .hud-bottom {
 
-          bottom: 24px;
+          bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+
+        }
+
+        .swipe-indicator {
+
+          bottom: calc(104px + env(safe-area-inset-bottom, 0px));
 
         }
 
