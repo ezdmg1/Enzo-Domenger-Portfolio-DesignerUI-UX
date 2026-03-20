@@ -46,14 +46,31 @@ if (shouldFadeIn) {
 
 // Startup white overlay element (fades OUT to reveal the scene)
 const startupOverlay = document.getElementById('fade-overlay');
-let startupOverlayOpacity = 1;
 let overlayDismissed = false;
+let startupOverlayTimeoutId = 0;
+
+function dismissStartupOverlay() {
+  if (!startupOverlay || overlayDismissed) return;
+  overlayDismissed = true;
+  startupOverlay.style.opacity = '0';
+  window.setTimeout(() => {
+    if (startupOverlay.parentElement) startupOverlay.remove();
+  }, 450);
+}
+
+function scheduleStartupOverlayDismiss(delay = 0) {
+  if (!startupOverlay || overlayDismissed) return;
+  if (startupOverlayTimeoutId) window.clearTimeout(startupOverlayTimeoutId);
+  startupOverlayTimeoutId = window.setTimeout(() => {
+    startupOverlayTimeoutId = 0;
+    dismissStartupOverlay();
+  }, delay);
+}
 
 // For touch devices with fade in, hide overlays immediately
 if (shouldFadeIn) {
   if (startupOverlay) {
     startupOverlay.style.display = 'none';
-    overlayDismissed = true;
   }
   
   const loadingOverlay = document.getElementById('loading-overlay');
@@ -72,6 +89,7 @@ let videoReady = false;
 function maybeHideLoadingOverlay() {
   if (loadingOverlay && modelReady && videoReady) {
     loadingOverlay.remove();
+    scheduleStartupOverlayDismiss();
   }
 }
 
@@ -84,6 +102,7 @@ try {
 if (loadingOverlay && comingFromIndex) {
   // Start hidden; reveal only if loading is still ongoing after a short delay
   loadingOverlay.style.display = 'none';
+  scheduleStartupOverlayDismiss(300);
   setTimeout(() => {
     if (!modelReady || !videoReady) {
       loadingOverlay.style.display = 'flex';
@@ -91,8 +110,14 @@ if (loadingOverlay && comingFromIndex) {
   }, 450);
 }
 
+window.addEventListener('load', () => {
+  scheduleStartupOverlayDismiss(300);
+});
+
 // Reduced motion support
 const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const useHighFidelityMaterials = !isCoarsePointer && !prefersReduced;
+const MAX_PIXEL_RATIO = isCoarsePointer ? 1 : 1.5;
 
 // Visibility throttling (reduce work when tab is hidden to save resources)
 let isDocHidden = document.hidden;
@@ -187,7 +212,7 @@ const renderer = new THREE.WebGLRenderer({
   depth: true
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.setClearColor(0xD7D7D7);
 document.body.appendChild(renderer.domElement);
@@ -200,7 +225,7 @@ video.muted = true;
 video.playsInline = true;
 video.autoplay = true;
 video.crossOrigin = 'anonymous';
-video.preload = 'auto';
+video.preload = 'metadata';
 
 // Video event listeners
 video.addEventListener('loadeddata', () => {
@@ -221,8 +246,7 @@ video.addEventListener('canplay', () => {
   });
 });
 
-// Force reload video
-video.load();
+setTimeout(() => video.load(), 0);
 
 const videoTexture = new THREE.VideoTexture(video);
 videoTexture.minFilter = THREE.LinearFilter;
@@ -364,19 +388,21 @@ const TEX_BUSTER = DEBUG ? `?t=${Date.now()}` : '';
 const itemTextures = itemTexturePaths.map((path) => {
   const tex = textureLoader.load(path + TEX_BUSTER);
   tex.colorSpace = THREE.SRGBColorSpace;
-  tex.minFilter = THREE.LinearMipmapLinearFilter;
+  tex.minFilter = useHighFidelityMaterials ? THREE.LinearMipmapLinearFilter : THREE.LinearFilter;
   tex.magFilter = THREE.LinearFilter;
-  tex.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
-  tex.generateMipmaps = true;
+  tex.anisotropy = Math.min(useHighFidelityMaterials ? 4 : 1, renderer.capabilities.getMaxAnisotropy());
+  tex.generateMipmaps = useHighFidelityMaterials;
   // glTF-compatible orientation
   tex.flipY = false;
   return tex;
 });
 
 // Shared normal map applied to all items
-const sharedNormalMap = textureLoader.load('./Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.webp' + TEX_BUSTER);
+const sharedNormalMap = useHighFidelityMaterials
+  ? textureLoader.load('./Textures/UV_Polaroid_frame_Template_TEST_NORMAL_V2.webp' + TEX_BUSTER)
+  : null;
 // normal maps should not be in sRGB; keep default color space
-sharedNormalMap.flipY = false;
+if (sharedNormalMap) sharedNormalMap.flipY = false;
 
 /**
  * Applies realistic lighting effects to a Three.js material
@@ -405,9 +431,8 @@ loader.load(
   './BLENDER_Template_1.glb',
   (gltf) => {
     modelTemplate = gltf.scene;
-    
-    // Create carousel items with the loaded model
-    for (let i = 0; i < itemCount; i++) {
+
+    function createCarouselItem(i) {
       const angle = (i / itemCount) * Math.PI * 2;
       
       // Clone the model for each carousel item
@@ -427,10 +452,10 @@ loader.load(
           const perItemTex = itemTextures[(i % itemTextures.length)];
           if (perItemTex) {
             child.material.map = perItemTex;
-            child.material.map.minFilter = THREE.LinearMipmapLinearFilter;
+            child.material.map.minFilter = useHighFidelityMaterials ? THREE.LinearMipmapLinearFilter : THREE.LinearFilter;
             child.material.map.magFilter = THREE.LinearFilter;
-            child.material.map.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
-            child.material.map.generateMipmaps = true;
+            child.material.map.anisotropy = Math.min(useHighFidelityMaterials ? 4 : 1, renderer.capabilities.getMaxAnisotropy());
+            child.material.map.generateMipmaps = useHighFidelityMaterials;
           }
           // Apply shared normal map to enhance shading
           if (sharedNormalMap) {
@@ -448,7 +473,7 @@ loader.load(
             child.geometry.computeBoundingBox();
           }
           
-          applyRealismToMaterial(child.material);
+          if (useHighFidelityMaterials) applyRealismToMaterial(child.material);
           meshes.push(child);
         }
       });
@@ -480,8 +505,26 @@ loader.load(
       
       modelsLoaded++;
     }
-    modelReady = true;
-    maybeHideLoadingOverlay();
+
+    const CHUNK_SIZE = isCoarsePointer ? 1 : 2;
+    let nextItemIndex = 0;
+
+    function processCarouselChunk() {
+      const end = Math.min(nextItemIndex + CHUNK_SIZE, itemCount);
+      for (; nextItemIndex < end; nextItemIndex++) {
+        createCarouselItem(nextItemIndex);
+      }
+
+      if (nextItemIndex < itemCount) {
+        setTimeout(() => requestAnimationFrame(processCarouselChunk), 0);
+        return;
+      }
+
+      modelReady = true;
+      maybeHideLoadingOverlay();
+    }
+
+    processCarouselChunk();
   },
   (progress) => {
     modelsLoaded++;
@@ -525,7 +568,7 @@ function createFallbackBoxes() {
       }
     }
     material.needsUpdate = true;
-    applyRealismToMaterial(material);
+    if (useHighFidelityMaterials) applyRealismToMaterial(material);
     const mesh = new THREE.Mesh(geometry, material);
     mesh.castShadow = false;
     mesh.receiveShadow = false;
@@ -621,7 +664,6 @@ window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    const MAX_PIXEL_RATIO = 2; // Cap pixel ratio to avoid performance issues on high-DPI screens
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO));
     backgroundMaterial.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
     
@@ -637,6 +679,8 @@ const cursorText = document.getElementById('cursor-text');
 const CURSOR_IDLE_DELAY_MS = 200;
 let idleTimer = null;
 let isIdle = false;
+let cursorMoveScheduled = false;
+let lastCursorMoveEvent = null;
 
 // Position cursor text at mouse position
 function updateCursorTextPosition(x, y) {
@@ -654,29 +698,33 @@ if (cursorText) {
   }
 }
 
-// Removed unused cursor transform functions
-
 // Update cursor position with transform for better performance
 window.addEventListener('mousemove', (e) => {
-  // Update cursor text position
-  updateCursorTextPosition(e.clientX, e.clientY);
-  
-  // Hide "scroll" text on movement
-  if (cursorText && !cursorText.classList.contains('hidden')) {
-    cursorText.classList.add('hidden');
-    isIdle = false;
-  }
-  
-  clearTimeout(idleTimer);
-  idleTimer = setTimeout(() => {
-    if (cursorText) {
-      cursorText.classList.remove('hidden');
-      isIdle = true;
-    }
-  }, CURSOR_IDLE_DELAY_MS);
-}, { passive: true, capture: false });
+  lastCursorMoveEvent = e;
+  if (cursorMoveScheduled) return;
+  cursorMoveScheduled = true;
 
-// Removed unused cursor scale handlers
+  requestAnimationFrame(() => {
+    cursorMoveScheduled = false;
+    const ev = lastCursorMoveEvent;
+    if (!ev) return;
+
+    updateCursorTextPosition(ev.clientX, ev.clientY);
+
+    if (cursorText && !cursorText.classList.contains('hidden')) {
+      cursorText.classList.add('hidden');
+      isIdle = false;
+    }
+
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => {
+      if (cursorText) {
+        cursorText.classList.remove('hidden');
+        isIdle = true;
+      }
+    }, CURSOR_IDLE_DELAY_MS);
+  });
+}, { passive: true, capture: false });
 
 // Handle scroll to zoom camera then navigate projects
 let lastWheelTime = 0;
@@ -689,8 +737,7 @@ const ZOOM_TO_NAV_DELAY_MS = 800;
 
 window.addEventListener('wheel', (event) => {
   log('Wheel event detected - controlsEnabled:', controlsEnabled, 'isMouseOverModal:', isMouseOverModal);
-  
-  // Désactiver le scroll de la caméra si la modal est ouverte ou si la souris est sur la modal
+
   if (!controlsEnabled || isMouseOverModal) {
     log('❌ Scroll bloqué');
     return;
@@ -742,18 +789,6 @@ window.addEventListener('wheel', (event) => {
   // Permanently hide text once fully zoomed in
   if (cameraProgress >= 1 && cursorText) {
     cursorText.style.display = 'none';
-  }
-}, { passive: true });
-
-// Fade out the startup overlay on scroll interaction
-window.addEventListener('wheel', (event) => {
-  if (!startupOverlay || overlayDismissed) return;
-  const amount = Math.min(0.3, Math.abs(event.deltaY) / 2000); // require more scroll to clear
-  startupOverlayOpacity = Math.max(0, startupOverlayOpacity - amount);
-  startupOverlay.style.opacity = String(startupOverlayOpacity);
-  if (startupOverlayOpacity === 0) {
-    overlayDismissed = true;
-    startupOverlay.remove();
   }
 }, { passive: true });
 

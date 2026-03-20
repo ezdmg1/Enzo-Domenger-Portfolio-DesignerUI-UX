@@ -38,33 +38,25 @@ const pageLoader = document.getElementById('page-loader');
 let pageLoaderHidden = false;
 let sceneFullyLoaded = false;
 
-// Aggressive preloader for the carousel assets
-const CAROUSEL_ASSETS = [
-  './portfolio/',
-  './portfolio/BLENDER_Template_1.glb',
-  './portfolio/COMP VIDEO.mp4'
-];
-function preloadCarouselAssets() {
-  try {
-    if (window.caches && window.location.protocol.startsWith('http')) {
-      return caches.open('carousel-preload-v1').then(cache => cache.addAll(CAROUSEL_ASSETS)).catch(() => {
-        return Promise.all(CAROUSEL_ASSETS.map(u => fetch(u, { cache: 'force-cache' }).catch(() => {})));
-      });
-    }
-    return Promise.all(CAROUSEL_ASSETS.map(u => fetch(u, { cache: 'force-cache' }).catch(() => {})));
-  } catch (_) {
-    return Promise.resolve();
-  }
-}
-const carouselPreloadPromise = preloadCarouselAssets();
+const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+const canIdlePrefetchCarousel = !isCoarsePointer && !(connection && (connection.saveData || /2g/.test(connection.effectiveType || '')));
+let carouselPreloadPromise = Promise.resolve();
 
-// Preload carousel in hidden iframe during page load for faster transition
-window.addEventListener('load', () => {
-  const preloadFrame = document.createElement('iframe');
-  preloadFrame.style.cssText = 'display:none;position:absolute;width:0;height:0;border:none';
-  preloadFrame.src = './portfolio/';
-  document.body.appendChild(preloadFrame);
-});
+function scheduleCarouselPrefetch() {
+  if (!canIdlePrefetchCarousel) return;
+  const prefetch = () => {
+    carouselPreloadPromise = fetch('./portfolio/', { cache: 'force-cache' }).catch(() => {});
+  };
+
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(prefetch, { timeout: 3000 });
+    return;
+  }
+
+  setTimeout(prefetch, 2500);
+}
+
+scheduleCarouselPrefetch();
 
 function navigateToCarouselAfterPreload() {
   // Fast transition (500ms)
@@ -86,7 +78,7 @@ document.addEventListener('visibilitychange', () => {
 // Removed unused fade overlay variables
 let transitionStarted = false;
 let transitionNavigated = false;
-const CAROUSEL_URL = './portfolio/';
+const CAROUSEL_URL = './portfolio/?v=3';
 let lockZPos = null; // freeze camera Z once inside the cube
 
 // Cursor text element
@@ -261,12 +253,12 @@ function getQualityFromURL() {
   } catch (_) { return null; }
 }
 function bladeCountForQuality(q) {
-  if (q === 'low') return 40000;
-  if (q === 'high') return 80000;
-  return 60000;
+  if (q === 'low') return 6000;
+  if (q === 'high') return 18000;
+  return 12000;
 }
 const urlQ = getQualityFromURL();
-const defaultQ = (window.devicePixelRatio > 2) ? 'low' : 'medium';
+const defaultQ = (isCoarsePointer || window.devicePixelRatio > 2) ? 'low' : 'medium';
 const QUALITY = urlQ || defaultQ;
 const BLADE_COUNT = bladeCountForQuality(QUALITY);
 const BLADE_WIDTH = 0.1;
@@ -369,8 +361,8 @@ function generateBlade(center, vArrOffset, uv) {
   return { verts, indices };
 }
 
-// Generate grass field (synchronous - original version)
-function generateField() {
+// Generate grass field progressively to avoid one huge blocking task on startup
+function generateFieldAsync() {
   const positions = [];
   const uvs = [];
   const indices = [];
@@ -380,39 +372,56 @@ function generateField() {
   const surfaceMin = PLANE_SIZE / 2 * -1;
   const surfaceMax = PLANE_SIZE / 2;
   const radius = PLANE_SIZE / 2;
+  const CHUNK_SIZE = isCoarsePointer ? 250 : 600;
+  let i = 0;
 
-  for (let i = 0; i < BLADE_COUNT; i++) {
-    const r = radius * Math.sqrt(Math.random());
-    const theta = Math.random() * 2 * Math.PI;
-    const x = r * Math.cos(theta);
-    const y = r * Math.sin(theta);
+  function finalizeField() {
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+    geom.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2));
+    geom.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
+    geom.setIndex(indices);
+    geom.computeVertexNormals();
+    geom.computeBoundingSphere();
 
-    const pos = new THREE.Vector3(x, 0, y);
-    const uv = [convertRange(pos.x, surfaceMin, surfaceMax, 0, 1), convertRange(pos.z, surfaceMin, surfaceMax, 0, 1)];
-
-    const blade = generateBlade(pos, i * VERTEX_COUNT, uv);
-    blade.verts.forEach(vert => {
-      positions.push(...vert.pos);
-      uvs.push(...vert.uv);
-      colors.push(...vert.color);
-    });
-    blade.indices.forEach(indice => indices.push(indice));
+    const grassMesh = new THREE.Mesh(geom, grassMaterial);
+    scene.add(grassMesh);
   }
 
-  const geom = new THREE.BufferGeometry();
-  geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
-  geom.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2));
-  geom.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
-  geom.setIndex(indices);
-  geom.computeVertexNormals();
-  geom.computeBoundingSphere();
+  function processChunk() {
+    const end = Math.min(i + CHUNK_SIZE, BLADE_COUNT);
 
-  const grassMesh = new THREE.Mesh(geom, grassMaterial);
-  scene.add(grassMesh);
+    for (; i < end; i++) {
+      const r = radius * Math.sqrt(Math.random());
+      const theta = Math.random() * 2 * Math.PI;
+      const x = r * Math.cos(theta);
+      const y = r * Math.sin(theta);
+
+      const pos = new THREE.Vector3(x, 0, y);
+      const uv = [convertRange(pos.x, surfaceMin, surfaceMax, 0, 1), convertRange(pos.z, surfaceMin, surfaceMax, 0, 1)];
+
+      const blade = generateBlade(pos, i * VERTEX_COUNT, uv);
+      blade.verts.forEach((vert) => {
+        positions.push(...vert.pos);
+        uvs.push(...vert.uv);
+        colors.push(...vert.color);
+      });
+      blade.indices.forEach((indice) => indices.push(indice));
+    }
+
+    if (i < BLADE_COUNT) {
+      setTimeout(processChunk, 0);
+      return;
+    }
+
+    finalizeField();
+  }
+
+  processChunk();
 }
 
-// Generate grass field
-generateField();
+// Generate grass field after first paint to reduce startup blocking time
+setTimeout(generateFieldAsync, 0);
 
 // Grass-textured ground plane
 const groundGeom = new THREE.PlaneGeometry(PLANE_SIZE, PLANE_SIZE, 1, 1);
@@ -675,7 +684,6 @@ function animate() {
   }
 
   // Show touch enter button when close to target
-  const touchEnterBtn = document.getElementById('touch-enter-btn');
   if (isCoarsePointer && touchEnterBtn && !transitionStarted) {
     const distanceToTarget = Math.abs(camera.position.z - TARGET_Z);
     if (distanceToTarget < 5) {

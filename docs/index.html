@@ -49,8 +49,8 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="./assets/Logo_32_.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/Logo_32_.ico">
@@ -61,10 +61,6 @@
   <!-- PWA Manifest -->
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#000000">
-  <!-- Prefetch next-page heavy assets to reduce load time -->
-  <link rel="prefetch" href="./portfolio/BLENDER_Template_1.glb" as="fetch" crossorigin>
-  <link rel="prefetch" href="./portfolio/COMP VIDEO.mp4" as="video" crossorigin>
-  <link rel="prefetch" href="./portfolio/">
   <!-- Preconnect to CDN used by carousel's module imports -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   
@@ -344,14 +340,16 @@
   <!-- Service Worker pour améliorer le cache et les performances -->
   <script>
     if ('serviceWorker' in navigator) {
+      const registerSW = () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      };
+
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then((registration) => {
-            console.log('✅ Service Worker enregistré:', registration.scope);
-          })
-          .catch((error) => {
-            console.log('❌ Erreur Service Worker:', error);
-          });
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(registerSW, { timeout: 3000 });
+          return;
+        }
+        setTimeout(registerSW, 1500);
       });
     }
   </script>

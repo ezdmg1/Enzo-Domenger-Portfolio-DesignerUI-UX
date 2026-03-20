@@ -106,7 +106,7 @@
 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
@@ -826,10 +826,6 @@
 
       #logo-btn:hover img { opacity: 1; }
 
-
-
-      /* Startup overlay (will fade OUT) */
-
       #fade-overlay {
 
         position: fixed;
@@ -849,6 +845,8 @@
         align-items: center;
 
         justify-content: center;
+
+        transition: opacity 0.45s ease;
 
       }
 
@@ -1094,7 +1092,7 @@
 
     
 
-    <script type="module" src="./main.js?v=2"></script>
+    <script type="module" src="./main.js?v=3"></script>
 
     
 
@@ -1102,45 +1100,29 @@
 
     <script>
 
-      // Désactiver temporairement le Service Worker pour forcer le rechargement
-
       if ('serviceWorker' in navigator) {
 
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        const registerSW = () => {
 
-          for(let registration of registrations) {
+          navigator.serviceWorker.register('./sw.js?v=2').catch(() => {});
 
-            registration.unregister();
-
-            console.log('🔄 Service Worker unregistered');
-
-          }
-
-        });
-
-      }
-
-      
-
-      // Décommenter pour réactiver le Service Worker plus tard
-
-      /*
-
-      if ('serviceWorker' in navigator) {
+        };
 
         window.addEventListener('load', () => {
 
-          navigator.serviceWorker.register('./sw.js')
+          if ('requestIdleCallback' in window) {
 
-            .then(reg => console.log('✅ Service Worker registered:', reg.scope))
+            requestIdleCallback(registerSW, { timeout: 3000 });
 
-            .catch(err => console.error('❌ Service Worker registration failed:', err));
+            return;
+
+          }
+
+          setTimeout(registerSW, 1500);
 
         });
 
       }
-
-      */
 
     </script>
 

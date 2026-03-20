@@ -42,7 +42,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/logo(180).png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <style>
     @font-face {
       font-family: 'South Amsterdam';
@@ -906,8 +906,9 @@
       if (items.length < 2) return;
 
       const SCALE_STEP = 0.06;
+      let scrollScheduled = false;
 
-      function onScroll() {
+      function updateStack() {
         items.forEach((item, i) => {
           if (i === items.length - 1) return;
           const card = item.querySelector('.gallery-card');
@@ -922,8 +923,17 @@
         });
       }
 
+      function onScroll() {
+        if (scrollScheduled) return;
+        scrollScheduled = true;
+        requestAnimationFrame(() => {
+          scrollScheduled = false;
+          updateStack();
+        });
+      }
+
       window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
+      updateStack();
     }
 
     setTimeout(initScrollStack, 100);
@@ -935,16 +945,26 @@
       const len = path.getTotalLength();
       path.style.strokeDasharray = len;
       path.style.strokeDashoffset = len;
+      let lineScrollScheduled = false;
 
-      function onScroll() {
+      function updateLine() {
         const scrollTop = window.scrollY || document.documentElement.scrollTop;
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         const progress = docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0;
         path.style.strokeDashoffset = len * (1 - progress);
       }
 
+      function onScroll() {
+        if (lineScrollScheduled) return;
+        lineScrollScheduled = true;
+        requestAnimationFrame(() => {
+          lineScrollScheduled = false;
+          updateLine();
+        });
+      }
+
       window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
+      updateLine();
     })();
 
   </script>

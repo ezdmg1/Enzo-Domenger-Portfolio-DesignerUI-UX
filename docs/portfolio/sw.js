@@ -1,5 +1,5 @@
 // Service Worker for caching assets
-const CACHE_NAME = 'portfolio-cache-v1';
+const CACHE_NAME = 'portfolio-cache-v2';
 const urlsToCache = [
   './',
   './main.js',
@@ -47,36 +47,50 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  const accept = request.headers.get('accept') || '';
+  const isHTML = request.mode === 'navigate' || accept.includes('text/html');
+  const isJS = request.destination === 'script' || /\.js($|\?)/i.test(new URL(request.url).pathname);
+
+  if (isHTML || isJS) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response && response.status === 200 && response.type === 'basic') {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseToCache);
+            });
+          }
+          return response;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request)
+    caches.match(request)
       .then((response) => {
-        // Cache hit - return response
         if (response) {
-          console.log('[SW] Serving from cache:', event.request.url);
+          console.log('[SW] Serving from cache:', request.url);
           return response;
         }
-        
-        // Clone the request
-        const fetchRequest = event.request.clone();
-        
-        return fetch(fetchRequest).then((response) => {
-          // Check if valid response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
+
+        return fetch(request).then((networkResponse) => {
+          if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+            return networkResponse;
           }
-          
-          // Clone the response
-          const responseToCache = response.clone();
-          
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-          
-          return response;
+
+          const responseToCache = networkResponse.clone();
+
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseToCache);
+          });
+
+          return networkResponse;
         }).catch((err) => {
           console.error('[SW] Fetch failed:', err);
-          // Return offline page or fallback
         });
       })
   );
