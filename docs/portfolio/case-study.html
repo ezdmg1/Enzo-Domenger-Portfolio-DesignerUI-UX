@@ -591,7 +591,12 @@
         heroImage: `https://www.youtube.com/embed/T1v0eDGNcOg?autoplay=1&mute=1&loop=1&playlist=T1v0eDGNcOg&controls=0`,
         description: `Cette vidéo illustre un projet de vulgarisation de la conception générative par l'IA en architecture. Durant mon stage de cinq mois, j'ai renforcé mes compétences en motion design, gestion de projet et narration visuelle, tout en apprenant à structurer et simplifier des concepts complexes.`,
         context: `Cette vidéo illustre un projet de vulgarisation de la conception générative par l'IA en architecture. Durant mon stage de cinq mois, j'ai renforcé mes compétences en motion design, gestion de projet et narration visuelle, tout en apprenant à structurer et simplifier des concepts complexes.`,
-        technologies: ['After Effects', 'Premiere Pro', 'Illustrator', 'Blender', '3ds Max', 'Revit'],
+        galleryImages: [
+          '../portfolio/images/club/club-2.webp',
+          '../portfolio/images/club/club-3.webp',
+          '../portfolio/images/club/club-4.webp',
+          '../portfolio/images/club/club-5.webp',
+        ],
       },
       {
         role: 'Motion Designer',
@@ -601,7 +606,12 @@
         heroImage: `https://www.youtube.com/embed/F3rhjsh-SmQ?autoplay=1&mute=1&loop=1&playlist=F3rhjsh-SmQ&controls=0`,
         description: 'Animation motion design avec bande sonore de la conférence TED de Garry Kasparov sur l\'intelligence artificielle. Création typographique et effets visuels explorant la relation homme-machine à travers l\'histoire de Deep Blue.',
         context: 'Animation motion design avec bande sonore de la conférence TED de Garry Kasparov sur l\'intelligence artificielle. Création typographique et effets visuels explorant la relation homme-machine à travers l\'histoire de Deep Blue. Motion design narratif mêlant animation 2D et composition graphique.',
-        technologies: ['After Effects', 'Premiere Pro', 'Illustrator', 'Photoshop'],
+        galleryImages: [
+          '../portfolio/images/But was it intelligent/But was it intelligent-2.webp',
+          '../portfolio/images/But was it intelligent/But was it intelligent-3.webp',
+          '../portfolio/images/But was it intelligent/But was it intelligent-4.webp',
+          '../portfolio/images/But was it intelligent/But was it intelligent-5.webp',
+        ],
       },
       {
         role: 'Réalisateur & Monteur',
@@ -710,15 +720,34 @@
     }
 
     function buildVideoContent(project) {
+      const imgs = project.galleryImages || [];
+      const skills = Array.isArray(project.technologies) && project.technologies.length
+        ? `
+        <div class="skills" style="margin-top:-32px;margin-bottom:48px;">
+          ${project.technologies.map(t => `<span class="skill-pill">${t}</span>`).join('')}
+        </div>
+      `
+        : '';
+      const gallery = imgs.length
+        ? `
+        <div class="gallery-section" id="scroll-stack">
+          ${stackCard(imgs[0], 'gallery-card-wide', 'Image 1')}
+          ${stackCard(imgs[1], 'gallery-card-wide', 'Image 2')}
+          ${stackCard(imgs[2], 'gallery-card-wide', 'Image 3')}
+          ${stackCard(imgs[3], 'gallery-card-wide', 'Image 4')}
+        </div>
+      `
+        : '';
+
       return `
         <div class="context-section">
           <h2>contexte</h2>
           <p>${project.context || project.description}</p>
         </div>
 
-        <div class="skills" style="margin-top:-32px;margin-bottom:48px;">
-          ${project.technologies.map(t => `<span class="skill-pill">${t}</span>`).join('')}
-        </div>
+        ${skills}
+
+        ${gallery}
       `;
     }
 
