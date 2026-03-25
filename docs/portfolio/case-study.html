@@ -858,13 +858,22 @@
       const metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc) metaDesc.setAttribute('content', (project.description || '').slice(0, 155));
 
+      const videoUrl = project.heroImage && project.heroImage.includes('youtube.com/embed/')
+        ? `https://www.youtube.com/watch?v=${project.heroImage.match(/youtube\.com\/embed\/([^?]+)/)?.[1] || ''}`
+        : '';
+
       const visitBtn = project.url
         ? `<a class="meta-visit-btn" href="${project.url}" target="_blank" rel="noopener">${ICON_LINK} Visiter le site</a><div class="meta-sep"></div>`
+        : '';
+
+      const videoBtn = videoUrl
+        ? `<a class="meta-visit-btn" href="${videoUrl}" target="_blank" rel="noopener">${ICON_LINK} Voir la vidéo</a><div class="meta-sep"></div>`
         : '';
 
       const metaBar = `
         <div class="meta-bar">
           ${visitBtn}
+          ${videoBtn}
           <span class="meta-role">${ICON_ROLE} ${project.role}</span>
           <div class="meta-sep"></div>
           <span class="meta-categories">${project.categories}</span>
