@@ -633,6 +633,25 @@ window.addEventListener('wheel', (e) => {
   lastScrollTime = performance.now();
 }, { passive: true });
 
+// Keyboard arrow navigation (up/down) - same behavior as wheel
+window.addEventListener('keydown', (e) => {
+  if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+  
+  // Hide hint on arrow key
+  if (cursorText) {
+    cursorText.classList.add('hidden');
+  }
+  if (transitionStarted) return; // ignore input during transition
+  
+  e.preventDefault(); // prevent page scroll
+  
+  const dir = e.key === 'ArrowUp' ? -1 : 1; // up => -Z (forward), down => +Z (backward)
+  const magnitude = 100; // simulate wheel delta
+  forwardVel += dir * magnitude * SCROLL_ACCEL;
+  forwardVel = THREE.MathUtils.clamp(forwardVel, -MAX_VEL, MAX_VEL);
+  lastScrollTime = performance.now();
+});
+
 const clock = new THREE.Clock();
 
 function animate() {

@@ -792,6 +792,63 @@ window.addEventListener('wheel', (event) => {
   }
 }, { passive: true });
 
+// Keyboard arrow navigation (up/down) - same behavior as wheel
+window.addEventListener('keydown', (event) => {
+  if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
+  
+  log('Arrow key detected - controlsEnabled:', controlsEnabled, 'isMouseOverModal:', isMouseOverModal);
+
+  if (!controlsEnabled || isMouseOverModal) {
+    log('❌ Arrow navigation bloqué');
+    return;
+  }
+  
+  event.preventDefault(); // prevent page scroll
+  
+  const now = performance.now();
+  
+  // Phase 2 : already fully zoomed in → navigate between projects
+  if (cameraProgress >= 1) {
+    // Record first time we reached max zoom
+    if (zoomCompletedAt < 0) zoomCompletedAt = now;
+    // Wait for the pause delay before enabling navigation
+    if (now - zoomCompletedAt < ZOOM_TO_NAV_DELAY_MS) return;
+    if (now - lastWheelNavTime < WHEEL_NAV_THROTTLE_MS) return;
+    lastWheelNavTime = now;
+    
+    if (event.key === 'ArrowUp') {
+      // arrow up → projet suivant (droite)
+      const nextIndex = (currentIndex + 1) % itemCount;
+      rotateToIndex(nextIndex);
+    } else {
+      // arrow down → projet précédent (gauche)
+      const prevIndex = (currentIndex - 1 + itemCount) % itemCount;
+      rotateToIndex(prevIndex);
+    }
+    return;
+  }
+  
+  // Phase 1 : zoom in only (no zoom back out)
+  if (now - lastWheelTime < WHEEL_THROTTLE_MS) return;
+  lastWheelTime = now;
+  
+  if (!hasScrolled) {
+    hasScrolled = true;
+  }
+  
+  // Hide cursor text when using arrows
+  if (cursorText) {
+    cursorText.classList.add('hidden');
+  }
+  
+  // Arrow up only zooms in — arrow down does nothing during zoom phase
+  if (event.key === 'ArrowUp') {
+    cameraProgress = Math.min(cameraProgress + 0.12, 1);
+  }
+  
+  log('New cameraProgress:', cameraProgress);
+});
+
 // Update video resolution when video metadata is loaded
 video.addEventListener('loadedmetadata', () => {
   backgroundMaterial.uniforms.uVideoResolution.value.set(video.videoWidth, video.videoHeight);
